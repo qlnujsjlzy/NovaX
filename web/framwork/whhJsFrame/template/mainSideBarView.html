@@ -1,0 +1,42 @@
+<!-- sidebar: style can be found in sidebar.less -->
+
+    <ul class="sidebar-menu">
+        <li class="header"> 使用AngularJS封装的KendoUI指令库 </li>
+        <li class="active treeview">
+            <a href="#">
+                <i class="fa fa-laptop"></i>
+                <span>UI控件Demo</span>
+                <i class="fa fa-angle-left pull-right"></i>
+            </a>
+            <ul class="treeview-menu">
+                <li ><a ui-sref="main.welcome" ><i class="fa fa-circle-o"></i>欢迎界面</a></li>
+                <li ><a ui-sref="main.gridPage1" ><i class="fa fa-circle-o"></i>Grid增删改查和输入控件</a></li>
+                <li><a ui-sref=".gridPage2" ><i class="fa fa-circle-o"></i>Grid记录Changes</a></li>
+                <li><a ui-sref=".datePage1" ><i class="fa fa-circle-o"></i>datePicker日期控件</a></li>
+                <li><a ui-sref=".comboBoxDemo" ><i class="fa fa-circle-o"></i>comboBox控件</a></li>
+            </ul>
+        </li>
+        <li class="treeview">
+            <a href="#">
+                <i class="fa fa-share"></i> <span>Multilevel</span>
+                <i class="fa fa-angle-left pull-right"></i>
+            </a>
+            <ul class="treeview-menu">
+                <li><a href="#"><i class="fa fa-circle-o"></i> Level One</a></li>
+                <li><a href="#"><i class="fa fa-circle-o"></i> Level One <i class="fa fa-angle-left pull-right"></i></a>
+                    <ul class="treeview-menu">
+                        <li><a href="#"><i class="fa fa-circle-o"></i> Level Two</a></li>
+                        <li>
+                            <a href="#"><i class="fa fa-circle-o"></i> Level Two <i class="fa fa-angle-left pull-right"></i></a>
+                            <ul class="treeview-menu">
+                                <li><a href="#"><i class="fa fa-circle-o"></i> Level Three</a></li>
+                                <li><a href="#"><i class="fa fa-circle-o"></i> Level Three</a></li>
+                            </ul>
+                        </li>
+                    </ul>
+                </li>
+                <li><a href="#"><i class="fa fa-circle-o"></i> Level One</a></li>
+            </ul>
+        </li>
+    </ul>
+
