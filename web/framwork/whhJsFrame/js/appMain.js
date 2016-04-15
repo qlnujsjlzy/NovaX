@@ -299,8 +299,44 @@ App.factory('appExceptionInterceptor', ['$rootScope', function ($rootScope) {
     };
     return interceptor;
 }]);
+App.factory('httpBlockUIInterceptor',['$rootScope',function($rootScope){
+
+    // 需要屏蔽用户操作的http请求 拦截下来 开启blockui遮罩
+    var interceptor = {
+        request: function (config) {
+            //不能什么请求都遮罩,比如一些下拉框等控件在加载数据的时候 就不应该出现遮罩 这个我们需要在header里面放一个参数来进行区分
+            if(config.headers.needUiBlock){
+                $rootScope.blockPage();
+            }
+            return config;
+        },
+        response:function(response){
+            if(response.config.headers.needUiBlock){
+                $rootScope.unBlockPage();
+            }
+            return response;
+        },
+        requestError: function (config) {
+            if(config.headers.needUiBlock){
+                $rootScope.unBlockPage();
+            }
+            return config;
+        },
+        responseError: function (response) {
+            if(response.config.headers.needUiBlock){
+                $rootScope.unBlockPage();
+            }
+            return response;
+        }
+    }
+
+    return interceptor
+
+
+}]);
 App.config(['$httpProvider', function ($httpProvider) {
     $httpProvider.interceptors.push('appExceptionInterceptor');
+    $httpProvider.interceptors.push('httpBlockUIInterceptor');
 }]);
 
 

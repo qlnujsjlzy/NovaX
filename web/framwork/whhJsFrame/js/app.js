@@ -27,12 +27,22 @@ App.run(function ($rootScope, loginService, $state) {
     //****************************************blockUI相关********************************************
     $rootScope.blockPage = function () {
         //$.blockUI({ css: { backgroundColor: '#f00', color: '#fff'} });
-        $.blockUI({
-                overlayCSS: {
-                    backgroundColor: '#000',
-                    opacity: 0.6//,
-                    //cursor: 'wait'
-                }
+        $.blockUI(
+            {
+                css : {
+                    border : 'none',
+                    padding : '15px',
+                    backgroundColor : '#FFA500',
+                    '-webkit-border-radius' : '10px',
+                    '-moz-border-radius' : '10px',
+                    opacity : 1.0,
+                    color : '#fff'
+                },
+                overlayCSS:  {
+                    backgroundColor: '#000', //颜色
+                    opacity:         0 //透明度
+                },
+                message : '数据加载中...'
             }
         );
     }

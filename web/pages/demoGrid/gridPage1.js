@@ -122,7 +122,8 @@ App.controller('gridPage1Ctrl', ['$scope', '$http','$timeout', function ($scope,
             }
             $http({
                 url: "GridDemoService/getPhone.json?phonename=" + $scope.phonename,
-                method: "GET"
+                method: "GET",
+                headers: { 'needUiBlock': true} // 加上这一句 在做http请求的时候会提供界面屏蔽
 
             }).success(function (data, status, header, config) {
                 //直接赋值数据 而不使用transaction   坏处是如果远程请求耗时较长的话,不会出现菊花图标来过渡
