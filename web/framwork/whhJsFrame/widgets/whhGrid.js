@@ -1,40 +1,6 @@
 /**
  * Created by wangzheng 12897 on 16/3/30.
  *
- * 2016/04/01
- * 构建angularJS指令和模板 实现基于指令创建grid
- * 实现查询功能 实现数据源的set get
- *
- * 2016/04/02
- * 增加多列下拉 增加单列下拉
- *
- * 2016/04/03
- * 增加日期控件  和 日期时间控件
- *
- * 2016/04/05
- * 增加widgetApi对象 实现 获取选中行 删除选中行  updateItem等功能
- *
- * 2016/04/06
- * 实现change事件捕捉 各种状态下获取insertItems updateItems 和 deleteItems
- *
- * 2016/04/07
- * 增加每列可选是否可编辑功能 schema自动构建
- * 实现基本的输入控制 是否必输 max min控制
- * 实现save功能 基于url自动传入update的数据作为参数
- *
- * 2016/04/08
- * 修复id字段问题  构建schema的过程优化
- * 修复多列下拉抬头和内容不对齐的问题
- * 修复日期控件内英文月份 星期的问题 改为中文
- *
- * 2016/04/13
- * 计划实现勾选框功能 记录勾选   我们应该先实现itemClick事件
- * 计划实现Restore Scroll Positions 功能
- * 计划增加分页显示/不分页显示 属性
- * 计划增加Locked (frozen) columns
- *
- *
- *
  */
 //angular.module('whh.grid', [])
 App.directive('ngWhhGrid', function () {//编写grid对应的指令
@@ -48,11 +14,6 @@ App.directive('ngWhhGrid', function () {//编写grid对应的指令
         },
         template: '<div><div class="whhGridMainTitle" style="border-color: #e6e6e6;border-width: 1px;border-style: solid;border-bottom-width: 0px;"></div><div class="whhGridMainContent"></div></div>',
         controller: ['$scope', '$http', function ($scope, $http) {
-
-
-
-
-
 
 
             // 创建暴露给外部的API
