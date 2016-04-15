@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
+<beans>
+
+<!--======================================================================================-->
+	<!--================应用名称为ss,dataapp 为ss_dataapp 数据库配置开始================-->
+	<!--======================================================================================-->
+	<bean id="portal_default_dataSource"
+		class="org.logicalcobwebs.proxool.WhhProxoolDataSource">
+		<property name="driver">
+			<value>${portal_default.proxool.driver-class}</value>
+		</property>
+		<property name="driverUrl">
+			<value>${portal_default.proxool.driver-url}</value>
+		</property>
+		<property name="user">
+			<value>${portal_default.user}</value>
+		</property>
+		<property name="password">
+			<value>${portal_default.password}</value>
+		</property>
+		<property name="alias">
+			<value>${portal_default.proxool.alias}</value>
+		</property>
+		
+		<property name="houseKeepingSleepTime">
+			<value>${portal_default.proxool.house-keeping-sleep-time}</value>
+		</property>
+		
+		<property name="houseKeepingTestSql">
+			<value>${portal_default.proxool.house-keeping-test-sql}</value>
+		</property>
+		<property name="prototypeCount">
+			<value>${portal_default.proxool.prototype-count}</value>
+		</property>
+		<property name="maximumConnectionCount">
+			<value>${portal_default.proxool.maximum-connection-count}</value>
+		</property>
+		<property name="maximumConnectionLifetime">
+			<value>${portal_default.proxool.maximum-connection-lifetime}</value>
+		</property>
+		<property name="maximumActiveTime">
+			<value>${portal_default.proxool.maximum-active-time}</value>
+		</property>
+		<property name="trace">
+			<value>${portal_default.proxool.trace}</value>
+		</property>
+		<property name="verbose">
+			<value>${portal_default.proxool.verbose}</value>
+		</property>
+		<property name="statistics">
+			<value>${portal_default.proxool.statistics}</value>
+		</property>
+		
+		<property name="testBeforeUse">
+			<value>${portal_default.proxool.testBeforeUse}</value>
+		</property>
+	</bean>
+
+	<!-- ======================================================================== -->
+	<!--  TransactionManager定义。                                                -->
+	<!-- ======================================================================== -->
+	<bean id="portal_default_transactionManager"
+		class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+		<property name="dataSource" ref="portal_default_dataSource" />
+	</bean>
+	<bean id="portal_default_transactionTemplate"
+		class="org.springframework.transaction.support.TransactionTemplate">
+		<property name="transactionManager" ref="portal_default_transactionManager" />
+	</bean>
+	 <!-- ======================================================================== -->
+    <!--  用纯JDBC实现DAO的相关设置(可选)。                                       -->
+    <!-- ======================================================================== -->
+    <bean id="portal_default_jdbcTemplate" class="org.springframework.jdbc.core.JdbcTemplate">
+        <property name="dataSource" ref="portal_default_dataSource"/>
+    </bean>
+  
+</beans>
