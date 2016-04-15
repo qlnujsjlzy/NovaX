@@ -1,0 +1,61 @@
+/**
+ * Created by wz on 16/4/2.
+ */
+//angular.module('datePage1', ['whh.datePicker'])
+App.controller('datePage1Ctrl', ['$scope', function ($scope) {
+    $scope.dateOption1 =
+    {
+
+        // 获取api对象 和 widget对象
+        getWidgetApi: function (widgetApi) {
+            $scope.widgetApi = widgetApi;
+            $scope.widget = widgetApi.widget;
+        }
+    }
+
+
+    $scope.setDate1 = function () {
+        $scope.widgetApi.setDate( new Date('2011/12/31') );
+    }
+    $scope.setDate2 = function () {
+        $scope.widgetApi.setDate( "2015-01-01" );
+    }
+
+
+    $scope.getDate = function () {
+       var date =  $scope.widgetApi.getDate();
+        alert(date);
+    }
+
+    $scope.getDateStr = function () {
+       var dateStr =  $scope.widgetApi.getDateStr();
+        alert(dateStr);
+    }
+
+    $scope.getMSeconds = function () {
+        alert($scope.widgetApi.getMSeconds());
+    }
+
+
+
+
+    // 绑定事件处理器  可以绑定多个事件处理器
+    var identifier;
+    $scope.bind = function () {
+        $scope.widgetApi.clearOnChangeHandler();
+
+        identifier = $scope.widgetApi.bindOnChangeHandler(function (date) {
+            //选中事件,返回选中行
+            alert(date);
+        });
+        $scope.ifHandler = "已绑定OnChange事件";
+    }
+
+
+    //解绑事件
+    $scope.unbind = function () {
+        $scope.widgetApi.unBindOnChangeHandler(identifier);
+        $scope.ifHandler = "已取消选OnChange事件";
+    }
+}]);
+

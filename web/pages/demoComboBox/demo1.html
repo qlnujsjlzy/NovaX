@@ -1,0 +1,50 @@
+<div class="container-fluid" ng-controller="demo1Ctrl">
+
+
+     <div class="row">
+
+
+            <div class="col-lg-2" style="padding-left: 0px;" >
+                <button class="btn   btn-success" ng-click="bind1()" style="width: 100%;"> 添加OnChange事件
+                </button>
+            </div>
+
+            <div class="col-lg-2"  >
+                <button class="btn   btn-success" ng-click="unbind1()" style="width: 100%;"> 解除OnChange事件
+                </button>
+            </div>
+            <div class="col-lg-2"  >
+                <button class="btn   btn-success" ng-click="getSelectItem()" style="width: 100%;"> 获取选中行
+                </button>
+            </div>
+            <div class="col-lg-2"  >
+                <button class="btn   btn-success" ng-click="selectItem()" style="width: 100%;"> index选中
+                </button>
+            </div>
+
+    </div>
+    <div class="row" style="margin-top: 5px;">
+        <h6>远程数据 <span style="color: red">{{ifHandler}}</span></h6>
+    <div class="col-lg-4" style="padding-left: 0px;padding-right: 0px;">
+        <ng-whh-combo-box option="comboBoxOption1"></ng-whh-combo-box>
+    </div>
+</div>
+        <div class="row" style="margin-top: 5px;">
+        <h6>本地数据</h6>
+        <div class="col-lg-4" style="padding-left: 0px;padding-right: 0px;">
+            <ng-whh-combo-box option="comboBoxOption2"></ng-whh-combo-box>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-lg-12">
+            <hr>
+            <span id="changes"></span>
+        </div>
+    </div>
+
+
+
+
+</div>
+
+

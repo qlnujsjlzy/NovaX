@@ -1,0 +1,81 @@
+<div class="container-fluid" ng-controller="gridPage2Ctrl">
+
+
+
+    <div class="row">
+        <div class="col-lg-1" style="padding-left: 0px;">
+            <button class="btn   btn-success" ng-click="query()" style="width: 100%;"> 查询
+            </button>
+        </div>
+        <div class="col-lg-1">
+            <button class="btn  btn-default" ng-click="addItem()" style="width: 100%;"> 新增</button>
+        </div>
+        <div class="col-lg-2">
+            <button class="btn  btn-default" ng-click="deleteSelectedItems()"
+                    style="width: 100%;padding-left: 0px;"> 删除选中行
+            </button>
+        </div>
+        <div class="col-lg-2">
+            <button class="btn btn-default" ng-click="getSelectedItems()" style="width: 100%;"> 获取选中行</button>
+        </div>
+        <div class="col-lg-2">
+            <button class="btn btn-danger " ng-click="showUpdates()" style="width: 100%;"> 显示changes
+            </button>
+        </div>
+
+        <div class="col-lg-2">
+            <button class="btn btn-danger " ng-click="throwException()" style="width: 100%;"> throwAppException
+            </button>
+        </div>
+
+    </div>
+
+    <div class="row" style="padding-top: 5px;">
+
+
+        <!--
+            <div class="col-lg-1 col-lg-offset-1">
+                <button class="btn   btn-danger" ng-click="deleteAllItems()" style="width: 100%;"> deleteAll </button>
+            </div>
+        -->
+        <div class="col-lg-2" style="padding-left: 0px;">
+            <button class="btn   btn-warning" ng-click="updateItem()" style="width: 100%;"> js代码更新item</button>
+        </div>
+
+
+        <div class="col-lg-2">
+            <button class="btn   btn-danger" ng-click="deleteItem()" style="width: 100%;"> js代码按index删除item </button>
+        </div>
+
+
+        <div class="col-lg-2">
+            <button class="btn btn-default" ng-click="query()" style="width: 100%;"> 导出Excel</button>
+        </div>
+        <div class="col-lg-2">
+            <button class="btn btn-default" ng-click="showUpdates()" style="width: 100%;"> 显示Changes
+            </button>
+        </div>
+        <div class="col-lg-2">
+            <button class="btn btn-default" ng-click="save()" style="width: 100%;">保存修改</button>
+        </div>
+
+    </div>
+
+
+    <div class="row" style="padding-top: 5px;">
+        <div class="col-lg-12"  style="padding-left: 0px;padding-right: 0px;">
+            <ng-whh-grid option="gridOption1"  ></ng-whh-grid>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-lg-12">
+            <hr>
+            <span id="changes"></span>
+        </div>
+    </div>
+
+
+
+
+</div>

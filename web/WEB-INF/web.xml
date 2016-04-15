@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app xmlns="http://java.sun.com/xml/ns/javaee"
+           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xsi:schemaLocation="http://java.sun.com/xml/ns/javaee
+		  http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd"
+           version="3.0">
+
+
+
+    <context-param>
+        <param-name>appConfigPath</param-name>
+        <param-value>appConfig.properties</param-value>
+    </context-param>
+
+
+    <servlet>
+        <servlet-name>spring-mvc</servlet-name>
+        <servlet-class>
+            org.springframework.web.servlet.DispatcherServlet
+        </servlet-class>
+        <init-param>
+            <param-name>contextConfigLocation</param-name>
+            <param-value>classpath:spring-mvc.xml</param-value>
+        </init-param>
+        <load-on-startup>1</load-on-startup>
+    </servlet>
+    <servlet-mapping><!-- 我认为 所有的请求的响应都应该是json的-->
+        <servlet-name>spring-mvc</servlet-name>
+        <url-pattern>*.json</url-pattern>
+    </servlet-mapping>
+
+
+    <!-- 使用ContextLoaderListener来加载其他的spring配置文件-->
+    <listener>
+        <listener-class>
+            org.springframework.web.context.ContextLoaderListener
+        </listener-class>
+    </listener>
+    <context-param>
+        <param-name>contextConfigLocation</param-name>
+        <param-value>
+            classpath:applicationContext.xml
+        </param-value>
+    </context-param>
+
+
+
+    <listener>
+        <listener-class>
+            com.whhercp.appbase.listener.ApplicationInitListener
+        </listener-class>
+    </listener>
+    <listener>
+        <listener-class>com.whhercp.appbase.listener.SqlMapConfigListener</listener-class>
+    </listener>
+
+
+</web-app>

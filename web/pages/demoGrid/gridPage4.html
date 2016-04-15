@@ -1,0 +1,72 @@
+<div class="container-fluid"><!-- 这个View会有独立scope的 要注意-->
+
+    <div ng-controller="gridPage4Ctrl">
+        <div class="row">
+
+
+            <div class="col-lg-2 " style="padding-left: 0px;">
+                <button class="btn btn-default " ng-click="showUpdates1()" style="width: 100%;"> 显示changes
+                </button>
+            </div>
+            <div class="col-lg-2">
+                <button class="btn btn-default " ng-click="getSelectedItems1()" style="width: 100%;"> 获取选中行
+                </button>
+            </div>
+            <div class="col-lg-2">
+                <button class="btn btn-default " ng-click="deleteSelectedItems1()" style="width: 100%;"> 删除选中行
+                </button>
+            </div>
+
+
+            <div class="col-lg-2 " style="padding-left: 0px;">
+                <button class="btn btn-default " ng-click="showUpdates2()" style="width: 100%;"> 显示changes
+                </button>
+            </div>
+            <div class="col-lg-2">
+                <button class="btn btn-default " ng-click="getSelectedItems2()" style="width: 100%;"> 获取选中行
+                </button>
+            </div>
+            <div class="col-lg-2">
+                <button class="btn btn-default " ng-click="deleteSelectedItems2()" style="width: 100%;"> 删除选中行
+                </button>
+            </div>
+
+
+        </div>
+
+
+
+        <div class="row" style="padding-top: 5px;">
+            <div class="col-lg-6" style="padding-left: 0px;padding-right: 0px;">
+                <ng-whh-grid option="gridOption1"></ng-whh-grid>
+            </div>
+            <div class="col-lg-6" style="padding-left: 0px;padding-right: 0px;">
+                <ng-whh-grid option="gridOption2"></ng-whh-grid>
+            </div>
+        </div>
+        <div class="row">
+            <h5><span style="color: red">{{ifHandler}}</span></h5>
+            <div class="col-lg-2" style="padding-left: 0px;" >
+                <button class="btn   btn-success" ng-click="bind()" style="width: 100%;"> 添加OnSelect事件
+                </button>
+            </div>
+
+            <div class="col-lg-2"  >
+                <button class="btn   btn-success" ng-click="unbind()" style="width: 100%;"> 解除OnSelect事件
+                </button>
+            </div>
+
+        </div>
+
+        <div class="row">
+            <div class="col-lg-12">
+                <hr>
+                <span id="changes"></span>
+            </div>
+        </div>
+
+
+
+    </div>
+
+</div>

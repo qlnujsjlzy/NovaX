@@ -1,0 +1,50 @@
+<div class="container-fluid" ng-controller="datePage1Ctrl">
+
+    <div class="row" style="padding-top: 5px;">
+        <span style="color: red">{{ifHandler}}</span>
+        <div class="col-lg-3" style="padding-left: 0px;padding-right: 0px;">
+            <ng-whh-date-picker option="dateOption1"></ng-whh-date-picker>
+        </div>
+    </div>
+
+    <div class="row" style="margin-top: 5px;">
+        <div class="col-lg-3" style="padding-left: 0px;" >
+            <button class="btn   btn-success" ng-click="setDate1()" style="width: 100%;"> 设置新日期 2011/12/31
+            </button>
+        </div>
+        <div class="col-lg-3" >
+            <button class="btn   btn-success" ng-click="setDate2()" style="width: 100%;"> 设置新日期 2015-01-01
+            </button>
+        </div>
+
+        <div class="col-lg-3" >
+            <button class="btn   btn-success" ng-click="getDate()" style="width: 100%;"> getDate
+            </button>
+        </div>
+
+        <div class="col-lg-3" >
+            <button class="btn   btn-success" ng-click="getDateStr()" style="width: 100%;"> getDateStr 日期字符串
+            </button>
+        </div>
+    </div>
+
+
+    <div class="row" style="margin-top: 5px;">
+        <div class="col-lg-3" style="padding-left: 0px;">
+            <button class="btn   btn-success" ng-click="getMSeconds()" style="width: 100%;"> 获取毫秒数
+            </button>
+        </div>
+        <div class="col-lg-2" style="padding-left: 0px;" >
+            <button class="btn   btn-success" ng-click="bind()" style="width: 100%;"> 添加OnChange事件
+            </button>
+        </div>
+
+        <div class="col-lg-2"  >
+            <button class="btn   btn-success" ng-click="unbind()" style="width: 100%;"> 解除OnChange事件
+            </button>
+        </div>
+    </div>
+
+</div>
+
+
