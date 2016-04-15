@@ -3,3 +3,4 @@ WhhJSPlatform.iml
 
 target/classes/portal-data-source.xml
 target
+#src/main/resources/proxool.properties
