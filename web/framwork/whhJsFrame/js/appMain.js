@@ -241,6 +241,9 @@ App.service('loginService', ['$rootScope', '$http', '$timeout', '$state', '$q', 
     //是否登录?
     loginService.ifLogin = function () {
 
+        //if(!ifLoginCheck){
+        //    return true;
+        //}
         if ($rootScope.login_info) {
             return true;
         } else {

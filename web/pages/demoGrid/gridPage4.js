@@ -110,11 +110,11 @@ App.controller('gridPage4Ctrl', ['$scope', '$http', '$timeout', function ($scope
     $scope.bind = function () {
 
 
-        $scope.gridApi1.clearOnSelectHandler();
-        $scope.gridApi2.clearOnSelectHandler();
+        $scope.gridApi1.clearBindEvent('Select');
+        $scope.gridApi2.clearBindEvent('Select');
 
         //给第二个grid绑定事件
-        identifier1 = $scope.gridApi1.bindOnSelectHandler(
+        identifier1 = $scope.gridApi1.bindEvent('Select',
             function (items) {  //选中行触发的事件 可以写多个 会顺序执行   参数就是选中行数组
 
                 var info = "---------------SelectedItems grid2------------- <br>"
@@ -131,7 +131,7 @@ App.controller('gridPage4Ctrl', ['$scope', '$http', '$timeout', function ($scope
 
 
         //给第二个grid绑定事件
-        identifier2 = $scope.gridApi2.bindOnSelectHandler(
+        identifier2 = $scope.gridApi2.bindEvent('Select',
             function (items) {  //选中行触发的事件 可以写多个 会顺序执行   参数就是选中行数组
 
                 var info = "---------------SelectedItems grid2------------- <br>"
@@ -151,8 +151,8 @@ App.controller('gridPage4Ctrl', ['$scope', '$http', '$timeout', function ($scope
 
     //解绑事件
     $scope.unbind = function () {
-        $scope.gridApi1.unBindOnSelectHandler(identifier1);
-        $scope.gridApi2.unBindOnSelectHandler(identifier2);
+        $scope.gridApi1.unBindEvent('Select',identifier1);
+        $scope.gridApi2.unBindEvent('Select',identifier2);
         $("#changes").html("");
         $scope.ifHandler = "已取消选OnSelect事件";
     }

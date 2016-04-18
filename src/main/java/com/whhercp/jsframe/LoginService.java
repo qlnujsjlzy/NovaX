@@ -9,7 +9,14 @@ import com.whhercp.lang.util.StringUtil;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import com.whhercp.dataobject.security.SecUser;
+import org.springframework.web.multipart.MultipartFile;
+
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.BufferedOutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -23,7 +30,19 @@ import java.util.regex.Pattern;
 @RequestMapping("/loginServcie")
 public class LoginService {
 
+    //http://localhost:8080/whhJsPlatform/FileuploadService/uploadFile.json
+    @RequestMapping(value = "/getAppPath" ,method = RequestMethod.GET)
+    @ResponseBody
+    public Map getAppPath(HttpServletRequest request){
 
+        //构建下载链接
+        String appPath = "http://"+request.getServerName()+":"+request.getServerPort()+"/";
+
+        // 返回的得是对象 可以转成json的对象
+        Map res = new HashMap();
+        res.put("appPath",appPath);
+        return res;
+    }
 
     @RequestMapping(value = "/logout" ,method = RequestMethod.POST)
     @ResponseBody

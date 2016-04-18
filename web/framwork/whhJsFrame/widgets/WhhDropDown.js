@@ -1,10 +1,9 @@
 /**
- * Created by wz on 16/4/11.
+ * Created by wz on 16/4/18.
  */
-//angular.module('whh.comboBox',[])
-App.directive('ngWhhComboBox',function(){
+App.directive('ngWhhDropDown',function() {
     return {
-        restrict:"A",
+        restrict: "A",
         replace: false,
         require: '?ngModel',
         scope: {
@@ -12,7 +11,6 @@ App.directive('ngWhhComboBox',function(){
         },
         //template:'<input style="width: 100%;" />',
         controller: ['$scope', function ($scope) {
-
             $scope.widgetApi={};
 
 
@@ -28,7 +26,6 @@ App.directive('ngWhhComboBox',function(){
                 return item;
             }
 
-
             //根据index来选中一行
             $scope.widgetApi.setSelectIndex = function(index){
                 $scope.widget.select(index);
@@ -36,11 +33,8 @@ App.directive('ngWhhComboBox',function(){
                 if($scope.ngModel){
                     $scope.ngModel.$setViewValue($scope.widget.dataItem(index));
                 }
+
             }
-
-
-
-
 
 
 
@@ -68,25 +62,11 @@ App.directive('ngWhhComboBox',function(){
             }
 
 
-
-
-
         }],
-        link: function (scope, element, attrs,ctrl) {
+        link : function (scope,element,attr,ctrl) {
 
-
-            //=====================================ng-model双向数据绑定 start===================================
             if(ctrl){
                 scope.ngModel = ctrl;
-
-
-
-
-
-                // 这次 modelValue  是keyValue字符串    viewValue是itemobject
-                // 其实这个不是那么严格的说viewValue必须是字符串什么的,其实在封装控件的时候,viewValue并不是决定界面显示什么的因素,
-                // 而是控件来决定界面显示什么,你看render方法都重写掉了,所以真的没有必要太在意是不是string类型 只是记录就可以了
-
 
 
                 //重写render 不需要去给input控件赋值 只需要给下拉控件赋值就可以了
@@ -95,7 +75,6 @@ App.directive('ngWhhComboBox',function(){
                     var keyValue = scope.ngModel.$modelValue;
                     scope.widget.value(keyValue);// 把$modelValue 赋值给我们下拉控件
                 }
-
 
                 //1. from model to view     js直接改model值的时候  也就是$watch捕获的时候
                 // 用户直接改model的时候 会触发$watch  会使用formatter构造viewValue  会做render
@@ -108,7 +87,7 @@ App.directive('ngWhhComboBox',function(){
                         }
                     }
 
-                    return  value;  //这个值会被用来做render 在render里面我会给下拉控件赋值
+                    return  value;  //这个值会被赋值给$viewValue 用来做render 在render里面我会给下拉控件赋值
                 });
 
 
@@ -123,42 +102,22 @@ App.directive('ngWhhComboBox',function(){
                 });
 
 
-
-
-                //3.用户直接在input里打字
-                // 会触发$watch  会执行render 把value传给render  执行我们重写的render 实现下拉值得改变
-
-
-
-
-
-
-
             }
 
-            //=====================================ng-model双向数据绑定 end===================================
 
+            //数据源
 
-
-
-
-
-
-
-
-            var editorType2 = scope.option;
             var dataSource ;
             if(scope.option["url"]){
+                //远程数据源
                 dataSource = new kendo.data.DataSource({
                     transport: {
                         read: {
                             url: scope.option["url"],
                             dataType: "json",
                             data: function () {
-                                if (scope.option["paraField"]) {  //call url的时候传参
-                                    return {}; // {"para": item[scope.option['paraField']]};  //方式1 传这行某个field的值
-                                } else if (scope.option["para"]) {
-                                    return scope.option["para"];  // 方式2 用户自己定义一个对象来传
+                                if (scope.option["para"]) {
+                                    return scope.option["para"];  // 方式1 用户自己定义一个对象来传
                                 } else {
                                     return {}; // JSON.stringify(item);  // 方式3 传整个item
                                 }
@@ -166,64 +125,25 @@ App.directive('ngWhhComboBox',function(){
                         }
                     },
                     requestEnd: function(e) {
-                        //var response = e.response;
-                        //var type = e.type;
-                        //console.log(type); // displays "read"
-                        //console.log(response.length); // displays "77"
                         if(ctrl){
                             //默认选中第一行
-                            scope.ngModel.$setViewValue(e.response[0]);
+                            if(e.response){
+                                scope.ngModel.$setViewValue(e.response[0]);
+                            }
                         }
                     }
                 });
             }else{
+                // 本地数据源
                 dataSource = new kendo.data.DataSource({
                     data:scope.option["data"]
                 });
-
             }
 
-            //构建抬头模板
-            var headerTemplate =
-                '<div width="100%" class="k-header ">' +
-                '    <div class="k-header " style="margin-right: 15px;padding-left: 5px;">' +
-                '       <table width="100%" >' +
-                '           <tr>  ';
-
-            for (var j = 0; j < editorType2["columns"].length; j++) {
-                headerTemplate = headerTemplate + '<td width="' + editorType2["columns"][j]["width"] + '%"><h6>' + editorType2["columns"][j]["title"] + '</h6></td>';
-            }
-            headerTemplate = headerTemplate +
-                '           </tr>' +
-                '       </table>' +
-                '   </div>' +
-                '</div>';
-
-
-            //构建item模板
-            var itemTemplate =
-                '<div>' +
-                '   <table width="100%" style="border-bottom:solid 1px;border-bottom-color: ghostwhite"  ><tr>';
-            for (var j = 0; j < editorType2["columns"].length; j++) {
-                itemTemplate = itemTemplate + '<td width="' + editorType2["columns"][j]["width"] + '%"><h6>#: data.' + editorType2["columns"][j]["field"] + ' #</h6></td>';
-            }
-
-            itemTemplate = itemTemplate + '</tr></table></div>';
-
-
-            $(element).kendoComboBox({
-                filter: "startswith",
-
-                dataTextField: editorType2['textField'],
-                dataValueField: editorType2['valueField'],
-                headerTemplate: headerTemplate,
-
-                //内容和header会有一定的偏移 因为右侧有一个滚动条 而header右侧是没有滚动条的
-                // 整个下拉看度是335  下拉内部是320 那么差值是15 也就是滚动条的宽度
-                // 最简单的办法 是把header缩小15px   用jquery 获取class=k-header 然后设置宽度
-                template: itemTemplate,
+            $(element).kendoDropDownList({
                 dataSource: dataSource,
-                height: 400,
+                dataTextField: scope.option['textField'],
+                dataValueField: scope.option['valueField'],
                 width:"100%",
                 index:0,
                 change: function(e) {
@@ -238,6 +158,7 @@ App.directive('ngWhhComboBox',function(){
 
                     if(scope.eventHanders["Change"].length>0){
 
+
                         //循环执行 事件处理器
                         for(var i=0;i<scope.eventHanders["Change"].length;i++){
                             scope.eventHanders["Change"][i].handler(item);
@@ -248,6 +169,7 @@ App.directive('ngWhhComboBox',function(){
                 select: function(e) {
                     // var item = e.item;
                     //var item = jQuery.extend({},e.item,true);
+
 
 
                     var comboBox = e.sender;
@@ -267,15 +189,12 @@ App.directive('ngWhhComboBox',function(){
                         }
                     }
                 }
-
             });
 
-
-            scope.widget = $(element).data("kendoComboBox");
+            scope.widget = $(element).data("kendoDropDownList");
 
             scope.widgetApi.widget = scope.widget;
             scope.option.getWidgetApi(scope.widgetApi);
-           // scope.option.getWidgetObj(scope.widget);
 
             if(ctrl){
                 //默认选中第一行
@@ -284,6 +203,9 @@ App.directive('ngWhhComboBox',function(){
                 }
             }
 
+
         }
-    }
+
+    };
+
 });

@@ -16,6 +16,10 @@ App.directive('ngWhhGrid', function () {//编写grid对应的指令
         controller: ['$scope', '$http', function ($scope, $http) {
 
 
+            //便捷使用
+            $scope.$http = $http;
+
+
             // 创建暴露给外部的API
             $scope.widgetApi = {};
             $scope.widgetApi.modifyCache = {
@@ -28,61 +32,59 @@ App.directive('ngWhhGrid', function () {//编写grid对应的指令
 
 
             //各种事件处理器集合
-            $scope.onSelectHandler = [];
-            $scope.onEditingHandler = [];
-
-            // 注册一个事件处理器  返回一个identifier
-            $scope.widgetApi.bindOnSelectHandler = function(func){
-                return innerBind($scope.onSelectHandler,func);;
-            }
-            //取消注册一个事件处理器
-            $scope.widgetApi.unBindOnSelectHandler = function(identifier){
-                return innerUnBind($scope.onSelectHandler,identifier);
-            }
-            //取消注册一个事件处理器
-            $scope.widgetApi.clearOnSelectHandler = function(){
-                $scope.onSelectHandler.length = 0;
-            }
 
 
-            // 注册一个事件处理器  返回一个identifier
-            $scope.widgetApi.bindOnEditingHandler = function(func){
-                return innerBind($scope.onEditingHandler,func);
-            }
-            //取消注册一个事件处理器
-            $scope.widgetApi.unBindOnEditingHandler = function(identifier){
-                return innerUnBind($scope.onEditingHandler,identifier);
-            }
-            //取消注册一个事件处理器
-            $scope.widgetApi.clearOnEditingHandler = function(){
-                $scope.onEditingHandler.length = 0;
-            }
 
-            function innerBind(handers,func){
+
+
+            //事件处理方法
+            $scope.eventHanders = {
+                "Select":[],
+                "Editing":[]
+            }
+            $scope.widgetApi.bindEvent = function bindEvent(eventName,func){
                 var identifier = Math.uidFast();
                 var handler = {identifier:identifier,handler:func};
-                handers.push(handler);
+                $scope.eventHanders[eventName].push(handler);
                 return identifier;
             }
-            function innerUnBind(handers,identifier){
-                for(var i=handers.length-1;i>=0;i--){
-                    if(handers[i].identifier == identifier){
-                        handers.splice(i,1);
+            $scope.widgetApi.unBindEvent = function unBindEvent(eventName,identifier){
+                for(var i=$scope.eventHanders[eventName].length-1;i>=0;i--){
+                    if($scope.eventHanders[eventName][i].identifier == identifier){
+                        $scope.eventHanders[eventName].splice(i,1);
                         break;
                     }
                 }
             }
+            $scope.widgetApi.clearBindEvent = function clearBindEvent(eventName){
+                $scope.eventHanders[eventName].length = 0;
+            }
 
 
 
-
-
+            $scope.widgetApi.query = function (para) {
+                $http({
+                    url: para["url"],
+                    method: para["method"],
+                    headers: { 'needUiBlock': true}, // 加上这一句 在做http请求的时候会提供界面屏蔽
+                    data:para["data"]
+                }).success(function (data, status, header, config) {
+                    $scope.gridApi.setData(data);
+                });
+            }
 
 
             $scope.widgetApi.setData = function (data) {
 
                 // 直接给数据源加data 是不会触发change事件里的add操作的 这样正合我意,
                 // 因为数据查询出来的话 本来就不需要作为insertItems 出现
+                // 如果不是从后台查询出来的数据 直接set进来 那这个数据是不带oid的
+                // 事实是 只要是从后台数据库过来的数据 一定都是有oid的   如果不是数据库来的 没有oid 那么如何记录呢?
+                // 那就要自己创建oid  这就意味着抛弃服务器过来的oid 完全靠自己前端实现
+                for(var i=0;i<data.length;i++){
+                    data[i]["oid"] = "wz_init_"+Math.uidFast();
+                }
+
                 $scope.innerOptions.dataSource.data(data);
                 $scope.selectedRowItems.length = 0;//要清除选中行
             }
@@ -317,10 +319,10 @@ App.directive('ngWhhGrid', function () {//编写grid对应的指令
                 //    }
                 //}
 
-                if(scope.onSelectHandler.length>0){
+                if(scope.eventHanders["Select"].length>0){
                     //循环执行 事件处理器
-                    for(var i=0;i<scope.onSelectHandler.length;i++){
-                        scope.onSelectHandler[i].handler(select_items);
+                    for(var i=0;i<scope.eventHanders["Select"].length;i++){
+                        scope.eventHanders["Select"][i].handler(select_items);
                     }
                 }
             }
@@ -819,10 +821,10 @@ App.directive('ngWhhGrid', function () {//编写grid对应的指令
                     scope.selectedRowItems.push(dataItem["uid"]);
                 }
 
-                if(scope.onSelectHandler.length>0){
+                if(scope.eventHanders["Select"].length>0){
                     //循环执行 事件处理器
-                    for(var i=0;i<scope.onSelectHandler.length;i++){
-                        scope.onSelectHandler[i].handler(selectedDataItems);
+                    for(var i=0;i<scope.eventHanders["Select"].length;i++){
+                        scope.eventHanders["Select"][i].handler(selectedDataItems);
                     }
                 }
             }
@@ -830,11 +832,56 @@ App.directive('ngWhhGrid', function () {//编写grid对应的指令
 
 
 //==========================================================================dataSourceOption start==========================================================================================================================================================
-            dataSourceOptions.data = [];
+            //dataSourceOptions.data = [];
             dataSourceOptions.schema = schema;
             if (innerOptions.pageable) {
                 dataSourceOptions.pageSize = 5;
             }
+
+
+
+            //dataSourceOptions.transport = {
+            //    read: {
+            //        url: "DataSourceService/fakeQuery.json",
+            //        dataType: "json"
+            //        }
+            //    }
+            //
+            //
+            //dataSourceOptions.requestStart = function(e) {
+            //    // 第一次会使用read查询 查询出来以后我们修改内容然后保存,再fetch 就不会callURL 只会请求本地数据了,
+            //
+            //    console.log("request started");
+            //
+            //
+            //    scope.$http({
+            //        url: "GridDemoService/getPhone.json?phonename=",
+            //        method: "GET",
+            //        //headers: { 'needUiBlock': true} // 加上这一句 在做http请求的时候会提供界面屏蔽
+            //
+            //    }).success(function (data, status, header, config) {
+            //        //直接赋值数据 而不使用transaction   坏处是如果远程请求耗时较长的话,不会出现菊花图标来过渡
+            //        // 要想有菊花图标 还得自己再实现一个query方法
+            //        scope.widgetApi.setData(data);
+            //    });
+            //
+            //
+            //}
+            //dataSourceOptions.requestEnd = function(e) {
+            //
+            //
+            //
+            //    //
+            //    ////看来这里并不能够对response做什么修改
+            //    ////e.response = [e.response[1]];
+            //    //
+            //    //var response = e.response;
+            //    //var type = e.type;
+            //    //console.log(type); // displays "read"
+            //    ////console.log(response.length); // displays "77"
+            //}
+
+
             dataSourceOptions.change = function (e) {
                 //e.sender kendo.data.DataSource
                 //The data source instance which fired the event.

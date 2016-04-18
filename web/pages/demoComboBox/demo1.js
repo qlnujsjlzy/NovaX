@@ -86,16 +86,16 @@ App.controller('demo1Ctrl', ['$scope', function ($scope) {
     var identifier2;
     $scope.bind1 = function () {
 
-        $scope.widgetApi1.clearOnChangeHandler();
-        $scope.widgetApi2.clearOnChangeHandler();
+        $scope.widgetApi1.clearBindEvent('Select');
+        $scope.widgetApi2.clearBindEvent('Select');
 
-        identifier1 = $scope.widgetApi1.bindOnChangeHandler(function (item) {
+        identifier1 = $scope.widgetApi1.bindEvent('Select',function (item) {
             //选中事件,返回选中行
             $("#changes").html(JSON.stringify(item));
             alert(JSON.stringify(item));
         });
         // 绑定事件处理器  可以绑定多个事件处理器  参数是选中行
-        identifier2 = $scope.widgetApi2.bindOnChangeHandler(function (item) {
+        identifier2 = $scope.widgetApi2.bindEvent('Select',function (item) {
             //选中事件,返回选中行
             $("#changes").html(JSON.stringify(item));
             alert(JSON.stringify(item));
@@ -107,8 +107,8 @@ App.controller('demo1Ctrl', ['$scope', function ($scope) {
 
     //解绑事件
     $scope.unbind1 = function () {
-        $scope.widgetApi1.unBindOnChangeHandler(identifier1);
-        $scope.widgetApi2.unBindOnChangeHandler(identifier2);
+        $scope.widgetApi1.unBindEvent('Select',identifier1);
+        $scope.widgetApi2.unBindEvent('Select',identifier2);
 
         $scope.ifHandler = "已取消选中事件";
     }
@@ -123,4 +123,11 @@ App.controller('demo1Ctrl', ['$scope', function ($scope) {
     $scope.selectItem = function () {
         var item = $scope.widgetApi1.setSelectIndex(2);
     }
+
+
+    $scope.setValue = function () {
+        $scope.comboBox1 = "海思麒麟950 4*2.3+4*1.8GHz(8核)";
+    }
+
+
 }]);

@@ -36,15 +36,17 @@ App.controller('datePage1Ctrl', ['$scope', function ($scope) {
         alert($scope.widgetApi.getMSeconds());
     }
 
-
+    $scope.changeDateByNgModel = function () {
+        $scope.aDate = new Date();
+    }
 
 
     // 绑定事件处理器  可以绑定多个事件处理器
     var identifier;
     $scope.bind = function () {
-        $scope.widgetApi.clearOnChangeHandler();
+        $scope.widgetApi.clearBindEvent('Change');
 
-        identifier = $scope.widgetApi.bindOnChangeHandler(function (date) {
+        identifier = $scope.widgetApi.bindEvent('Change',function (date) {
             //选中事件,返回选中行
             alert(date);
         });
@@ -54,7 +56,7 @@ App.controller('datePage1Ctrl', ['$scope', function ($scope) {
 
     //解绑事件
     $scope.unbind = function () {
-        $scope.widgetApi.unBindOnChangeHandler(identifier);
+        $scope.widgetApi.unBindEvent('Change',identifier);
         $scope.ifHandler = "已取消选OnChange事件";
     }
 }]);

@@ -37,6 +37,7 @@
 	<!-- bean工厂的快捷访问-->
 	<bean id="beanFactory" class="com.whhercp.common.springbase.SpringBeanFactory"/>
 
-
+	<!-- 支持上传文件 解析requestbody 的解析器 -->
+	<bean id="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver"/>
 
 </beans>

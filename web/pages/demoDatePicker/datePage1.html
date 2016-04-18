@@ -1,9 +1,11 @@
 <div class="container-fluid" ng-controller="datePage1Ctrl">
 
     <div class="row" style="padding-top: 5px;">
-        <span style="color: red">{{ifHandler}}</span>
+        <span style="color: red">{{ifHandler}}   双向绑定:{{aDate}}</span>
         <div class="col-lg-3" style="padding-left: 0px;padding-right: 0px;">
-            <ng-whh-date-picker option="dateOption1"></ng-whh-date-picker>
+            <!-- <input  /> <ng-whh-date-picker option="dateOption1" ></ng-whh-date-picker>-->
+            <input type="text" ng-whh-date-picker  option="dateOption1"  ng-model="aDate" />
+
         </div>
     </div>
 
@@ -43,6 +45,12 @@
             <button class="btn   btn-success" ng-click="unbind()" style="width: 100%;"> 解除OnChange事件
             </button>
         </div>
+
+        <div class="col-lg-2"  >
+            <button class="btn   btn-success" ng-click="changeDateByNgModel()" style="width: 100%;"> changeDateByNgModel
+            </button>
+        </div>
+
     </div>
 
 </div>

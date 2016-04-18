@@ -131,7 +131,7 @@ App.controller('gridPage1Ctrl', ['$scope', '$http','$timeout', function ($scope,
                 $scope.gridApi.setData(data);
             });
         }
-        $scope.query();
+        //$scope.query();
 
 
         var timeout;

@@ -1,4 +1,4 @@
-package com.whhercp.demo.grid;
+package com.whhercp.demo;
 
 import com.whhercp.jpa.datastore.DataAdapter;
 import com.whhercp.lang.exception.AppException;
@@ -79,6 +79,11 @@ public class GridDemoService {
     public List<Map> getPhone(@RequestParam("phonename") String phonename){
         System.out.println("getOS ");
 
+        try{
+            Thread.sleep(2000);// 模拟网络延迟
+        }catch(Exception e){}
+
+
 
         DataAdapter da = new DataAdapter();
         da.setConnect("portal");
@@ -107,6 +112,12 @@ public class GridDemoService {
         return list;
     }
 
+
+    @RequestMapping(value = "/getPhonePost" ,method = RequestMethod.POST)
+    @ResponseBody
+    public List<Map> getPhonePost(@RequestParam("phonename") String phonename){
+        return getPhone(phonename);
+    }
 
 
     @RequestMapping(value = "/save" ,method = RequestMethod.POST)

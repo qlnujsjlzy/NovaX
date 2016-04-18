@@ -3,9 +3,10 @@
  */
 
 //全局参数
-var pchostname = "localhost";//http://192.200.5.147
+var pchostname = "http://localhost:8080/";//http://192.200.5.147
 var theme = "red";//默认主题 blue,blue-light,yellow,yellow-light,green,green-light,purple,purple-light,red,red-light,black,black-light
 var layout = "fixed";//布局
+var ifLoginCheck = false;
 
 //配置路由
 App.config(function ($stateProvider, $urlRouterProvider) {
@@ -129,5 +130,25 @@ App.config(function ($stateProvider, $urlRouterProvider) {
                 templateUrl: "pages/demoBtn/demoBtn.html"
             }
         }
+    }).state('main.init.FileUpload', {
+        url: "/FileUpload",
+        views: {
+            "userPage@main": {
+                templateUrl: "pages/demoFileUpload/demo.html"
+            }
+        }
+    }).state('main.init.DropDown', {
+        url: "/DropDown",
+        views: {
+            "userPage@main": {
+                templateUrl: "pages/demoDropDown/demo1.html"
+            }
+        }
     })
+
+
+
+
+
+
 });
