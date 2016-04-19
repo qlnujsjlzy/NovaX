@@ -11,8 +11,8 @@ App.directive('ngWhhGrid', function () {//编写grid对应的指令
         replace: true,
         scope: {
             option: "=" // 双向绑定过来
-        },
-        template: '<div><div class="whhGridMainTitle" style="border-color: #e6e6e6;border-width: 1px;border-style: solid;border-bottom-width: 0px;"></div><div class="whhGridMainContent"></div></div>',
+        },//e6e6e6
+        template: '<div><div class="whhGridMainTitle" style="border-color: dimgrey;border-width: 1px;border-style: solid;border-bottom-width: 0px;"></div><div class="whhGridMainContent"></div></div>',
         controller: ['$scope', '$http', function ($scope, $http) {
 
 
@@ -40,7 +40,8 @@ App.directive('ngWhhGrid', function () {//编写grid对应的指令
             //事件处理方法
             $scope.eventHanders = {
                 "Select":[],
-                "Editing":[]
+                "Editing":[],
+                "ValueChange":[]
             }
             $scope.widgetApi.bindEvent = function bindEvent(eventName,func){
                 var identifier = Math.uidFast();
@@ -516,6 +517,8 @@ App.directive('ngWhhGrid', function () {//编写grid对应的指令
 
                         //删掉selectable属性
                         delete innerOptions.selectable;
+                        delete innerOptions.pageSize;
+                        delete innerOptions.pageable;
                     }
                 }
             }
@@ -609,26 +612,38 @@ App.directive('ngWhhGrid', function () {//编写grid对应的指令
                                         input.attr("name", options.field);//name必须和field同名 这样才能数据绑定
                                         input.appendTo(container);//把元素追加上去
 
-                                        var dataSource = new kendo.data.DataSource({
-                                            transport: {
-                                                read: {
-                                                    url: editorType["url"],
-                                                    dataType: editorType["dataType"], // "jsonp" is required for cross-domain requests; use "json" for same-domain requests
-                                                    data: function () {
-                                                        if (editorType["paraField"]) {
-                                                            //如果要传某个字段值
-                                                            return {"para": item[editorType['paraField']]};
-                                                        } else if (editorType["para"]) {
-                                                            //如果有用户自己定义的参数
-                                                            return editorType["para"];
-                                                        } else {
-                                                            //如果用户什么都没写 那么就是默认传整个item
-                                                            return JSON.stringify(item);
+
+
+
+                                        var dataSource ;
+                                        if(editorType["url"]){
+                                            //远程数据源
+                                            dataSource = new kendo.data.DataSource({
+                                                transport: {
+                                                    read: {
+                                                        url: editorType["url"],
+                                                        dataType: editorType["dataType"], // "jsonp" is required for cross-domain requests; use "json" for same-domain requests
+                                                        data: function () {
+                                                            if (editorType["paraField"]) {
+                                                                //如果要传某个字段值
+                                                                return {"para": item[editorType['paraField']]};
+                                                            } else if (editorType["para"]) {
+                                                                //如果有用户自己定义的参数
+                                                                return editorType["para"];
+                                                            } else {
+                                                                //如果用户什么都没写 那么就是默认传整个item
+                                                                return JSON.stringify(item);
+                                                            }
                                                         }
                                                     }
                                                 }
-                                            }
-                                        });
+                                            });
+                                        }else{
+                                            // 本地数据源
+                                            dataSource = new kendo.data.DataSource({
+                                                data:editorType["data"]
+                                            });
+                                        }
 
                                         input.kendoDropDownList({
                                             dataSource: dataSource,
@@ -661,23 +676,57 @@ App.directive('ngWhhGrid', function () {//编写grid对应的指令
                                         input.appendTo(container);//把元素追加上去
 
 
-                                        var dataSource = new kendo.data.DataSource({
-                                            transport: {
-                                                read: {
-                                                    url: editorType2["url"],
-                                                    dataType: editorType2["dataType"],
-                                                    data: function () {
-                                                        if (editorType2["paraField"]) {
-                                                            return {"para": item[editorType2['paraField']]};
-                                                        } else if (editorType2["para"]) {
-                                                            return editorType2["para"];
-                                                        } else {
-                                                            return JSON.stringify(item);
+                                        //var dataSource = new kendo.data.DataSource({
+                                        //    transport: {
+                                        //        read: {
+                                        //            url: editorType2["url"],
+                                        //            dataType: editorType2["dataType"],
+                                        //            data: function () {
+                                        //                if (editorType2["paraField"]) {
+                                        //                    return {"para": item[editorType2['paraField']]};
+                                        //                } else if (editorType2["para"]) {
+                                        //                    return editorType2["para"];
+                                        //                } else {
+                                        //                    return JSON.stringify(item);
+                                        //                }
+                                        //            }
+                                        //        }
+                                        //    }
+                                        //});
+
+
+
+                                        var dataSource ;
+                                        if(editorType2["url"]){
+                                            //远程数据源
+                                            dataSource = new kendo.data.DataSource({
+                                                transport: {
+                                                    read: {
+                                                        url: editorType2["url"],
+                                                        dataType: editorType2["dataType"], // "jsonp" is required for cross-domain requests; use "json" for same-domain requests
+                                                        data: function () {
+                                                            if (editorType2["paraField"]) {
+                                                                //如果要传某个字段值
+                                                                return {"para": item[editorType2['paraField']]};
+                                                            } else if (editorType2["para"]) {
+                                                                //如果有用户自己定义的参数
+                                                                return editorType2["para"];
+                                                            } else {
+                                                                //如果用户什么都没写 那么就是默认传整个item
+                                                                return JSON.stringify(item);
+                                                            }
                                                         }
                                                     }
                                                 }
-                                            }
-                                        });
+                                            });
+                                        }else{
+                                            // 本地数据源
+                                            dataSource = new kendo.data.DataSource({
+                                                data:editorType2["data"]
+                                            });
+                                        }
+
+
 
 
                                         //构建抬头模板
@@ -1016,6 +1065,23 @@ App.directive('ngWhhGrid', function () {//编写grid对应的指令
                     }
                 }
                 // }
+
+
+
+
+
+                if (e.action == "itemchange") {
+
+                    if(scope.eventHanders["ValueChange"].length>0){
+                        //循环执行 事件处理器
+                        for(var i=0;i<scope.eventHanders["ValueChange"].length;i++){
+                            scope.eventHanders["ValueChange"][i].handler(field,items[0]);
+                        }
+                    }
+
+                }
+
+
             }
 //==========================================================================dataSourceOption end==========================================================================================================================================================
 

@@ -1,0 +1,93 @@
+<!-- 在这里写定义  以后就在这里做ui-view -->
+<div ng-controller="GridMakerSub1Ctrl" style="padding: 5px;">
+
+
+    <ul class="nav nav-pills nav-stacked">
+
+        <li>
+            <div class="row">
+                <div class="col-md-4"><input class="form-control" type="text" placeholder="输入gridName"
+                                             ng-model="gridName"></div>
+                <div class="col-md-2">
+                    <button class="btn btn-primary btn-block margin-bottom"> 查询Grid定义</button>
+                </div>
+            </div>
+
+        </li>
+        <li>
+            <div class="row">
+                <div class="col-md-2">
+                    <button class="btn btn-primary btn-block margin-bottom" ng-click="addItem()"> 新增列</button>
+                </div>
+                <div class="col-md-2">
+                    <button class="btn btn-primary btn-block margin-bottom" ng-click="deleteSelectedItems()"> 删除列</button>
+                </div>
+                <div class="col-md-2">
+                    <button class="btn btn-primary btn-block margin-bottom" ng-click="showOption()"> 查看option</button>
+                </div>
+            </div>
+        </li>
+        <li>
+
+            <div class="row">
+                <div class="col-md-12">
+                    <ng-whh-grid option="CreatingGridOption"></ng-whh-grid>
+                </div>
+            </div>
+
+        </li>
+        <li>
+            <div class="form-group">
+
+                <div class="checkbox">
+                    <label>
+                        <input type="checkbox" id="editable" ng-model="wz_editable">可编辑
+                    </label>
+                    <label>
+                        <input type="checkbox" id="selectCheckBox" ng-model="wz_selectCheckBox">使用勾选框
+                    </label>
+                </div>
+
+                <div class="form-group">
+                    <div class="radio" >
+                        <label>
+                            <input type="radio" name="optionsRadios" id="optionsRadios1"  ng-model="wz_selectable" value="multiple row">
+                            多行选择
+                        </label>
+                        <label>
+                            <input type="radio" name="optionsRadios" id="optionsRadios2"   ng-model="wz_selectable" value="row"  checked="" >
+                             单行选择
+                        </label>
+                    </div>
+                </div>
+
+
+                <div class="form-group">
+                    <label for="pageSize">pageSize</label>
+                    <input type="text" class="form-control" id="pageSize" placeholder="每页item数量  使用勾选框将会禁用分页">
+
+                    <label for="height">height</label>
+                    <input type="text" class="form-control" id="height" placeholder="高度">
+                </div>
+
+                <div class="checkbox">
+                    <label>
+                        <input type="checkbox" id="groupable">分类汇总功能<!--  -->
+                    </label>
+                    <label>
+                        <input type="checkbox" id="sortable">排序
+                    </label>
+                    <label>
+                        <input type="checkbox" id="reorderable">列拖拽
+                    </label>
+                    <label>
+                        <input type="checkbox" id="resizable">列宽可调
+                    </label>
+                </div>
+            </div>
+
+        </li>
+    </ul>
+
+
+</div>

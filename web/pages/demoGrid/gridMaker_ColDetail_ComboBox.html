@@ -1,0 +1,77 @@
+<!-- 在这里写定义  以后就在这里做ui-view -->
+<div style="padding: 5px;" ng-controller="GridMakerColComboBoxCtrl">
+
+
+
+
+
+
+
+    <ul class="nav nav-pills nav-stacked">
+        <li>
+            <div class="form-group">
+                <div class="checkbox">
+                    <label>
+                        <input type="checkbox">可见  <!--  -->
+                    </label>
+                    <label>
+                        <input type="checkbox">可编辑  <!-- editable -->
+                    </label>
+                    <label>
+                        <input type="checkbox">必填<!--validation-->
+                    </label>
+                </div>
+            </div>
+        </li>
+        <li>
+            <div class="form-group">
+                <label for="colWidth">宽度</label>
+                <input type="text" class="form-control" id="colWidth" placeholder="300">
+            </div>
+        </li>
+        <li>
+            <div class="form-group">
+                <label for="url">数据源url</label>
+                <input type="text" class="form-control" id="url" placeholder="sampleService/getData.json">
+            </div>
+            <div class="form-group">
+                <label for="url">textField</label>
+                <input type="text" class="form-control" id="textField" placeholder="textField">
+            </div>
+            <div class="form-group">
+                <label for="url">valueField</label>
+                <input type="text" class="form-control" id="valueField" placeholder="valueField">
+            </div>
+
+            <div class="form-group">
+                <div class="checkbox">
+                    <label>
+                        <input type="checkbox">整行数据做参数<!--validation-->
+                    </label>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="url">参数列</label>
+                <input type="text" class="form-control" id="paraField" placeholder="这个字段的值将作为参数传到后台">
+            </div>
+            <div class="form-group">
+                <label for="para">自定义参数</label>
+                <input type="text" class="form-control" id="para" placeholder='{"username":"hello"}'>
+            </div>
+
+
+
+        <li>
+            <div class="form-group">
+                <label>本地数据源(填写url 则该项无效)</label>
+                <textarea class="form-control" rows="4" placeholder='[{"username":"helloWorld","address":"hangzhou","age":25}]'></textarea>
+            </div>
+        </li>
+        <li>
+            <div class="form-group">
+                <label>列定义</label>
+                <textarea class="form-control" rows="4" placeholder='[{field: "producer", title: "厂商", width: 30 }, {field:"serialname",title: "系列",width: 30 }]'></textarea>
+            </div>
+        </li>
+    </ul>
+</div>
