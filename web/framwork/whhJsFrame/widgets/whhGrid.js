@@ -552,6 +552,11 @@ App.directive('ngWhhGrid', function () {//编写grid对应的指令
                             if (outerColumnProperty == "width") {
                                 innerColumn.width = outerColumn.width;
                             }
+                            if (outerColumnProperty == "hidden") {
+                                innerColumn.hidden = outerColumn.hidden;
+                            }
+
+
                             if (outerColumnProperty == "format") {
 
                                 if (outerColumn.format == "yyyy-MM-dd") {
@@ -877,6 +882,18 @@ App.directive('ngWhhGrid', function () {//编写grid对应的指令
                     }
                 }
             }
+
+            innerOptions.edit=function(e) {
+                //if (!e.model.isNew()) {
+                //
+                //}
+                if(scope.eventHanders["Editing"].length>0){
+                    //循环执行 事件处理器
+                    for(var i=0;i<scope.eventHanders["Editing"].length;i++){
+                        scope.eventHanders["Editing"][i].handler(e.model);
+                    }
+                }
+            }
 //==========================================================================gridOption end====================================================================================================================================================================
 
 
@@ -884,7 +901,7 @@ App.directive('ngWhhGrid', function () {//编写grid对应的指令
             //dataSourceOptions.data = [];
             dataSourceOptions.schema = schema;
             if (innerOptions.pageable) {
-                dataSourceOptions.pageSize = 5;
+                dataSourceOptions.pageSize = innerOptions.pageSize;
             }
 
 

@@ -79,9 +79,9 @@ public class GridDemoService {
     public List<Map> getPhone(@RequestParam("phonename") String phonename){
         System.out.println("getOS ");
 
-        try{
-            Thread.sleep(2000);// 模拟网络延迟
-        }catch(Exception e){}
+//        try{
+//            Thread.sleep(2000);// 模拟网络延迟
+//        }catch(Exception e){}
 
 
 
