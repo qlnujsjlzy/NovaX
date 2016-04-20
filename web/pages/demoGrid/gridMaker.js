@@ -18,7 +18,7 @@
  *
  */
 
-App.controller('gridMakerMainCtrl', ['$scope', function ($scope) {
+App.controller('gridMakerMainCtrl', ['$scope','$state' ,function ($scope,$state) {
 
 
 
@@ -36,131 +36,244 @@ App.controller('gridMakerMainCtrl', ['$scope', function ($scope) {
 
 
     $scope.$on('createOption', function (event,arg) {
-        $scope.$broadcast('createOptionNow', arg);
+        //$scope.$broadcast('createOptionNow', arg);
+        createOption(arg);
     });
-
-
+    $scope.toSub1 = function(){
+        createOption();
+        $state.go('main.init.gridMaker.sub1');
+    }
+    $scope.toSub2 = function(){
+        createOption();
+        $state.go('main.init.gridMaker.sub2');
+    }
+    $scope.toSub3 = function(){
+        createOption();
+        $state.go('main.init.gridMaker.sub3');
+    }
 
 
     //全局option对象 也是最终的grid定义option对象
     $scope.globeOption = {};
     $scope.globeOption.getWidgetApi=function(gridApi){
+        //demo用的
         $scope.demoGridApi = gridApi;
+
+        //构建测试数据
+       // $scope.demoGridApi.setData(createDemoData($scope.globeOption.columns));
     }
+
+
+
     $scope.globeOption.columns = [];// 全局colDef
     $scope.globeColUid = {"uid":""};
 
-    $scope.optionCache = {
-        colDefGridData :[]
-
-    };//缓存 存放这个设置信息 直接存放进来
-
-
-}]).controller('GridMakerSub1Ctrl', ['$scope', '$state', function ($scope, $state) {
-
-    $scope.$on('createOptionNow', function (event,arg) {
-        $scope.createOption();
-    });
-
-    //基础option对象 定义了grid的基本属性 width height  title  等等基本属性 和 column数组;
-    $scope.basicOption = {};
-    $scope.basicOption.columns = $scope.globeOption.columns;
-
-
-    //初始化
-    $scope.wz_editable = false;
-    $scope.wz_selectCheckBox = false;
-    $scope.wz_selectable = "row"
-    $scope.wz_pageable = false;
-    $scope.wz_pageSize = "";
-    $scope.wz_height = 300;
-    $scope.wz_groupable = false;
-    $scope.wz_sortable = false;
-    $scope.wz_reorderable = true;
-    $scope.wz_resizable = true;
-    $scope.wz_title = "";
 
 
 
 
+    //缓存 存放这个设置界面最原始的信息
+    $scope.GridMakerSub1CtrlCache = {
+        colDefGridData :[],
+        wz_editable: false,
+        wz_selectCheckBox: false,
+        wz_selectable: "row",
+        wz_pageable : false,
+        wz_pageSize : "",
+        wz_height : 300,
+        wz_groupable : false,
+        wz_sortable : false,
+        wz_reorderable: true,
+        wz_resizable : true,
+        wz_title : "",
+        CreatingGridApi:{}
+    };
+
+    //缓存 存放这个设置界面最原始的信息
+    $scope.GridMakerColStringCtrlCache = {
+
+    };
+
+    //缓存 DatePicker设置界面 存放这个设置界面最原始的信息
+    $scope.GridMakerColDateCtrlCache = {
+        wz_hidden:true,
+        wz_required:false,
+        wz_editable:false,
+        wz_minDate:new Date(),
+        wz_maxDate:new Date(),
+        wz_width:100,
+        wz_format:"yyyy-MM-dd"
+    };
+
+    //缓存 存放这个设置界面最原始的信息
+    $scope.GridMakerColDropDownListCtrlCache = {
+
+    };
+    //缓存 存放这个设置界面最原始的信息
+    $scope.GridMakerColComboBoxCtrlCache = {
+
+    };
+    //缓存 存放这个设置界面最原始的信息
+    $scope.GridMakerColDateTimeCtrlCache = {
+
+    };
 
 
 
-    $scope.createOption = function () {
+     function createOption (uid){
+
+
+         if(!$scope.GridMakerSub1CtrlCache.CreatingGridApi){
+             return ;
+         }
+
+        //=======================================Sub1界面 start===============================================
         //双向绑定
-        $scope.basicOption.editable = $scope.wz_editable;
-        $scope.basicOption.selectCheckBox = $scope.wz_selectCheckBox;
-        $scope.basicOption.selectable = $scope.wz_selectable;
-        $scope.basicOption.title = $scope.wz_title;
+        $scope.globeOption.editable = $scope.GridMakerSub1CtrlCache.wz_editable;
+        $scope.globeOption.selectCheckBox = $scope.GridMakerSub1CtrlCache.wz_selectCheckBox;
+        $scope.globeOption.selectable = $scope.GridMakerSub1CtrlCache.wz_selectable;
+        $scope.globeOption.title = $scope.GridMakerSub1CtrlCache.wz_title;
 
-        if ($scope.wz_pageable) {
-            $scope.basicOption.pageable = {
+        if ($scope.GridMakerSub1CtrlCache.wz_pageable) {
+            $scope.globeOption.pageable = {
                 refresh: true,
                 pageSizes: true,
                 buttonCount: 5
             }
-            if ($scope.wz_pageSize) { //pageSize属性 留着给dataSource用的
-                $scope.basicOption.pageSize = $scope.wz_pageSize;
+            if ($scope.GridMakerSub1CtrlCache.wz_pageSize) { //pageSize属性 留着给dataSource用的
+                $scope.globeOption.pageSize = $scope.GridMakerSub1CtrlCache.wz_pageSize;
             } else {
-                $scope.basicOption.pageSize = 10;
+                $scope.globeOption.pageSize = 10;
             }
         }
-        $scope.basicOption.height = $scope.wz_height;
-        $scope.basicOption.groupable = $scope.wz_groupable;
-        $scope.basicOption.sortable = $scope.wz_sortable;
-        $scope.basicOption.reorderable = $scope.wz_reorderable;
-        $scope.basicOption.resizable = $scope.wz_resizable;
+        $scope.globeOption.height = $scope.GridMakerSub1CtrlCache.wz_height;
+        $scope.globeOption.groupable = $scope.GridMakerSub1CtrlCache.wz_groupable;
+        $scope.globeOption.sortable = $scope.GridMakerSub1CtrlCache.wz_sortable;
+        $scope.globeOption.reorderable = $scope.GridMakerSub1CtrlCache.wz_reorderable;
+        $scope.globeOption.resizable = $scope.GridMakerSub1CtrlCache.wz_resizable;
 
 
         //获取colDef 的定义 从grid里取出每个col的基本定义
-
-        var colList = $scope.CreatingGridApi.getData();
+        var colList = $scope.GridMakerSub1CtrlCache.CreatingGridApi.getData();
         for (var i = 0; i < colList.length; i++) {
 
             var ifHas = false;
-            for (var j = 0; j < $scope.basicOption.columns.length; j++) {
-                if($scope.basicOption.columns[j]["uid"]==colList[i].uid){
+            for (var j = 0; j < $scope.globeOption.columns.length; j++) {
+                if($scope.globeOption.columns[j]["uid"]==colList[i].uid){
                     ifHas = true;
                     break;
                 }
             }
-
             if(ifHas){
-                $scope.basicOption.columns[j].field = colList[i].columnField;
-                $scope.basicOption.columns[j].title = colList[i].columnTitle;
-                $scope.basicOption.columns[j].type = colList[i].columnType;
-                $scope.basicOption.columns[j].uid = colList[i].uid;
+                $scope.globeOption.columns[j].field = colList[i].columnField;
+                $scope.globeOption.columns[j].title = colList[i].columnTitle;
+                $scope.globeOption.columns[j].type = colList[i].columnType;
+                $scope.globeOption.columns[j].uid = colList[i].uid;
+                $scope.globeOption.columns[j].columnEditor = colList[i].columnEditor;
             }else{
                 var colDef = {};
                 colDef.field = colList[i].columnField;
                 colDef.title = colList[i].columnTitle;
                 colDef.colDataType = colList[i].columnType;
                 colDef.uid = colList[i].uid;
-                $scope.basicOption.columns.push(colDef);
+                colDef.columnEditor = colList[i].columnEditor;
+                $scope.globeOption.columns.push(colDef);
             }
         }
+         //然后没有的col 都要删掉
+         for(var i=$scope.globeOption.columns.length-1;i>=0;i--){
+             var ifHas = false;
+             for (var j = 0; j < colList.length; j++) {
+                 if($scope.globeOption.columns[i]["uid"]==colList[j].uid){
+                     ifHas = true;
+                     break;
+                 }
+             }
+             if(!ifHas){
+                 $scope.globeOption.columns.splice(i,1);
+             }
+         }
 
-
-        //合并到globeOption
-        for(var prop in $scope.basicOption){
-
-            if($scope.globeOption[prop]){
-
-            }else{
-                $scope.globeOption[prop] = $scope.basicOption[prop];
-            }
-
-        }
 
 
         //grid内容缓存起来
-        var datas = $scope.CreatingGridApi.getData();
-        $scope.optionCache.colDefGridData.length = 0;
+        var datas = $scope.GridMakerSub1CtrlCache.CreatingGridApi.getData();
+        $scope.GridMakerSub1CtrlCache.colDefGridData.length = 0;
         for(var i=0;i < datas.length;i++){
-            $scope.optionCache.colDefGridData.push(jQuery.extend({},datas[i],true));
+            $scope.GridMakerSub1CtrlCache.colDefGridData.push(jQuery.extend({},datas[i],true));
         }
 
+
+        //=======================================Sub1界面end===============================================
+
+        //=======================================DatePicker界面start===============================================
+        for(var i=0;i<$scope.globeOption.columns.length;i++){
+            if(uid == $scope.globeOption.columns[i]["uid"] && $scope.globeOption.columns[i]["columnEditor"]=="DatePicker") {
+                $scope.globeOption.columns[i].hidden = $scope.GridMakerColDateCtrlCache.wz_hidden;
+                $scope.globeOption.columns[i].width = $scope.GridMakerColDateCtrlCache.wz_width;
+                $scope.globeOption.columns[i].format = $scope.GridMakerColDateCtrlCache.wz_format;
+
+                var validation;
+                if($scope.GridMakerColDateCtrlCache.wz_required  ){
+                    if(!validation){validation={}};
+                    validation.required = $scope.GridMakerColDateCtrlCache.wz_required;
+                }
+                if($scope.GridMakerColDateCtrlCache.wz_minDate  ){
+                    if(!validation){validation={}};
+                    validation.min = $scope.GridMakerColDateCtrlCache.wz_minDate;
+                }
+                if($scope.GridMakerColDateCtrlCache.wz_maxDate  ){
+                    if(!validation){validation={}};
+                    validation.max = $scope.GridMakerColDateCtrlCache.wz_maxDate;
+                }
+                if(validation){
+                    $scope.globeOption.columns[i].validation = validation;
+                }
+
+                //加上datePicker配置
+                $scope.globeOption.columns[i].editorConfig={
+                    editorType: editorTypeEnum.DateTimePicker
+                }
+                break;
+            }
+        }
+        //=======================================DatePicker界面end===============================================
+
+
+
+
+
+
     }
+
+
+    function  createDemoData(columns) {
+        var res = [];
+        for (var index = 0; index <= 10; index++) {
+            var item = {};
+            for (var i = 0; i < columns.length; i++) {
+                if (columns[i].colDataType == "String") {
+                    item[columns[i].field] = "sample" + index;
+                } else if (columns[i].colDataType == "Number") {
+                    item[columns[i].field] = 26.32;
+                } else if (columns[i].colDataType == "Boolean") {
+                    item[columns[i].field] = true;
+                } else if (columns[i].colDataType == "Date") {
+                    item[columns[i].field] = new Date();
+                }
+            }
+            res.push(item);
+        }
+        return res;
+    }
+
+
+}]).controller('GridMakerSub1Ctrl', ['$scope', '$state', function ($scope, $state) {
+
+    //$scope.$on('createOptionNow', function (event,arg) {
+    //    $scope.createOption();
+    //});
+
 
 
     $scope.CreatingGridOption = {
@@ -221,6 +334,7 @@ App.controller('gridMakerMainCtrl', ['$scope', function ($scope) {
             }],
         //获取widgetApi
         getWidgetApi: function (widgetApi) {
+            $scope.GridMakerSub1CtrlCache.CreatingGridApi = widgetApi;
             $scope.CreatingGridApi = widgetApi;
             $scope.CreatingGrid = widgetApi.widget;
 
@@ -289,8 +403,8 @@ App.controller('gridMakerMainCtrl', ['$scope', function ($scope) {
                 }
 
                 //恢复grid数据源
-                if($scope.optionCache.colDefGridData){
-                    $scope.CreatingGridApi.setData($scope.optionCache.colDefGridData);
+                if($scope.GridMakerSub1CtrlCache.colDefGridData){
+                    $scope.CreatingGridApi.setData($scope.GridMakerSub1CtrlCache.colDefGridData);
                 }
 
             }
@@ -314,7 +428,7 @@ App.controller('gridMakerMainCtrl', ['$scope', function ($scope) {
 
     $scope.showOption = function () {
 
-        console.log(JSON.stringify($scope.basicOption));
+        console.log(JSON.stringify($scope.globeOption));
     }
 
 
@@ -352,46 +466,9 @@ App.controller('gridMakerMainCtrl', ['$scope', function ($scope) {
         createOption(arg);
     });
 
-    //默认值
-    $scope.tempColDef={
-        wz_hidden:true,
-        wz_required:false,
-        wz_minDate:"2016-01-01",
-        wz_maxDate:"2016-12-30",
-        wz_width:100
-    };
 
 
-    function createOption(uid){
 
-        for(var i=0;i<$scope.globeOption.columns.length;i++){
-            if(uid == $scope.globeOption.columns[i]["uid"]) {
-
-
-                $scope.globeOption.columns[i].hidden = $scope.tempColDef.wz_hidden;
-                $scope.globeOption.columns[i].width = $scope.tempColDef.wz_width;
-
-                var validation;
-                if($scope.tempColDef.wz_required  ){
-                    if(!validation){validation={}};
-                    validation.required = $scope.tempColDef.wz_required;
-                }
-                if($scope.tempColDef.wz_minDate  ){
-                    if(!validation){validation={}};
-                    validation.min = $scope.tempColDef.wz_minDate;
-                }
-                if($scope.tempColDef.wz_maxDate  ){
-                    if(!validation){validation={}};
-                    validation.max = $scope.tempColDef.wz_maxDate;
-                }
-                if(validation){
-                    $scope.globeOption.columns[i].validation = validation;
-                }
-
-                break;
-            }
-        }
-    }
 
 
     $scope.MaxdateOption =

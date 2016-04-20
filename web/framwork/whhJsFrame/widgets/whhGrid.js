@@ -86,12 +86,12 @@ App.directive('ngWhhGrid', function () {//编写grid对应的指令
                     data[i]["oid"] = "wz_init_"+Math.uidFast();
                 }
 
-                $scope.innerOptions.dataSource.data(data);
+                $scope.widgetApi.dataSource.data(data);
                 $scope.selectedRowItems.length = 0;//要清除选中行
             }
 
             $scope.widgetApi.getData = function (data) {
-                return jQuery.extend(true, [], $scope.innerOptions.dataSource.data());
+                return jQuery.extend(true, [], $scope.widgetApi.dataSource.data());
             }
 
             $scope.widgetApi.deleteSelectedItemsWithAlert = function () {
@@ -114,8 +114,8 @@ App.directive('ngWhhGrid', function () {//编写grid对应的指令
 
 
                 for (var j = $scope.selectedRowItems.length - 1; j >= 0; j--) {
-                    var dataItem = $scope.grid.dataSource.getByUid($scope.selectedRowItems[j]);
-                    $scope.innerOptions.dataSource.remove(dataItem);
+                    var dataItem = $scope.widgetApi.dataSource.getByUid($scope.selectedRowItems[j]);
+                    $scope.widgetApi.dataSource.remove(dataItem);
                 }
 
                 //var selectedDataItems = [];
@@ -140,15 +140,15 @@ App.directive('ngWhhGrid', function () {//编写grid对应的指令
                 }
 
                 var observable = new kendo.data.ObservableObject(item);
-                var dataItem = $scope.innerOptions.dataSource.insert(0, observable);
+                var dataItem = $scope.widgetApi.dataSource.insert(0, observable);
 
-                var index = $scope.innerOptions.dataSource.indexOf(dataItem);
+                var index = $scope.widgetApi.dataSource.indexOf(dataItem);
                 return index;
             }
 
 
             $scope.widgetApi.deleteItem = function (index) {
-                $scope.innerOptions.dataSource.remove($scope.widgetApi.dataSource.at(index));
+                $scope.widgetApi.dataSource.remove($scope.widgetApi.dataSource.at(index));
 
             }
 
@@ -309,7 +309,7 @@ App.directive('ngWhhGrid', function () {//编写grid对应的指令
                 // 如果用户有注册事件方法有的话 就执行
                 var select_items = [];
                 for (var j = 0; j < scope.selectedRowItems.length; j++) {
-                    select_items.push(scope.option.dataSource.getByUid(scope.selectedRowItems[j]));
+                    select_items.push(scope.widgetApi.dataSource.getByUid(scope.selectedRowItems[j]));
                 }
                 //参数就是选中行数组
                 // 如果用户有注册事件方法有的话 就执行
@@ -367,7 +367,7 @@ App.directive('ngWhhGrid', function () {//编写grid对应的指令
                 var $checkbox = $(checkbox);
                 var $tr = $checkbox.parent().parent();//jQuery的tr对象
                 var uid = $checkbox.parent().parent().attr("data-uid");//拿到了item的uid
-                var item = scope.option.dataSource.getByUid(uid); // 顺利拿到item
+                var item = scope.widgetApi.dataSource.getByUid(uid); // 顺利拿到item
                 //
                 //
                 ////现在来判断checkbox的状态
@@ -1107,7 +1107,7 @@ App.directive('ngWhhGrid', function () {//编写grid对应的指令
 
 
             // 创建数据源 同时我也会把数据源暴露到scope上 以及外部的option上
-            innerOptions.dataSource = scope.option.dataSource = new kendo.data.DataSource(dataSourceOptions);
+            innerOptions.dataSource =  new kendo.data.(dataSourceOptions);
             //创建grid
             $(element).find(".whhGridMainContent").kendoGrid(innerOptions);
             var grid = $(element).find(".whhGridMainContent").data("kendoGrid");
@@ -1117,7 +1117,7 @@ App.directive('ngWhhGrid', function () {//编写grid对应的指令
             scope.grid = grid;// 把grid对象放到自己的scope上去
             scope.innerOptions = innerOptions;// 暴露内部options
 
-            scope.widgetApi.dataSource = scope.option.dataSource;//暴露出真实的dataSource对象
+            scope.widgetApi.dataSource = innerOptions.dataSource;//暴露出真实的dataSource对象
             scope.widgetApi.widget = grid; // 暴露出grid对象
             scope.option.getWidgetApi(scope.widgetApi);  // 暴露出widgetApi对象
 
