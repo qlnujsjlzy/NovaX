@@ -1,24 +1,18 @@
 <!-- 在这里写定义  以后就在这里做ui-view -->
 <div style="padding: 5px;" ng-controller="GridMakerColComboBoxCtrl">
 
-
-
-
-
-
-
-    <ul class="nav nav-pills nav-stacked">
+    <ul class="nav nav-pills nav-stacked" ng-mousemove="move()">
         <li>
             <div class="form-group">
                 <div class="checkbox">
                     <label>
-                        <input type="checkbox">可见  <!--  -->
+                        <input type="checkbox" ng-model="GridMakerColComboBoxCtrlCache.wz_hidden">不可见  <!--  -->
                     </label>
                     <label>
-                        <input type="checkbox">可编辑  <!-- editable -->
+                        <input type="checkbox" ng-model="GridMakerColComboBoxCtrlCache.wz_editable">可编辑  <!-- editable -->
                     </label>
                     <label>
-                        <input type="checkbox">必填<!--validation-->
+                        <input type="checkbox" ng-model="GridMakerColComboBoxCtrlCache.wz_required">必填<!--validation-->
                     </label>
                 </div>
             </div>
@@ -26,37 +20,37 @@
         <li>
             <div class="form-group">
                 <label for="colWidth">宽度</label>
-                <input type="text" class="form-control" id="colWidth" placeholder="300">
+                <input type="text" class="form-control" id="colWidth" placeholder="300" ng-model="GridMakerColComboBoxCtrlCache.wz_width">
             </div>
         </li>
         <li>
             <div class="form-group">
                 <label for="url">数据源url</label>
-                <input type="text" class="form-control" id="url" placeholder="sampleService/getData.json">
+                <input type="text" class="form-control" id="url" placeholder="sampleService/getData.json" ng-model="GridMakerColComboBoxCtrlCache.wz_url">
             </div>
             <div class="form-group">
                 <label for="url">textField</label>
-                <input type="text" class="form-control" id="textField" placeholder="textField">
+                <input type="text" class="form-control" id="textField" placeholder="textField" ng-model="GridMakerColComboBoxCtrlCache.wz_textField">
             </div>
             <div class="form-group">
                 <label for="url">valueField</label>
-                <input type="text" class="form-control" id="valueField" placeholder="valueField">
+                <input type="text" class="form-control" id="valueField" placeholder="valueField" ng-model="GridMakerColComboBoxCtrlCache.wz_valueField">
             </div>
 
             <div class="form-group">
                 <div class="checkbox">
                     <label>
-                        <input type="checkbox">整行数据做参数<!--validation-->
+                        <input type="checkbox" ng-model="GridMakerColComboBoxCtrlCache.wz_para_item">整行数据做参数<!--validation-->
                     </label>
                 </div>
             </div>
             <div class="form-group">
                 <label for="url">参数列</label>
-                <input type="text" class="form-control" id="paraField" placeholder="这个字段的值将作为参数传到后台">
+                <input type="text" class="form-control" id="paraField" placeholder="这个字段的值将作为参数传到后台" ng-model="GridMakerColComboBoxCtrlCache.wz_paraField">
             </div>
             <div class="form-group">
                 <label for="para">自定义参数</label>
-                <input type="text" class="form-control" id="para" placeholder='{"username":"hello"}'>
+                <input type="text" class="form-control" id="para" placeholder='{"username":"hello"}' ng-model="GridMakerColComboBoxCtrlCache.wz_para">
             </div>
 
 
@@ -64,13 +58,13 @@
         <li>
             <div class="form-group">
                 <label>本地数据源(填写url 则该项无效)</label>
-                <textarea class="form-control" rows="4" placeholder='[{"username":"helloWorld","address":"hangzhou","age":25}]'></textarea>
+                <textarea class="form-control" rows="4" placeholder='[{"username":"helloWorld","address":"hangzhou","age":25}]' ng-model="GridMakerColComboBoxCtrlCache.wz_data"></textarea>
             </div>
         </li>
         <li>
             <div class="form-group">
                 <label>列定义</label>
-                <textarea class="form-control" rows="4" placeholder='[{field: "producer", title: "厂商", width: 30 }, {field:"serialname",title: "系列",width: 30 }]'></textarea>
+                <textarea class="form-control" rows="4" placeholder='[{field:"producer", title:"厂商", width:30}, {field:"serialname", title:"系列", width:30}]' ng-model="GridMakerColComboBoxCtrlCache.wz_columns"></textarea>
             </div>
         </li>
     </ul>

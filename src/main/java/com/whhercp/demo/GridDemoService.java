@@ -52,7 +52,21 @@ public class GridDemoService {
 
         return list;
     }
+    @RequestMapping(value = "/getOS2" ,method = RequestMethod.GET)
+    @ResponseBody
+    public List<Map> getOS2(@RequestParam("para") String brand){
+        System.out.println("getOS ");
 
+        try{
+            Thread.sleep(400);// 模拟网络延迟
+        }catch(Exception e){}
+
+        DataAdapter da = new DataAdapter();
+        da.setConnect("portal");
+        List<Map> list = da.queryForListBySql("select distinct os as text,os as value from js_os order by os");
+
+        return list;
+    }
 
     //http://localhost:8080/webDemo/GridDemoService/getCPU.json
     @RequestMapping(value = "/getCPU" ,method = RequestMethod.GET)

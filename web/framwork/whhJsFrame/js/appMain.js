@@ -270,6 +270,29 @@ App.service('loginService', ['$rootScope', '$http', '$timeout', '$state', '$q', 
 
 
 
+
+App.service('whhHttpService', ['$rootScope', '$http', function ($rootScope, $http) {
+
+    var whhHttpService = {};
+
+    whhHttpService.request = function(url,para){
+        //进行http请求
+        return $http({
+            url: url,
+            method: 'POST',
+            data:para,
+            responseType:"json",
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        })
+    }
+
+
+    return whhHttpService;
+
+}]);
+
 //****************************************用于捕获后台异常的拦截器********************************************
 //创建拦截器 用来捕获后台异常
 App.factory('appExceptionInterceptor', ['$rootScope', function ($rootScope) {

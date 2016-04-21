@@ -2,23 +2,18 @@
 <div style="padding: 5px;" ng-controller="GridMakerColDropDownListCtrl">
 
 
-
-
-
-
-
-    <ul class="nav nav-pills nav-stacked">
+    <ul class="nav nav-pills nav-stacked" ng-mousemove="move()">
         <li>
             <div class="form-group">
                 <div class="checkbox">
                     <label>
-                        <input type="checkbox">可见  <!--  -->
+                        <input type="checkbox" ng-model="GridMakerColDropDownListCtrlCache.wz_hidden">不可见  <!--  -->
                     </label>
                     <label>
-                        <input type="checkbox">可编辑  <!-- editable -->
+                        <input type="checkbox" ng-model="GridMakerColDropDownListCtrlCache.wz_editable">可编辑  <!-- editable -->
                     </label>
                     <label>
-                        <input type="checkbox">必填<!--validation-->
+                        <input type="checkbox"  ng-model="GridMakerColDropDownListCtrlCache.wz_required">必填<!--validation-->
                     </label>
                 </div>
             </div>
@@ -26,34 +21,34 @@
         <li>
             <div class="form-group">
                 <label for="colWidth">宽度</label>
-                <input type="text" class="form-control" id="colWidth" placeholder="300">
+                <input type="text" class="form-control" id="colWidth" placeholder="300" ng-model="GridMakerColDropDownListCtrlCache.wz_width">
             </div>
         </li>
         <li>
             <div class="form-group">
                 <label for="url">数据源url</label>
-                <input type="text" class="form-control" id="url" placeholder="sampleService/getData.json">
+                <input type="text" class="form-control" id="url" placeholder="sampleService/getData.json" ng-model="GridMakerColDropDownListCtrlCache.wz_url">
             </div>
             <div class="form-group">
                 <div class="checkbox">
                     <label>
-                        <input type="checkbox">整行数据做参数<!--validation-->
+                        <input type="checkbox" ng-model="GridMakerColDropDownListCtrlCache.wz_para_item">整行数据做参数<!--validation-->
                     </label>
                 </div>
             </div>
             <div class="form-group">
-                <label for="url">参数列</label>
-                <input type="text" class="form-control" id="paraField" placeholder="这个字段的值将作为参数传到后台">
+                <label for="url" >参数列</label>
+                <input type="text" class="form-control" id="paraField" placeholder="这个字段的值将作为参数传到后台" ng-model="GridMakerColDropDownListCtrlCache.wz_paraField">
             </div>
             <div class="form-group">
                 <label for="para">自定义参数</label>
-                <input type="text" class="form-control" id="para" placeholder='{"username":"hello"}'>
+                <input type="text" class="form-control" id="para" placeholder='{"username":"hello"}' ng-model="GridMakerColDropDownListCtrlCache.wz_para">
             </div>
         </li>
         <li>
             <div class="form-group">
                 <label>本地数据源(填写url 则该项无效)</label>
-                <textarea class="form-control" rows="4" placeholder='[{"key":"hello","value":"world"}] 属性名必须是key,value'></textarea>
+                <textarea class="form-control" rows="4" placeholder='[{"text":"hello","value":"world"}] 属性名必须是text,value' ng-model="GridMakerColDropDownListCtrlCache.wz_data"></textarea>
             </div>
         </li>
     </ul>

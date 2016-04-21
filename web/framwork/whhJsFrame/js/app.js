@@ -5,7 +5,6 @@
 var App = angular.module('app', ['ui.router']);
 
 
-
 //初始化
 App.run(function ($rootScope, loginService, $state,$q,$http) {
 

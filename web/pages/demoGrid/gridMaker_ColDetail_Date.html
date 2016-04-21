@@ -1,7 +1,7 @@
 <!-- 在这里写定义  以后就在这里做ui-view -->
-<div style="padding: 5px;" ng-controller="GridMakerColDateCtrl">
+<div style="padding: 5px;" ng-controller="GridMakerColDateCtrl" >
 
-    <ul class="nav nav-pills nav-stacked">
+    <ul class="nav nav-pills nav-stacked" ng-mousemove="move()">
 
         <li>
             <div class="form-group">
@@ -10,7 +10,7 @@
                         <input type="checkbox" ng-model="GridMakerColDateCtrlCache.wz_hidden">不可见  <!--  -->
                     </label>
                     <label>
-                        <input type="checkbox" ng-model="GridMakerColDateCtrlCache.wz_editable">不可编辑  <!-- editable -->
+                        <input type="checkbox" ng-model="GridMakerColDateCtrlCache.wz_editable">可编辑  <!-- editable -->
                     </label>
                     <label>
                         <input type="checkbox" ng-model="GridMakerColDateCtrlCache.wz_required">必填<!--validation-->
@@ -63,5 +63,5 @@
             </div>
         </li>
 
-
+</ul>
 </div>

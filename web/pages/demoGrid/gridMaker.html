@@ -1,12 +1,23 @@
 <div class="row" ng-controller="gridMakerMainCtrl">
         <div class="col-md-4">
-            <a href="compose.html" class="btn btn-primary btn-block margin-bottom">保存Grid定义</a>
+            <div class="box box-solid">
+                <div class="box-body">
+
+                    <label for="gridName">Grid定义</label>
+                    <input class="form-control" type="text" placeholder="输入GridName"  id="gridName" ng-model="grid_name" style="margin-bottom: 5px;">
+                    <a  class="btn btn-success btn-block ">查询</a>
+                    <a  class="btn btn-warning btn-block " ng-click="saveGridDef()" >新建</a>
+                    <a  class="btn btn-primary btn-block " ng-click="saveGridDef()" >保存</a>
+                    <a  class="btn btn-info btn-block ">另存</a>
+                </div>
+            </div>
             <div class="box box-solid">
                 <div class="box-header with-border">
                     <h3 class="box-title">创建Grid</h3>
                     <div class="box-tools">
                         <button class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
                     </div>
+
                 </div>
                 <div class="box-body no-padding">
                     <ul class="nav nav-pills nav-stacked">

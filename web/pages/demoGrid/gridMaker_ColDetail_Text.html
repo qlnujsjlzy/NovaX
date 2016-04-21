@@ -1,16 +1,16 @@
 <!-- 在这里写定义  以后就在这里做ui-view -->
 <div style="padding: 5px;" ng-controller="GridMakerColStringCtrl">
 
-    <ul class="nav nav-pills nav-stacked">
+    <ul class="nav nav-pills nav-stacked" ng-mousemove="move()">
 
         <li>
             <div class="form-group">
                 <div class="checkbox">
                     <label>
-                        <input type="checkbox">可见  <!--  -->
+                        <input type="checkbox" ng-model="GridMakerColStringCtrlCache.wz_hidden">不可见  <!--  -->
                     </label>
                     <label>
-                        <input type="checkbox">可编辑  <!-- editable -->
+                        <input type="checkbox" ng-model="GridMakerColStringCtrlCache.wz_editable">可编辑  <!-- editable -->
                     </label>
                 </div>
             </div>
@@ -19,23 +19,15 @@
             <div class="form-group">
                 <div class="checkbox">
                     <label>
-                        <input type="checkbox">必填<!--validation-->
+                        <input type="checkbox" ng-model="GridMakerColStringCtrlCache.wz_required">必填<!--validation-->
                     </label>
                 </div>
-            </div>
-            <div class="form-group">
-                <label for="minValue">最小值</label>
-                <input type="text" class="form-control" id="minValue">
-            </div>
-            <div class="form-group">
-                <label for="maxValue">最大值</label>
-                <input type="text" class="form-control" id="maxValue">
             </div>
         </li>
         <li>
             <div class="form-group">
                 <label for="colWidth">宽度</label>
-                <input type="text" class="form-control" id="colWidth" placeholder="宽度">
+                <input type="text" class="form-control" id="colWidth" placeholder="宽度" ng-model="GridMakerColStringCtrlCache.wz_width">
             </div>
         </li>
 

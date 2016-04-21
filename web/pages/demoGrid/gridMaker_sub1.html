@@ -2,40 +2,31 @@
 <div ng-controller="GridMakerSub1Ctrl" style="padding: 5px;">
 
 
-    <ul class="nav nav-pills nav-stacked">
-
+    <ul class="nav nav-pills nav-stacked" ng-mousemove="move()">
         <li>
-            <div class="row">
-                <div class="col-md-4">
-                    <input class="form-control" type="text" placeholder="输入gridName"  ng-model="gridName">
-                </div>
-                <div class="col-md-2">
-                    <button class="btn btn-primary btn-block margin-bottom"> 查询Grid定义</button>
-                </div>
-            </div>
 
-        </li>
-        <li>
-            <div class="row">
+            <div class="row" style="padding-left: 0px;">
                 <div class="col-md-2">
-                    <button class="btn btn-primary btn-block margin-bottom" ng-click="addItem()"> 新增列</button>
+                    <button class="btn btn-danger btn-block" ng-click="addItem()"> 新增列</button>
                 </div>
                 <div class="col-md-2">
-                    <button class="btn btn-primary btn-block margin-bottom" ng-click="deleteSelectedItems()"> 删除列</button>
+                    <button class="btn btn-danger btn-block" ng-click="deleteSelectedItems()"> 删除列</button>
                 </div>
                 <div class="col-md-2">
-                    <button class="btn btn-primary btn-block margin-bottom" ng-click="showOption()"> 查看option</button>
+                    <button class="btn btn-info btn-block" ng-click="showOption()"> 上移</button>
+                </div>
+                <div class="col-md-2">
+                    <button class="btn btn-info btn-block" ng-click="showOption()"> 下移</button>
                 </div>
             </div>
         </li>
-        <li>
 
+        <li>
             <div class="row">
                 <div class="col-md-12">
                     <ng-whh-grid option="CreatingGridOption"></ng-whh-grid>
                 </div>
             </div>
-
         </li>
         <li>
             <div class="form-group">
@@ -50,40 +41,11 @@
                     <label>
                         <input type="checkbox" id="pageable" ng-model="GridMakerSub1CtrlCache.wz_pageable">分页
                     </label>
-
-
-
-                </div>
-
-                <div class="form-group">
-                    <div class="radio" >
-                        <label>
-                            <input type="radio"   ng-model="GridMakerSub1CtrlCache.wz_selectable" value="multiple row">
-                            多行选择
-                        </label>
-                        <label>
-                            <input type="radio"   ng-model="GridMakerSub1CtrlCache.wz_selectable" value="row"  checked="" >
-                             单行选择
-                        </label>
-                    </div>
-                </div>
-
-
-                <div class="form-group">
-                    <label for="height">Grid标题</label>
-                    <input type="text" class="form-control" id="title"  ng-model="GridMakerSub1CtrlCache.wz_title" placeholder="Grid的标题">
-
-                    <label for="pageSize">pageSize</label>
-                    <input type="text" class="form-control" id="pageSize" ng-model="GridMakerSub1CtrlCache.wz_pageSize" placeholder="每页item数量  使用勾选框将会禁用分页">
-
-                    <label for="height">height</label>
-                    <input type="text" class="form-control" id="height"  ng-model="GridMakerSub1CtrlCache.wz_height" placeholder="高度">
-                </div>
-
-                <div class="checkbox">
-                    <label>
-                        <input type="checkbox" id="groupable" ng-model="GridMakerSub1CtrlCache.wz_groupable">分类汇总功能<!--  -->
+                    <!--
+                         <label style="visibility: hidden">
+                        <input type="checkbox" id="groupable" ng-model="GridMakerSub1CtrlCache.wz_groupable" >分类汇总功能
                     </label>
+                    -->
                     <label>
                         <input type="checkbox" id="sortable" ng-model="GridMakerSub1CtrlCache.wz_sortable">排序
                     </label>
@@ -93,8 +55,36 @@
                     <label>
                         <input type="checkbox" id="resizable" ng-model="GridMakerSub1CtrlCache.wz_resizable">列宽可调
                     </label>
+
+                    <label>
+                        <input type="radio"   ng-model="GridMakerSub1CtrlCache.wz_selectable" value="multiple row">
+                        多行选择
+                    </label>
+                    <label>
+                        <input type="radio"   ng-model="GridMakerSub1CtrlCache.wz_selectable" value="row"  checked="" >
+                        单行选择
+                    </label>
                 </div>
+
             </div>
+            <div class="form-group col-md-6" >
+                <label for="height">Grid标题</label>
+                <input type="text" class="form-control" id="title"  ng-model="GridMakerSub1CtrlCache.wz_title" placeholder="Grid的标题">
+
+
+
+
+            </div>
+            <div class="form-group col-md-3" >
+                <label for="height">height</label>
+                <input type="text" class="form-control" id="height"  ng-model="GridMakerSub1CtrlCache.wz_height" placeholder="高度">
+
+            </div>
+            <div class="form-group col-md-3" >
+                <label for="pageSize">pageSize</label>
+                <input type="text" class="form-control" id="pageSize" ng-model="GridMakerSub1CtrlCache.wz_pageSize" placeholder="每页item数量  使用勾选框将会禁用分页">
+            </div>
+
 
         </li>
     </ul>

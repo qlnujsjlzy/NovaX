@@ -1,19 +1,19 @@
 <!-- 在这里写定义  以后就在这里做ui-view -->
 <div style="padding: 5px;" ng-controller="GridMakerColDateTimeCtrl">
 
-    <ul class="nav nav-pills nav-stacked">
+    <ul class="nav nav-pills nav-stacked" ng-mousemove="move()">
 
         <li>
             <div class="form-group">
                 <div class="checkbox">
                     <label>
-                        <input type="checkbox">可见  <!--  -->
+                        <input type="checkbox" ng-model="GridMakerColDateTimeCtrlCache.wz_hidden">不可见  <!--  -->
                     </label>
                     <label>
-                        <input type="checkbox">可编辑  <!-- editable -->
+                        <input type="checkbox" ng-model="GridMakerColDateTimeCtrlCache.wz_editable">可编辑  <!-- editable -->
                     </label>
                     <label>
-                        <input type="checkbox">必填<!--validation-->
+                        <input type="checkbox" ng-model="GridMakerColDateTimeCtrlCache.wz_required">必填<!--validation-->
                     </label>
                 </div>
             </div>
@@ -21,19 +21,19 @@
         <li>
             <div class="form-group">
                 <label for="maxDate">最大时间</label>
-                <input class="form-control" id="maxDate" ng-whh-date-picker option="MaxdateOption">
+                <input class="form-control" id="maxDate" ng-whh-date-picker option="MaxdateOption" ng-model="GridMakerColDateTimeCtrlCache.wz_minDate">
             </div>
         </li>
         <li>
             <div class="form-group">
                 <label for="minDate">最小时间</label>
-                <input class="form-control" id="minDate" ng-whh-date-picker option="MindateOption">
+                <input class="form-control" id="minDate" ng-whh-date-picker option="MindateOption" ng-model="GridMakerColDateTimeCtrlCache.wz_maxDate">
             </div>
         </li>
         <li>
             <div class="form-group">
                 <label for="colWidth">宽度</label>
-                <input type="text" class="form-control" id="colWidth" placeholder="宽度">
+                <input type="text" class="form-control" id="colWidth" placeholder="宽度" ng-model="GridMakerColDateTimeCtrlCache.wz_width" >
             </div>
         </li>
     </ul>
