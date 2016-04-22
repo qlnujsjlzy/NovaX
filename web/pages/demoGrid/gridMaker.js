@@ -377,8 +377,15 @@ App.controller('gridMakerMainCtrl', ['$scope', '$state', '$filter', 'whhHttpServ
 
 
         //获取colDef 的定义 从grid里取出每个col的基本定义 restore回来之后 uid已经改变了! 导致了重新创建 丢失了editer相关属性 需要使用自己的uuid 不要使用grid的uid
+        //为了把构建columns的顺序也根据用户的上移下移的顺序来调整
+        var tempCols = [];
         var colList = $scope.GridMakerSub1CtrlCache.colDefGridData;
         for (var i = 0; i < colList.length; i++) {
+
+
+
+
+
 
             var ifHas = false;
             for (var j = 0; j < $scope.globeOption.columns.length; j++) {
@@ -393,6 +400,7 @@ App.controller('gridMakerMainCtrl', ['$scope', '$state', '$filter', 'whhHttpServ
                 $scope.globeOption.columns[j].type = colList[i].columnType;
                 $scope.globeOption.columns[j].colid = colList[i].colid;
                 $scope.globeOption.columns[j].columnEditor = colList[i].columnEditor;
+                tempCols[i] = $scope.globeOption.columns[j];
             } else {
                 var colDef = {};
                 colDef.field = colList[i].columnField;
@@ -400,9 +408,12 @@ App.controller('gridMakerMainCtrl', ['$scope', '$state', '$filter', 'whhHttpServ
                 colDef.type = colList[i].columnType;
                 colDef.colid = colList[i].colid;
                 colDef.columnEditor = colList[i].columnEditor;
-                $scope.globeOption.columns.push(colDef);
+                tempCols[i] = colDef;
+               // $scope.globeOption.columns.push(colDef);
             }
         }
+        $scope.globeOption.columns = tempCols;
+
         //然后没有的col 都要删掉
         for (var i = $scope.globeOption.columns.length - 1; i >= 0; i--) {
             var ifHas = false;
@@ -1062,6 +1073,81 @@ App.controller('gridMakerMainCtrl', ['$scope', '$state', '$filter', 'whhHttpServ
         // console.log(JSON.stringify($scope.globeOption));
     }
 
+
+    $scope.toUp = function () {
+        //var currentItem = $scope.CreatingGridApi.getSelectedItems()[0];
+        var arr = $scope.CreatingGridApi.getSelectedItems();
+
+
+        if(arr.length>=1){
+
+            var items = $scope.CreatingGridApi.dataSource.data();
+
+
+            var j = $scope.CreatingGridApi.dataSource.indexOf(arr[0]);
+            var temp = items[j-1];
+            items[j-1] = items[j];
+            items[j] = temp;
+
+            //var j=2;
+            //var temp = items[j-1];
+            //items[j-1] = items[j];
+            //items[j] = temp;
+
+            //for (var j=0; j< items.length ;  j++) {
+            //    if(arr[0]["uid"] == items[j]["uid"]){
+            //
+            //        //做替换
+            //        var temp = items[j-1];
+            //        items[j-1] = items[j];
+            //        items[j] = temp;
+            //
+            //        break;
+            //    }
+            //}
+
+            $scope.CreatingGridApi.dataSource.data(items);
+
+
+            //$scope.CreatingGridApi.widget.select().addClass("k-state-selected");
+
+            //更换位置后 还要保持这一行的选中状态
+            //var newIndex = $scope.CreatingGridApi.dataSource.indexOf(arr[0]);
+            //$scope.CreatingGridApi.widget.select("tr:eq("+(j-1)+")");
+            $scope.CreatingGridApi.selectItem(j-1);
+
+        }
+
+
+    }
+    $scope.toDown = function () {
+        var arr = $scope.CreatingGridApi.getSelectedItems();
+        if(arr.length>=1){
+            var items = $scope.CreatingGridApi.dataSource.data();
+            var j = $scope.CreatingGridApi.dataSource.indexOf(arr[0]);
+
+
+            var temp = items[j+1];
+            items[j+1] = items[j];
+            items[j] = temp;
+
+            $scope.CreatingGridApi.dataSource.data(items);
+            //$scope.CreatingGridApi.widget.select("tr:eq("+(j+1)+")");
+            $scope.CreatingGridApi.selectItem(j+1)
+        }
+    }
+
+    $scope.getSelectItem= function () {
+
+        var arr = $scope.CreatingGridApi.getSelectedItems();
+        var info = "---------------getSelectedItems1 grid1------------- <br>"
+        for (var i = 0; i < arr.length; i++) {
+            info = info + arr[i]["columnField"] + "<br>";
+            info = info + "<br>"
+        }
+
+        alert(info);
+    }
 
 }]).controller('GridMakerSub2Ctrl', ['$scope', '$state', function ($scope, $state) {
 

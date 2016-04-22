@@ -85,7 +85,6 @@ App.directive('ngWhhGrid', function () {//编写grid对应的指令
                 for(var i=0;i<data.length;i++){
                     data[i]["oid"] = "wz_init_"+Math.uidFast();
                 }
-
                 $scope.widgetApi.dataSource.data(data);
                 $scope.selectedRowItems.length = 0;//要清除选中行
             }
@@ -139,18 +138,31 @@ App.directive('ngWhhGrid', function () {//编写grid对应的指令
                     }
                 }
 
-                var observable = new kendo.data.ObservableObject(item);
-                var dataItem = $scope.widgetApi.dataSource.insert(0, observable);
+                var index = $scope.widgetApi.dataSource.data().length;
+                //var observable = new kendo.data.ObservableObject(item);
+                var observable = new ItemObject(item); //换用自己的包装类试试看
+                var dataItem = $scope.widgetApi.dataSource.insert(index, observable);
 
                 var index = $scope.widgetApi.dataSource.indexOf(dataItem);
                 return index;
             }
 
 
+            //可以根据index删除 或者根据一个Item做删除
             $scope.widgetApi.deleteItem = function (index) {
-                $scope.widgetApi.dataSource.remove($scope.widgetApi.dataSource.at(index));
-
+                if(typeof index =="number"){
+                    $scope.widgetApi.dataSource.remove($scope.widgetApi.dataSource.at(index));
+                }else{
+                    if(index["uid"]){
+                        $scope.widgetApi.dataSource.remove($scope.widgetApi.dataSource.getByUid(index["uid"]));
+                    }else{
+                        alert("传入的Item没有uid 不是标准的ItemObject");
+                    }
+                }
             }
+
+
+
             $scope.widgetApi.deleteAllItem = function () {
 
                 var length = $scope.widgetApi.dataSource.data().length;
@@ -199,9 +211,59 @@ App.directive('ngWhhGrid', function () {//编写grid对应的指令
             }
 
 
-            $scope.widgetApi.removeAll = function () {
-                // 暂时不写了
+            //可以根据index 或者 根据Item来做选中
+            $scope.widgetApi.selectItem = function (index) {
+                if(typeof index =="number"){
+
+                    var uid = $scope.widgetApi.dataSource.at(index)["uid"];
+                    var row = $scope.widgetApi.widget.tbody.find("tr:eq("+index+")");   // data-uid
+
+                    //var row = $scope.widgetApi.widget.select("tr:eq("+index+")");
+                    row.addClass("k-state-selected");
+
+                    //如果是勾选框的 还得把勾选框也选上
+                    if($scope.option.selectCheckBox){
+                        row.find("." + $scope.uid + "-whhNgGridSelCheckBox").prop("checked", true);
+                    }
+                    $scope.selectedRowItems.push(uid);
+
+                }else{
+                    if(index["uid"]){
+                        var itemIndex = $scope.widgetApi.dataSource.indexOf(index);
+                        var row = $scope.widgetApi.widget.tbody.find("tr:eq("+itemIndex+")");
+                        row.addClass("k-state-selected");
+
+                        //如果是勾选框的 还得把勾选框也选上
+                        if($scope.option.selectCheckBox){
+                            row.find("." + $scope.uid + "-whhNgGridSelCheckBox").prop("checked", true);
+                        }
+                        $scope.selectedRowItems.push(index["uid"]);
+
+                            //if ($scope.option.selectable == "row"){
+                            //    //如果是单行的
+                            //    var trs = scope.grid.items();
+                            //    for (var i = 0; i < trs.length; i++) {
+                            //        //先全部取消
+                            //        $(trs[i]).removeClass("k-state-selected");
+                            //        scope.selectedRowItems.length = 0;
+                            //        $(trs[i]).find("." + scope.uid + "-whhNgGridSelCheckBox").prop("checked", false); //记得把钩取消掉
+                            //    }
+                            //    // 如果当前行是选中
+                            //    if (checked) {
+                            //        row.addClass("k-state-selected");
+                            //        row.find("." + scope.uid + "-whhNgGridSelCheckBox").prop("checked", true); //记得当前行钩回来 前面把全部都取消了
+                            //    }
+                            //}
+
+                        //$scope.widgetApi.dataSource.getByUid(index["uid"])
+
+
+                    }else{
+                        alert("传入的Item没有uid 不是标准的ItemObject");
+                    }
+                }
             }
+
 
 
             /**
