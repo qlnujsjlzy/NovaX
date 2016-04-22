@@ -151,6 +151,17 @@ App.directive('ngWhhGrid', function () {//编写grid对应的指令
                 $scope.widgetApi.dataSource.remove($scope.widgetApi.dataSource.at(index));
 
             }
+            $scope.widgetApi.deleteAllItem = function () {
+
+                var length = $scope.widgetApi.dataSource.data().length;
+                for(var i=length-1;i>=0;i--){
+                    $scope.widgetApi.dataSource.remove($scope.widgetApi.dataSource.at(i));
+                }
+                //var dataItem = dataSource.at(0);
+                //dataSource.remove(dataItem);
+            }
+
+
 
             $scope.widgetApi.updateItem = function (index, para) {
                 //还是要根据uid来做更新  一般我们的用法都是要循环更新一个Grid里面的某些内容
@@ -391,6 +402,8 @@ App.directive('ngWhhGrid', function () {//编写grid对应的指令
                 //
                 //console.log(e.toString());
 
+
+                //如果是规定单选的 那么要特殊处理一下  就是要清掉所有的勾选和class 然后给当前行加回来
                 if (outerOptions.selectable == "row") {
                     //如果是单行的
                     var trs = scope.grid.items();
@@ -400,10 +413,14 @@ App.directive('ngWhhGrid', function () {//编写grid对应的指令
                         scope.selectedRowItems.length = 0;
                         $(trs[i]).find("." + scope.uid + "-whhNgGridSelCheckBox").prop("checked", false); //记得把钩取消掉
                     }
-                    row.find("." + scope.uid + "-whhNgGridSelCheckBox").prop("checked", true); //记得当前行钩回来 前面把全部都取消了
+
+                    // 如果当前行是选中
+                    if (checked) {
+                        row.addClass("k-state-selected");
+                        row.find("." + scope.uid + "-whhNgGridSelCheckBox").prop("checked", true); //记得当前行钩回来 前面把全部都取消了
+                    }
+
                 }
-
-
 
                 //checkedIds[dataItem.id] = checked;
                 if (checked) {
@@ -436,6 +453,12 @@ App.directive('ngWhhGrid', function () {//编写grid对应的指令
 
                     scope.triggerOnSelect();
                 }
+
+
+
+
+
+
             });
 
 //==========================================================================checkBox end========================================================================================

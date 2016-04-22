@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -71,7 +72,47 @@ public class GridDefService {
     }
 
 
+    /**
+     * 上传一个grid定义
+     * @param para
+     * @return
+     */
+    @RequestMapping(value = "/queryGridDef" ,method = RequestMethod.POST)
+    @ResponseBody
+    public Object queryGridDef(@RequestBody Map para){
+        System.out.println("uploadLoadGridDef");
 
+        Object res = null;
+
+
+        try{
+
+
+            String grid_cache_option = JSON.toJSONString(para.get("grid_cache_option"));
+
+
+            Map sqlPara = new HashMap();
+            sqlPara.put("grid_name",para.get("grid_name"));
+
+
+
+            DataAdapter da = new DataAdapter();
+            da.setConnect("portal");
+
+
+            List<Map> list = da.queryForListBySql("select grid_id,grid_name,grid_cache_option from  js_grid_def where grid_name=#grid_name# limit 1",sqlPara);
+            if(list.size()<=0){
+                throw new AppException("无法找到name是"+para.get("grid_name")+" 的Grid定义");
+            }
+
+            res = JSON.toJSON(list.get(0));
+
+        }catch(Exception e){
+            throw new AppException(e.getMessage());
+        }
+
+        return res;
+    }
 
 
 

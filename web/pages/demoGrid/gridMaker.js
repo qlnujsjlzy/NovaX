@@ -4,21 +4,19 @@
  * grid快速创建工具
  *
  *
- * 问题在于 什么时候去创建option对象 我认为用事件好 每个编辑器配置的controller里 只需要接受事件就可以
- * 接收到就创建.别的都不要管.
  *
- * 至于发出事件 我觉得有几个地方要发出
- * 1.grid做select的时候
- * 2.grid change的时候
- * 3.切换tab的时候
- * 4.保存的时候 都要发出事件
+ * 主要是两个流程 一个是存储属性 一个是恢复属性
+ * 存储属性 包括主界面sub1 和 各个editoer的配置页面的 值的保存 这部分操作都是通过鼠标事件来激发的
+ * 恢复属性 包括主界面属性的恢复 这个在主界面grid构建完成后才开始做      然后是各个editor界面的恢复 这个基于各个界面的cache对象里的history来恢复
+ * 主界面恢复 发生在切换会主界面,以及查询grid定义的时候,editor界面的恢复 在点击了具体的某一行col定义的时候 根据colid 从history对象里面取出来
+ *
+ * 123456
  *
  *
- * 而且这个事件发出 要先向上到顶部controller 然后从顶部向下覆盖所有的controller
  *
  */
 
-App.controller('gridMakerMainCtrl', ['$scope', '$state', 'whhHttpService', function ($scope, $state, whhHttpService) {
+App.controller('gridMakerMainCtrl', ['$scope', '$state', '$filter', 'whhHttpService', function ($scope, $state, $filter, whhHttpService) {
 
 
 
@@ -27,7 +25,29 @@ App.controller('gridMakerMainCtrl', ['$scope', '$state', 'whhHttpService', funct
 //====================================================缓存定义 start=================================================================
 
 
+    //全局按钮状态
+    $scope.QueryDisable = "";
+    $scope.NewDisable = "";
+    $scope.SaveDisable = "disabled";
+    $scope.newSaveDisable = "disabled";
+
+    function btn_initState() {  //初始态
+        $scope.QueryDisable = "";
+        $scope.NewDisable = "";
+        $scope.SaveDisable = "disabled";
+        $scope.newSaveDisable = "disabled";
+    }
+
+    function btn_alterState() { //修改态
+        $scope.QueryDisable = "";
+        $scope.NewDisable = "";
+        $scope.SaveDisable = "";
+        $scope.newSaveDisable = "";
+    }
+
+
     //全局option对象 也是最终的grid定义option对象
+    $scope.grid_id;
     $scope.globeOption = {};
     $scope.globeOption.getWidgetApi = function (gridApi) {
         //demo用的
@@ -57,13 +77,14 @@ App.controller('gridMakerMainCtrl', ['$scope', '$state', 'whhHttpService', funct
         wz_selectCheckBox: false,
         wz_selectable: "row",
         wz_pageable: false,
-        wz_pageSize: "",
+        wz_pageSize: 0,
         wz_height: 300,
         wz_groupable: false,
         wz_sortable: false,
         wz_reorderable: true,
         wz_resizable: true,
-        wz_title: "",
+        wz_title: "NewGrid",
+        wz_groupable: false,
         CreatingGridApi: {}
     };
 
@@ -241,8 +262,29 @@ App.controller('gridMakerMainCtrl', ['$scope', '$state', 'whhHttpService', funct
 
 
 //====================================================初始化缓存 start=================================================================
-    $scope.globeEditorCacheInit = function () {
+    $scope.globeEditorCacheInit = function (ifInitSub1) {
         // 设置过editor属性以后 这几个cache的current值会变化 在我新增行的时候 我需要做一个初始化
+
+        if (ifInitSub1) {
+            $scope.GridMakerSub1CtrlCache["colFieldIndex"] = 0;
+            $scope.GridMakerSub1CtrlCache["colDefGridData"] = [];
+            $scope.GridMakerSub1CtrlCache["wz_editable"] = true;
+            $scope.GridMakerSub1CtrlCache["wz_selectCheckBox"] = false;
+            $scope.GridMakerSub1CtrlCache["wz_selectable"] = "row";
+            $scope.GridMakerSub1CtrlCache["wz_pageable"] = false;
+            $scope.GridMakerSub1CtrlCache["wz_pageSize"] = 0;
+            $scope.GridMakerSub1CtrlCache["wz_height"] = 300;
+            $scope.GridMakerSub1CtrlCache["wz_groupable"] = false;
+            $scope.GridMakerSub1CtrlCache["wz_sortable"] = false;
+            $scope.GridMakerSub1CtrlCache["wz_reorderable"] = true;
+            $scope.GridMakerSub1CtrlCache["wz_resizable"] = true;
+            $scope.GridMakerSub1CtrlCache["wz_title"] = "NewGrid";
+            $scope.GridMakerSub1CtrlCache["wz_groupable"] = false;
+            if ($scope.GridMakerSub1CtrlCache.CreatingGridApi) {
+                $scope.GridMakerSub1CtrlCache.CreatingGridApi.deleteAllItem();
+            }
+        }
+
 
         $scope.GridMakerColStringCtrlCache["wz_hidden"] = false;
         $scope.GridMakerColStringCtrlCache["wz_required"] = false;
@@ -656,11 +698,12 @@ App.controller('gridMakerMainCtrl', ['$scope', '$state', 'whhHttpService', funct
 //====================================================构建测试数据 end=================================================================
 
 
-//启动的时候 执行一次初始化! 这很重要
-    $scope.globeEditorCacheInit();
-
-
     $scope.saveGridDef = function () {
+
+        // 说明还没有新建Grid
+        if (!$scope.grid_id) {
+            alert("请先点击新建按钮");
+        }
 
         createOption();
 
@@ -674,17 +717,19 @@ App.controller('gridMakerMainCtrl', ['$scope', '$state', 'whhHttpService', funct
 
         var gridInfoPkg = {};
 
-        gridInfoPkg.grid_id = Math.uidFast();
+        gridInfoPkg.grid_id = $scope.grid_id;//Math.uidFast();
         gridInfoPkg.grid_name = $scope.grid_name;
-        gridInfoPkg.globe_option = $scope.globeOption;
+        gridInfoPkg.globe_option = jQuery.extend({},$scope.globeOption,true);
 
         gridInfoPkg.grid_cache_option = {};
-        gridInfoPkg.grid_cache_option.GridMakerSub1CtrlCache = $scope.GridMakerSub1CtrlCache;
-        gridInfoPkg.grid_cache_option.GridMakerColStringCtrlCache = $scope.GridMakerColStringCtrlCache;
-        gridInfoPkg.grid_cache_option.GridMakerColDateCtrlCache = $scope.GridMakerColDateCtrlCache;
-        gridInfoPkg.grid_cache_option.GridMakerColDropDownListCtrlCache = $scope.GridMakerColDropDownListCtrlCache;
-        gridInfoPkg.grid_cache_option.GridMakerColComboBoxCtrlCache = $scope.GridMakerColComboBoxCtrlCache;
-        gridInfoPkg.grid_cache_option.GridMakerColDateTimeCtrlCache = $scope.GridMakerColDateTimeCtrlCache;
+        gridInfoPkg.grid_cache_option.GridMakerSub1CtrlCache = jQuery.extend({},$scope.GridMakerSub1CtrlCache,true);
+        delete gridInfoPkg.grid_cache_option.GridMakerSub1CtrlCache.CreatingGridApi;
+
+        gridInfoPkg.grid_cache_option.GridMakerColStringCtrlCache = jQuery.extend({},$scope.GridMakerColStringCtrlCache,true);
+        gridInfoPkg.grid_cache_option.GridMakerColDateCtrlCache = jQuery.extend({},$scope.GridMakerColDateCtrlCache,true);
+        gridInfoPkg.grid_cache_option.GridMakerColDropDownListCtrlCache = jQuery.extend({},$scope.GridMakerColDropDownListCtrlCache,true);
+        gridInfoPkg.grid_cache_option.GridMakerColComboBoxCtrlCache =jQuery.extend({},$scope.GridMakerColComboBoxCtrlCache,true);
+        gridInfoPkg.grid_cache_option.GridMakerColDateTimeCtrlCache = jQuery.extend({},$scope.GridMakerColDateTimeCtrlCache,true);
 
 
         whhHttpService.request("GridDefService/uploadLoadGridDef.json", gridInfoPkg).success(function (data, status, headers, config) {
@@ -698,39 +743,57 @@ App.controller('gridMakerMainCtrl', ['$scope', '$state', 'whhHttpService', funct
 
     $scope.queryGridDef = function () {
 
-        createOption();
+        whhHttpService.request("GridDefService/queryGridDef.json", {"grid_name": $scope.grid_name}).success(function (data, status, headers, config) {
+
+            btn_alterState();
+            $scope.grid_id = data.grid_id;
+            //$scope.grid_id=data.grid_id;
+
+            var grid_cache_option = JSON.parse(data.grid_cache_option)
+            console.log(grid_cache_option);
 
 
-        if ($scope.grid_name && $scope.grid_name != "") {
+            //准备开始恢复
+            delete grid_cache_option.GridMakerSub1CtrlCache.CreatingGridApi; //这个CreatingGridApi可不能覆盖
 
-        } else {
-            alert("请输入grid的name");
-            return;
-        }
-
-        var gridInfoPkg = {};
-
-        gridInfoPkg.grid_id = Math.uidFast();
-        gridInfoPkg.grid_name = $scope.grid_name;
-        gridInfoPkg.globe_option = $scope.globeOption;
-
-        gridInfoPkg.grid_cache_option = {};
-        gridInfoPkg.grid_cache_option.GridMakerSub1CtrlCache = $scope.GridMakerSub1CtrlCache;
-        gridInfoPkg.grid_cache_option.GridMakerColStringCtrlCache = $scope.GridMakerColStringCtrlCache;
-        gridInfoPkg.grid_cache_option.GridMakerColDateCtrlCache = $scope.GridMakerColDateCtrlCache;
-        gridInfoPkg.grid_cache_option.GridMakerColDropDownListCtrlCache = $scope.GridMakerColDropDownListCtrlCache;
-        gridInfoPkg.grid_cache_option.GridMakerColComboBoxCtrlCache = $scope.GridMakerColComboBoxCtrlCache;
-        gridInfoPkg.grid_cache_option.GridMakerColDateTimeCtrlCache = $scope.GridMakerColDateTimeCtrlCache;
+            for (var prop in grid_cache_option.GridMakerSub1CtrlCache) {
+                $scope.GridMakerSub1CtrlCache[prop] = grid_cache_option.GridMakerSub1CtrlCache[prop];
+            }
+            //$scope.GridMakerSub1CtrlCache = grid_cache_option.GridMakerSub1CtrlCache;
 
 
-        whhHttpService.request("GridDefService/uploadLoadGridDef.json", gridInfoPkg).success(function (data, status, headers, config) {
-            alert("保存成功");
+            $scope.GridMakerColStringCtrlCache = grid_cache_option.GridMakerColStringCtrlCache;
+            $scope.GridMakerColDateCtrlCache = grid_cache_option.GridMakerColDateCtrlCache;
+            $scope.GridMakerColDateTimeCtrlCache = grid_cache_option.GridMakerColDateTimeCtrlCache;
+            $scope.GridMakerColDropDownListCtrlCache = grid_cache_option.GridMakerColDropDownListCtrlCache;
+            $scope.GridMakerColComboBoxCtrlCache = grid_cache_option.GridMakerColComboBoxCtrlCache;
+
+            //每个编辑器页面的恢复不用担心因为有history对象
+            //关键是把列定义的grid填充回去
+            $scope.GridMakerSub1CtrlCache.CreatingGridApi.deleteAllItem();
+            for (var i = 0; i < $scope.GridMakerSub1CtrlCache.colDefGridData.length; i++) {
+                $scope.GridMakerSub1CtrlCache.CreatingGridApi.addItem($scope.GridMakerSub1CtrlCache.colDefGridData[i]);
+            }
+
+
         }).error(function (data, status, headers, config) {
-            alert("上传出错");
+            alert("出错");
         });
 
 
     }
+
+
+    $scope.createGridDef = function () {
+        btn_alterState();
+        $scope.grid_id = Math.uidFast();
+        $scope.grid_name = "NewGrid " + $filter('date')(new Date(), 'yyyy-MM-dd HH:mm:ss');
+
+        //做初始化
+        $scope.globeEditorCacheInit(true);
+    }
+
+
 }]).controller('GridMakerSub1Ctrl', ['$scope', '$state', function ($scope, $state) {
 
 
@@ -825,9 +888,16 @@ App.controller('gridMakerMainCtrl', ['$scope', '$state', 'whhHttpService', funct
             }],
         //获取widgetApi
         getWidgetApi: function (widgetApi) {
+
+
             $scope.GridMakerSub1CtrlCache.CreatingGridApi = widgetApi;
             $scope.CreatingGridApi = widgetApi;
             $scope.CreatingGrid = widgetApi.widget;
+
+
+            //启动的时候 执行一次初始化! 这很重要  但是不要把col定义grid给初始化了 切记
+            $scope.globeEditorCacheInit(false);
+
 
             $scope.CreatingGridApi.bindEvent('Select', function (items) {
                 // alert(111);
@@ -890,20 +960,23 @@ App.controller('gridMakerMainCtrl', ['$scope', '$state', 'whhHttpService', funct
 
             //restore  把globe里面的属性又恢复回来
             function restore() {
-                //恢复属性
-                for (var prop in $scope.globeOption) {
-                    if ($scope.globeOption[prop]) {
-                        $scope['wz_' + prop] = $scope.globeOption[prop];
-                    }
-                }
+                //恢复属性  感觉不需要这样的恢复了 因为属性都存在$scope.GridMakerSub1CtrlCache里面 就算你换页面也没有变化 不需要做恢复
+                //for (var prop in $scope.globeOption) {
+                //    if ($scope.globeOption[prop]) {
+                //        $scope['wz_' + prop] = $scope.globeOption[prop];
+                //    }
+                //}
 
                 //恢复grid数据源
-                if ($scope.GridMakerSub1CtrlCache.colDefGridData) {
+                if ($scope.GridMakerSub1CtrlCache.colDefGridData.length>0) {
                     $scope.CreatingGridApi.setData($scope.GridMakerSub1CtrlCache.colDefGridData);
                 }
-
             }
 
+            // 主界面的restore只能在这里做,因为主界面有一个grid 必须要等这个grid构建完成了才可以做restore 所以只有在这里可以保证这个grid是构建完成的
+            //感觉我还是不太喜欢这种写法 有没有办法使用promise来实现同步的写法 就可以不用写在这个里面了
+            //感觉比较难 promise对象只能在whhgrid内部创建出来 那能不能从外部穿一个promise对象进去呢? 直接放在option对象里穿进去,然后whhGrid内部对这个promise做reject 之类的
+            //然后就可以使用这个promise 了 就不需要把事件绑定之类的都写到这个里面来了.但是我觉得这样似乎并没有方便多少的感觉
             restore();
         }
     }
@@ -920,7 +993,7 @@ App.controller('gridMakerMainCtrl', ['$scope', '$state', 'whhHttpService', funct
         $scope.GridMakerSub1CtrlCache.colFieldIndex++;
 
         //初始化editor自页面的缓存
-        $scope.globeEditorCacheInit();
+        $scope.globeEditorCacheInit(false);
 
 
         // 发出事件 构建history对象

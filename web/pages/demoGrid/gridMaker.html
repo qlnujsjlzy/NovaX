@@ -1,14 +1,14 @@
 <div class="row" ng-controller="gridMakerMainCtrl">
         <div class="col-md-4">
-            <div class="box box-solid">
+            <div class="box box-solid ">
                 <div class="box-body">
 
                     <label for="gridName">Grid定义</label>
                     <input class="form-control" type="text" placeholder="输入GridName"  id="gridName" ng-model="grid_name" style="margin-bottom: 5px;">
-                    <a  class="btn btn-success btn-block ">查询</a>
-                    <a  class="btn btn-warning btn-block " ng-click="saveGridDef()" >新建</a>
-                    <a  class="btn btn-primary btn-block " ng-click="saveGridDef()" >保存</a>
-                    <a  class="btn btn-info btn-block ">另存</a>
+                    <a  class="btn btn-success btn-block {{QueryDisable}}" ng-click="queryGridDef()">查询</a>
+                    <a  class="btn btn-warning btn-block {{NewDisable}}" ng-click="createGridDef()" >新建</a>
+                    <a  class="btn btn-primary btn-block {{SaveDisable}}" ng-click="saveGridDef()" >保存</a>
+                    <a  class="btn btn-info btn-block disabled" ng>另存</a>
                 </div>
             </div>
             <div class="box box-solid">
