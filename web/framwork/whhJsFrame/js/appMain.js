@@ -292,7 +292,33 @@ App.service('whhHttpService', ['$rootScope', '$http', function ($rootScope, $htt
     return whhHttpService;
 
 }]);
+App.service('whhDateService', ['$rootScope', '$filter', function ($rootScope, $filter) {
 
+    var whhDateService = {};
+
+    whhDateService.dateToString = function(date){
+         return $filter('date')(date, 'yyyy-MM-dd');
+    }
+    whhDateService.dateTimeToString = function(date){
+        return $filter('date')(date, 'yyyy-MM-dd HH:mm:ss');
+    }
+
+
+    whhDateService.StringToDateTime = function(dateStr){
+        var endLogTimeDate = new Date(Date.parse(dateStr.replace(/-/g, "/")));
+        return endLogTimeDate;
+    }
+    whhDateService.StringToDate = function(dateStr){
+        var endLogTimeDate = new Date(Date.parse(dateStr.replace(/-/g, "/")));
+        return endLogTimeDate;
+    }
+
+
+
+
+    return whhDateService;
+
+}]);
 //****************************************用于捕获后台异常的拦截器********************************************
 //创建拦截器 用来捕获后台异常
 App.factory('appExceptionInterceptor', ['$rootScope', function ($rootScope) {

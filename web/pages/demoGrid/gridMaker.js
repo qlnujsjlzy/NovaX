@@ -16,7 +16,7 @@
  *
  */
 
-App.controller('gridMakerMainCtrl', ['$scope', '$state', '$filter', 'whhHttpService', function ($scope, $state, $filter, whhHttpService) {
+App.controller('gridMakerMainCtrl', ['$scope', '$state', '$filter', 'whhHttpService','whhDateService', function ($scope, $state, $filter, whhHttpService,whhDateService) {
 
 
 
@@ -156,8 +156,8 @@ App.controller('gridMakerMainCtrl', ['$scope', '$state', '$filter', 'whhHttpServ
                     $scope.GridMakerColDateCtrlCache.wz_format = $scope.GridMakerColDateCtrlCache.history[$scope.globeColUid["colid"]].wz_format;
                     $scope.GridMakerColDateCtrlCache.wz_editable = $scope.GridMakerColDateCtrlCache.history[$scope.globeColUid["colid"]].wz_editable;
                     $scope.GridMakerColDateCtrlCache.wz_required = $scope.GridMakerColDateCtrlCache.history[$scope.globeColUid["colid"]].wz_required;
-                    $scope.GridMakerColDateCtrlCache.wz_minDate = $scope.GridMakerColDateCtrlCache.history[$scope.globeColUid["colid"]].wz_minDate;
-                    $scope.GridMakerColDateCtrlCache.wz_maxDate = $scope.GridMakerColDateCtrlCache.history[$scope.globeColUid["colid"]].wz_maxDate;
+                    $scope.GridMakerColDateCtrlCache.wz_minDate = whhDateService.StringToDateTime($scope.GridMakerColDateCtrlCache.history[$scope.globeColUid["colid"]].wz_minDate);
+                    $scope.GridMakerColDateCtrlCache.wz_maxDate = whhDateService.StringToDateTime($scope.GridMakerColDateCtrlCache.history[$scope.globeColUid["colid"]].wz_maxDate);
                 }
             }, function error() {
 
@@ -178,8 +178,8 @@ App.controller('gridMakerMainCtrl', ['$scope', '$state', '$filter', 'whhHttpServ
                     $scope.GridMakerColDateTimeCtrlCache.wz_format = $scope.GridMakerColDateTimeCtrlCache.history[$scope.globeColUid["colid"]].wz_format;
                     $scope.GridMakerColDateTimeCtrlCache.wz_editable = $scope.GridMakerColDateTimeCtrlCache.history[$scope.globeColUid["colid"]].wz_editable;
                     $scope.GridMakerColDateTimeCtrlCache.wz_required = $scope.GridMakerColDateTimeCtrlCache.history[$scope.globeColUid["colid"]].wz_required;
-                    $scope.GridMakerColDateTimeCtrlCache.wz_minDate = $scope.GridMakerColDateTimeCtrlCache.history[$scope.globeColUid["colid"]].wz_minDate;
-                    $scope.GridMakerColDateTimeCtrlCache.wz_maxDate = $scope.GridMakerColDateTimeCtrlCache.history[$scope.globeColUid["colid"]].wz_maxDate;
+                    $scope.GridMakerColDateTimeCtrlCache.wz_minDate = whhDateService.StringToDateTime($scope.GridMakerColDateTimeCtrlCache.history[$scope.globeColUid["colid"]].wz_minDate);
+                    $scope.GridMakerColDateTimeCtrlCache.wz_maxDate = whhDateService.StringToDateTime($scope.GridMakerColDateTimeCtrlCache.history[$scope.globeColUid["colid"]].wz_maxDate);
                 }
             }, function error() {
 
@@ -719,17 +719,62 @@ App.controller('gridMakerMainCtrl', ['$scope', '$state', '$filter', 'whhHttpServ
 
         gridInfoPkg.grid_id = $scope.grid_id;//Math.uidFast();
         gridInfoPkg.grid_name = $scope.grid_name;
+
+
         gridInfoPkg.globe_option = jQuery.extend({},$scope.globeOption,true);
+        for(var i=0;i<gridInfoPkg.globe_option.columns.length;i++){
+            if(gridInfoPkg.globe_option.columns[i].editorConfig){
+                if(gridInfoPkg.globe_option.columns[i].editorConfig.editorType==editorTypeEnum.DatePicker){
+                    if(gridInfoPkg.globe_option.columns[i].validation){
+                        if(gridInfoPkg.globe_option.columns[i].validation.min){
+                            gridInfoPkg.globe_option.columns[i].validation.min = whhDateService.dateToString(gridInfoPkg.globe_option.columns[i].validation.min);
+                        }
+                        if(gridInfoPkg.globe_option.columns[i].validation.max){
+                            gridInfoPkg.globe_option.columns[i].validation.max = whhDateService.dateToString(gridInfoPkg.globe_option.columns[i].validation.max);
+                        }
+                    }
+                }
+                if(gridInfoPkg.globe_option.columns[i].editorConfig.editorType==editorTypeEnum.DateTimePicker){  //是日期控件
+                    if(gridInfoPkg.globe_option.columns[i].validation){   //有validation
+                        if(gridInfoPkg.globe_option.columns[i].validation.min){  //有min
+                            gridInfoPkg.globe_option.columns[i].validation.min = whhDateService.dateTimeToString(gridInfoPkg.globe_option.columns[i].validation.min);
+                        }
+                        if(gridInfoPkg.globe_option.columns[i].validation.max){
+                            gridInfoPkg.globe_option.columns[i].validation.max = whhDateService.dateTimeToString(gridInfoPkg.globe_option.columns[i].validation.max);
+                        }
+                    }
+                }
+            }
+        }
+
 
         gridInfoPkg.grid_cache_option = {};
         gridInfoPkg.grid_cache_option.GridMakerSub1CtrlCache = jQuery.extend({},$scope.GridMakerSub1CtrlCache,true);
         delete gridInfoPkg.grid_cache_option.GridMakerSub1CtrlCache.CreatingGridApi;
 
-        gridInfoPkg.grid_cache_option.GridMakerColStringCtrlCache = jQuery.extend({},$scope.GridMakerColStringCtrlCache,true);
+
+
         gridInfoPkg.grid_cache_option.GridMakerColDateCtrlCache = jQuery.extend({},$scope.GridMakerColDateCtrlCache,true);
+        for(var innercolid in gridInfoPkg.grid_cache_option.GridMakerColDateCtrlCache.history ){
+
+            gridInfoPkg.grid_cache_option.GridMakerColDateCtrlCache.history[innercolid].wz_maxDate = whhDateService.dateToString(gridInfoPkg.grid_cache_option.GridMakerColDateCtrlCache.history[innercolid].wz_maxDate);
+            gridInfoPkg.grid_cache_option.GridMakerColDateCtrlCache.history[innercolid].wz_minDate = whhDateService.dateToString(gridInfoPkg.grid_cache_option.GridMakerColDateCtrlCache.history[innercolid].wz_minDate);
+        }
+
+        gridInfoPkg.grid_cache_option.GridMakerColDateTimeCtrlCache = jQuery.extend({},$scope.GridMakerColDateTimeCtrlCache,true);
+        for(var innercolid in gridInfoPkg.grid_cache_option.GridMakerColDateTimeCtrlCache.history ){
+
+            gridInfoPkg.grid_cache_option.GridMakerColDateTimeCtrlCache.history[innercolid].wz_maxDate = whhDateService.dateTimeToString(gridInfoPkg.grid_cache_option.GridMakerColDateTimeCtrlCache.history[innercolid].wz_maxDate);
+            gridInfoPkg.grid_cache_option.GridMakerColDateTimeCtrlCache.history[innercolid].wz_minDate = whhDateService.dateTimeToString(gridInfoPkg.grid_cache_option.GridMakerColDateTimeCtrlCache.history[innercolid].wz_minDate);
+
+        }
+
+
+
+        gridInfoPkg.grid_cache_option.GridMakerColStringCtrlCache = jQuery.extend({},$scope.GridMakerColStringCtrlCache,true);
         gridInfoPkg.grid_cache_option.GridMakerColDropDownListCtrlCache = jQuery.extend({},$scope.GridMakerColDropDownListCtrlCache,true);
         gridInfoPkg.grid_cache_option.GridMakerColComboBoxCtrlCache =jQuery.extend({},$scope.GridMakerColComboBoxCtrlCache,true);
-        gridInfoPkg.grid_cache_option.GridMakerColDateTimeCtrlCache = jQuery.extend({},$scope.GridMakerColDateTimeCtrlCache,true);
+
 
 
         whhHttpService.request("GridDefService/uploadLoadGridDef.json", gridInfoPkg).success(function (data, status, headers, config) {
@@ -762,6 +807,8 @@ App.controller('gridMakerMainCtrl', ['$scope', '$state', '$filter', 'whhHttpServ
             //$scope.GridMakerSub1CtrlCache = grid_cache_option.GridMakerSub1CtrlCache;
 
 
+            //可以直接赋值 但是GridMakerColDateCtrlCache的话 还得做个转换 因为存到数据库再取出来转换成对象 maxDate这种Date类型的数据已经变成字符串了
+            //得在这里手动再转换一下 需要统一标准  date 就是 yyyy-MM-dd   dateTime 就是yyyy-MM-dd HH:mm:ss  在传入后台之前我们就应该转化为字符串 不要让后台参与
             $scope.GridMakerColStringCtrlCache = grid_cache_option.GridMakerColStringCtrlCache;
             $scope.GridMakerColDateCtrlCache = grid_cache_option.GridMakerColDateCtrlCache;
             $scope.GridMakerColDateTimeCtrlCache = grid_cache_option.GridMakerColDateTimeCtrlCache;
