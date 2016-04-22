@@ -30,12 +30,15 @@ App.controller('gridMakerMainCtrl', ['$scope', '$state', '$filter', 'whhHttpServ
     $scope.NewDisable = "";
     $scope.SaveDisable = "disabled";
     $scope.newSaveDisable = "disabled";
-
+    $scope.addItemDisable = "disabled";
+    $scope.deleteSelectedItemsDisable ="disabled";
     function btn_initState() {  //初始态
         $scope.QueryDisable = "";
         $scope.NewDisable = "";
         $scope.SaveDisable = "disabled";
         $scope.newSaveDisable = "disabled";
+        $scope.addItemDisable = "disabled";
+        $scope.deleteSelectedItemsDisable ="disabled";
     }
 
     function btn_alterState() { //修改态
@@ -43,6 +46,8 @@ App.controller('gridMakerMainCtrl', ['$scope', '$state', '$filter', 'whhHttpServ
         $scope.NewDisable = "";
         $scope.SaveDisable = "";
         $scope.newSaveDisable = "";
+        $scope.addItemDisable = "";
+        $scope.deleteSelectedItemsDisable ="";
     }
 
 

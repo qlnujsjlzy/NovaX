@@ -7,99 +7,35 @@
 App.controller('gridPage4Ctrl', ['$scope', '$http', '$timeout', function ($scope, $http, $timeout) {
     $scope.gridOption1 =
     {
-        title:"Grid 勾选框和select事件",
-        pageable: false,
-        height: 300,
-        groupable: true,
-        sortable: true,
-        //scrolling: true,
-        resizable: true,  //resizable  用户可以自己调整列宽
-        reorderable: true, // 用户可以自己拖拽列的顺序
-        selectable: "multiple row", //multiple row 多行    row单行  不写就是不可选
-        selectCheckBox: true, // 是否要显示勾选框
-        //batch: true, // 批量修改
-        //editable: true,// 可修改
-        columns: [{
-            field: "phonename",
-            title: "名称",
-            width: 200,
-
-            type: "string",  //类型 用于schema "string", "number", "boolean", "date". The default is "string".
-            editable: false, //每一列的编辑状态 不写就默认是true了
-            validation: {   // validation
-                required: true
-            }
-        }, {
-            field: "os",
-            title: "os(单列下拉)",
-            width: 240,
-            editorConfig: {
-                editorType: editorTypeEnum.DropDownList,
-                url: "GridDemoService/getOS.json",
-                dataType: "json",
-                paraField: "brand",
-                para: {},
-                textField: "key",
-                valueField: "value"
-            }
-        }, {
-            field: "id",
-            title: "id"
-        }],
+        dataWindowId:"GridDemo4_1",
 
         // 首先就要获取到widgetApi
         getWidgetApi: function (widgetApi) {
             $scope.gridApi1 = widgetApi;
             $scope.grid1 = widgetApi.widget;
+
+            $scope.gridApi1.query({
+                url: "GridDemoService/getPhone.json?phonename=",
+                method: "GET"
+
+            });
         }
     }
 
-
-
     $scope.gridOption2 =
     {
-
-        height: 300,
-        sortable: true,
-        title:"Grid 勾选框和select事件",
-        resizable: true,  //resizable  用户可以自己调整列宽
-        reorderable: true, // 用户可以自己拖拽列的顺序
-        selectable: "multiple row", //multiple row 多行    row单行  不写就是不可选   如果使用了selectCheckBox=true 那么selectable属性会做特殊处理
-        selectCheckBox: false, // 是否要显示勾选框
-        //editable: true,// 可修改
-        columns: [{
-            field: "phonename",
-            title: "名称",
-            width: 200,
-
-            type: "string",  //类型 用于schema "string", "number", "boolean", "date". The default is "string".
-            editable: false, //每一列的编辑状态 不写就默认是true了
-            validation: {   // validation
-                required: true
-            }
-        }, {
-            field: "os",
-            title: "os(单列下拉)",
-            width: 240,
-            editorConfig: {
-                editorType: editorTypeEnum.DropDownList,
-                url: "GridDemoService/getOS.json",
-                dataType: "json",
-                paraField: "brand",
-                para: {},
-                textField: "key",
-                valueField: "value"
-            }
-        }, {
-            field: "id",
-            title: "id"
-        }],
-
-
+        dataWindowId:"GridDemo4_2",
         //获取widgetApi
         getWidgetApi: function (widgetApi) {
             $scope.gridApi2 = widgetApi;
             $scope.grid2 = widgetApi.widget;
+
+
+            $scope.gridApi2.query({
+                url: "GridDemoService/getPhone.json?phonename=",
+                method: "GET"
+
+            });
         }
     }
 
@@ -159,23 +95,6 @@ App.controller('gridPage4Ctrl', ['$scope', '$http', '$timeout', function ($scope
 
 
 
-
-    $scope.query = function (para) {
-        $http({
-            url: "GridDemoService/getPhone.json?phonename=",
-            method: "GET"
-        }).success(function (data, status, header, config) {
-            $scope.gridApi1.setData(data);
-        });
-        $http({
-            url: "GridDemoService/getPhone.json?phonename=",
-            method: "GET"
-        }).success(function (data, status, header, config) {
-            $scope.gridApi2.setData(data);
-        });
-
-    }
-    $scope.query();
 
 
     $scope.deleteSelectedItems1 = function () {

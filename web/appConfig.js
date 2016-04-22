@@ -71,7 +71,106 @@ App.config(function ($stateProvider, $urlRouterProvider) {
             }
         }
 
-    }).state('main.init.gridPage1', {
+    })
+//===============================================================Grid制作工具的路由 start=========================================================================
+// gridMaker是父状态  下级状态是sub1 sub2  sub3
+        .state('main.init.gridMaker', {
+            url: "/gridMaker",
+            views: {
+                "userPage@main": {
+                    templateUrl: "framwork/whhJsFrame/gridMaker/gridMaker.html"
+                }
+            }
+        }).state('main.init.gridMaker.sub1', {
+        url: "/sub1",
+        views: {
+            "gridMakerView": {
+                templateUrl: "framwork/whhJsFrame/gridMaker/gridMaker_sub1.html"
+            }
+        }
+    }).state('main.init.gridMaker.sub2', {
+        url: "/sub2",
+        views: {
+            "gridMakerView": {
+                templateUrl: "framwork/whhJsFrame/gridMaker/gridMaker_sub2.html"
+            }
+        }
+    }).state('main.init.gridMaker.sub3', {
+        url: "/sub3",
+        views: {
+            "gridMakerView@main.init.gridMaker": {   // gridMakerView这个View在main.init.gridMaker这个state下的  不写默认是上一级state
+                templateUrl: "framwork/whhJsFrame/gridMaker/gridMaker_sub3.html"
+            }
+        }
+    }).state('main.init.gridMaker.sub1.editor_string', {
+        url: "/editor_string",
+        views: {
+            "gridMakerColDetailView@main.init.gridMaker": {
+                templateUrl: "framwork/whhJsFrame/gridMaker/gridMaker_ColDetail_Text.html"
+            }
+        }
+    }).state('main.init.gridMaker.sub1.editor_date', {
+        url: "/editor_date",
+        views: {
+            "gridMakerColDetailView@main.init.gridMaker": {
+                templateUrl: "framwork/whhJsFrame/gridMaker/gridMaker_ColDetail_Date.html"
+            }
+        }
+    }).state('main.init.gridMaker.sub1.editor_dropdownlist', {
+        url: "/editor_dropdownlist",
+        views: {
+            "gridMakerColDetailView@main.init.gridMaker": {
+                templateUrl: "framwork/whhJsFrame/gridMaker/gridMaker_ColDetail_DropDownList.html"
+            }
+        }
+    }).state('main.init.gridMaker.sub1.editor_combobox', {
+        url: "/editor_combobox",
+        views: {
+            "gridMakerColDetailView@main.init.gridMaker": {
+                templateUrl: "framwork/whhJsFrame/gridMaker/gridMaker_ColDetail_ComboBox.html"
+            }
+        }
+    }).state('main.init.gridMaker.sub1.editor_datetime', {
+            url: "/editor_datetime",
+            views: {
+                "gridMakerColDetailView@main.init.gridMaker": {
+                    templateUrl: "framwork/whhJsFrame/gridMaker/gridMaker_ColDetail_DateTime.html"
+                }
+            }
+    })
+//===============================================================Grid制作工具的路由 end=========================================================================
+/*
+ Create by wangzheng  2016-04-01
+ 以上部分为框架配置 请勿修改
+
+ */
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+//*===================================================用户页面 Userages==============================================================*
+//*                                                                                                                                 *
+//*                                                                                                                                 *
+//*                                                   用户页面 Userages                                                              *
+//*                                                                                                                                 *
+//*                                                                                                                                 *
+//*===================================================用户页面 Userages==============================================================*
+        .state('main.init.gridPage1', {
         // 很奇怪的是 为什么我载入 main.gridPage1这个state里的view 结果main里面的mainSideBarView也没有了 也得重新载入?
         // 而header啊 footer啊 这些 怎么又不会消失掉的
         // 原因是  这个view只会载入一次的  main.gridPage1这个state里的view  那么父级别的main状态也开始载入 于是mainSideBarView被载入
@@ -145,78 +244,6 @@ App.config(function ($stateProvider, $urlRouterProvider) {
             }
         }
     })
-
-
-    //******************************Grid制作工具的路由 start***********************************
-    // gridMaker是父状态  下级状态是sub1 sub2  sub3
-    .state('main.init.gridMaker', {
-        url: "/gridMaker",
-        views: {
-            "userPage@main": {
-                templateUrl: "pages/demoGrid/gridMaker.html"
-            }
-        }
-    }).state('main.init.gridMaker.sub1', {
-        url: "/sub1",
-        views: {
-            "gridMakerView": {
-                templateUrl: "pages/demoGrid/gridMaker_sub1.html"
-            }
-        }
-    }).state('main.init.gridMaker.sub2', {
-        url: "/sub2",
-        views: {
-            "gridMakerView": {
-                templateUrl: "pages/demoGrid/gridMaker_sub2.html"
-            }
-        }
-    }).state('main.init.gridMaker.sub3', {
-        url: "/sub3",
-        views: {
-            "gridMakerView@main.init.gridMaker": {   // gridMakerView这个View在main.init.gridMaker这个state下的  不写默认是上一级state
-                templateUrl: "pages/demoGrid/gridMaker_sub3.html"
-            }
-        }
-    }).state('main.init.gridMaker.sub1.editor_string', {
-        url: "/editor_string",
-        views: {
-            "gridMakerColDetailView@main.init.gridMaker": {
-                templateUrl: "pages/demoGrid/gridMaker_ColDetail_Text.html"
-            }
-        }
-    }).state('main.init.gridMaker.sub1.editor_date', {
-        url: "/editor_date",
-        views: {
-            "gridMakerColDetailView@main.init.gridMaker": {
-                templateUrl: "pages/demoGrid/gridMaker_ColDetail_Date.html"
-            }
-        }
-    }).state('main.init.gridMaker.sub1.editor_dropdownlist', {
-        url: "/editor_dropdownlist",
-        views: {
-            "gridMakerColDetailView@main.init.gridMaker": {
-                templateUrl: "pages/demoGrid/gridMaker_ColDetail_DropDownList.html"
-            }
-        }
-    }).state('main.init.gridMaker.sub1.editor_combobox', {
-        url: "/editor_combobox",
-        views: {
-            "gridMakerColDetailView@main.init.gridMaker": {
-                templateUrl: "pages/demoGrid/gridMaker_ColDetail_ComboBox.html"
-            }
-        }
-    }).state('main.init.gridMaker.sub1.editor_datetime', {
-        url: "/editor_datetime",
-        views: {
-            "gridMakerColDetailView@main.init.gridMaker": {
-                templateUrl: "pages/demoGrid/gridMaker_ColDetail_DateTime.html"
-            }
-        }
-    })
-    //******************************Grid制作工具的路由 end***********************************
-
-
-
 
 
 });

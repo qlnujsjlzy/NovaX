@@ -288,6 +288,31 @@ App.service('whhHttpService', ['$rootScope', '$http', function ($rootScope, $htt
         })
     }
 
+    whhHttpService.postRequest = function(url,para){
+        //进行http请求
+        return $http({
+            url: url,
+            method: 'POST',
+            data:para,
+            responseType:"json",
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        })
+    }
+
+    whhHttpService.getRequest = function(url,para){
+        //进行http请求
+        return $http({
+            url: url,
+            method: 'GET',
+            data:para,
+            responseType:"json",
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        })
+    }
 
     return whhHttpService;
 

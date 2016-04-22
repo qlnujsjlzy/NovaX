@@ -42,9 +42,9 @@ public class GridDemoService {
     public List<Map> getOS(@RequestParam("para") String brand){
         System.out.println("getOS ");
 
-        try{
-            Thread.sleep(400);// 模拟网络延迟
-        }catch(Exception e){}
+//        try{
+//            Thread.sleep(400);// 模拟网络延迟
+//        }catch(Exception e){}
 
         DataAdapter da = new DataAdapter();
         da.setConnect("portal");
@@ -57,9 +57,9 @@ public class GridDemoService {
     public List<Map> getOS2(@RequestParam("para") String brand){
         System.out.println("getOS ");
 
-        try{
-            Thread.sleep(400);// 模拟网络延迟
-        }catch(Exception e){}
+//        try{
+//            Thread.sleep(400);// 模拟网络延迟
+//        }catch(Exception e){}
 
         DataAdapter da = new DataAdapter();
         da.setConnect("portal");
@@ -74,9 +74,9 @@ public class GridDemoService {
     public List<Map> getCPU(@RequestParam("para") String para){
         System.out.println("getCPU");
 
-        try{
-            Thread.sleep(400);// 模拟网络延迟
-        }catch(Exception e){}
+//        try{
+//            Thread.sleep(400);// 模拟网络延迟
+//        }catch(Exception e){}
 
         DataAdapter da = new DataAdapter();
         da.setConnect("portal");

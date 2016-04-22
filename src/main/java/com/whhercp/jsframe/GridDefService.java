@@ -100,7 +100,7 @@ public class GridDefService {
             da.setConnect("portal");
 
 
-            List<Map> list = da.queryForListBySql("select grid_id,grid_name,grid_cache_option from  js_grid_def where grid_name=#grid_name# limit 1",sqlPara);
+            List<Map> list = da.queryForListBySql("select grid_id,grid_name,grid_cache_option,globe_option from  js_grid_def where grid_name=#grid_name# limit 1",sqlPara);
             if(list.size()<=0){
                 throw new AppException("无法找到name是"+para.get("grid_name")+" 的Grid定义");
             }

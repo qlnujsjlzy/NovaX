@@ -13,12 +13,13 @@ App.directive('ngWhhGrid', function () {//编写grid对应的指令
             option: "=" // 双向绑定过来
         },//e6e6e6
         template: '<div><div class="whhGridMainTitle" style="border-color: dimgrey;border-width: 1px;border-style: solid;border-bottom-width: 0px;"></div><div class="whhGridMainContent"></div></div>',
-        controller: ['$scope', '$http', function ($scope, $http) {
+        controller: ['$scope', '$http','whhHttpService','whhDateService', function ($scope, $http,whhHttpService,whhDateService) {
 
 
             //便捷使用
             $scope.$http = $http;
-
+            $scope.whhHttpService = whhHttpService;
+            $scope.whhDateService = whhDateService;
 
             // 创建暴露给外部的API
             $scope.widgetApi = {};
@@ -70,7 +71,11 @@ App.directive('ngWhhGrid', function () {//编写grid对应的指令
                     headers: { 'needUiBlock': true}, // 加上这一句 在做http请求的时候会提供界面屏蔽
                     data:para["data"]
                 }).success(function (data, status, header, config) {
-                    $scope.gridApi.setData(data);
+                    $scope.widgetApi.setData(data);
+
+                    $scope.widgetApi.modifyCache.insertItems.length = 0;
+                    $scope.widgetApi.modifyCache.deleteItems.length = 0;
+                    $scope.widgetApi.modifyCache.updateItems.length = 0;
                 });
             }
 
@@ -87,6 +92,13 @@ App.directive('ngWhhGrid', function () {//编写grid对应的指令
                 }
                 $scope.widgetApi.dataSource.data(data);
                 $scope.selectedRowItems.length = 0;//要清除选中行
+
+
+                $scope.widgetApi.modifyCache.insertItems.length = 0;
+                $scope.widgetApi.modifyCache.deleteItems.length = 0;
+                $scope.widgetApi.modifyCache.updateItems.length = 0;
+
+
             }
 
             $scope.widgetApi.getData = function (data) {
@@ -269,15 +281,15 @@ App.directive('ngWhhGrid', function () {//编写grid对应的指令
             /**
              * save 的模板方法
              */
-            $scope.widgetApi.save = function (para) {
+            $scope.widgetApi.save = function (url) {
 
                 var test1 = JSON.stringify($scope.widgetApi.modifyCache);
                 var test2 = JSON.stringify($scope.widgetApi.modifyCache.updateItems[0]);
                 var test3 = kendo.stringify($scope.widgetApi.modifyCache.updateItems[0]);
                 var test4 = kendo.stringify($scope.widgetApi.modifyCache);
                 $http({
-                    url: para.url,
-                    method: para.method,
+                    url: url,
+                    method: "POST",
                     data: $scope.widgetApi.modifyCache
                 }).success(function (data, status, header, config) {
                     $scope.widgetApi.dataSource.fetch();
@@ -346,8 +358,7 @@ App.directive('ngWhhGrid', function () {//编写grid对应的指令
         link: function (scope, element, attrs) {
 
 
-            //处理grid的title
-            $(element).find(".whhGridMainTitle").addClass("k-grouping-header").append(scope.option.title);
+
 
             //<div><div class="whhGridMainTitle"></div><div class="whhGridMainContent"></div></div>
             //给当前scope创建一个uid   每个grid有自己唯一的uid 可以保证checkbox的事件传播不会混起来
@@ -411,7 +422,7 @@ App.directive('ngWhhGrid', function () {//编写grid对应的指令
                     for (var i = 0; i < trs.length; i++) {
                         //先全部取消
                         $(trs[i]).addClass("k-state-selected");
-                        var dataItem = grid.dataItem(trs[i]);
+                        var dataItem = scope.grid.dataItem(trs[i]);
                         scope.selectedRowItems.push(dataItem["uid"]);
 
                         //$(trs[i]).find(".whhNgGridSelCheckBox").attr("checked",'checked');
@@ -516,14 +527,29 @@ App.directive('ngWhhGrid', function () {//编写grid对应的指令
                     scope.triggerOnSelect();
                 }
 
-
-
-
-
-
             });
 
 //==========================================================================checkBox end========================================================================================
+
+
+
+//==========================================================================创建grid 和暴露对象==========================================================================================================================================================
+            function createGridAndApi(){
+                // 创建数据源 同时我也会把数据源暴露到scope上 以及外部的option上
+                innerOptions.dataSource =  new kendo.data.DataSource(dataSourceOptions);
+                //创建grid
+                $(element).find(".whhGridMainContent").kendoGrid(innerOptions);
+
+                //向外暴露
+                var grid = scope.grid = $(element).find(".whhGridMainContent").data("kendoGrid");// 把grid对象放到自己的scope上去
+                scope.innerOptions = innerOptions;// 暴露内部options
+
+                scope.widgetApi.dataSource = innerOptions.dataSource;//暴露出真实的dataSource对象
+                scope.widgetApi.widget = scope.grid; // 暴露出grid对象
+                scope.option.getWidgetApi(scope.widgetApi);  // 暴露出widgetApi对象
+
+            }
+//==========================================================================创建grid 和暴露对象 end==========================================================================================================================================================
 
 
 //==========================================================================gridOption start========================================================================================
@@ -532,16 +558,16 @@ App.directive('ngWhhGrid', function () {//编写grid对应的指令
             //我先从数据库拿出outerOptions 然后看本地的outerOptions是否有属性 有的化就覆盖
             var outerOptions = scope.option;
 
-
-
-
-
             // 构造新的options对象 和 dataSource的Option对象
             var innerOptions = scope.innerOptions = {};
             var dataSourceOptions = {};
 
 
             function createInnerOptionAndDataSource(){
+
+                //处理grid的title
+                $(element).find(".whhGridMainTitle").addClass("k-grouping-header").append(scope.option.title);
+
                 //默认禁用分类汇总
                 innerOptions.groupable = false;
                 scope.innerOptions.editorColCache = {};
@@ -746,10 +772,10 @@ App.directive('ngWhhGrid', function () {//编写grid对应的指令
                                                                     return {"para": item[editorType['paraField']]};
                                                                 } else if (editorType["para"]) {
                                                                     //如果有用户自己定义的参数
-                                                                    return editorType["para"];
+                                                                    return {"para":editorType["para"]};
                                                                 } else {
                                                                     //如果用户什么都没写 那么就是默认传整个item
-                                                                    return JSON.stringify(item);
+                                                                    return {"para":""};
                                                                 }
                                                             }
                                                         }
@@ -827,10 +853,10 @@ App.directive('ngWhhGrid', function () {//编写grid对应的指令
                                                                     return {"para": item[editorType2['paraField']]};
                                                                 } else if (editorType2["para"]) {
                                                                     //如果有用户自己定义的参数
-                                                                    return editorType2["para"];
+                                                                    return {"para":editorType2["para"]};
                                                                 } else {
-                                                                    //如果用户什么都没写 那么就是默认传整个item
-                                                                    return JSON.stringify(item);
+                                                                    //如果用户什么都没写 那么就是默认传整个item  先不传整个item 代价太大
+                                                                    return {"para":""};
                                                                 }
                                                             }
                                                         }
@@ -1211,28 +1237,75 @@ App.directive('ngWhhGrid', function () {//编写grid对应的指令
 
             }//////createInnerOptionAndDataSource
 
-            //执行一遍
-            createInnerOptionAndDataSource();
-//==========================================================================创建grid 和暴露对象==========================================================================================================================================================
-
-
-            // 创建数据源 同时我也会把数据源暴露到scope上 以及外部的option上
-            innerOptions.dataSource =  new kendo.data.DataSource(dataSourceOptions);
-            //创建grid
-            $(element).find(".whhGridMainContent").kendoGrid(innerOptions);
-
-
-            //向外暴露
-            var grid = scope.grid = $(element).find(".whhGridMainContent").data("kendoGrid");// 把grid对象放到自己的scope上去
-            scope.innerOptions = innerOptions;// 暴露内部options
-
-            scope.widgetApi.dataSource = innerOptions.dataSource;//暴露出真实的dataSource对象
-            scope.widgetApi.widget = scope.grid; // 暴露出grid对象
-            scope.option.getWidgetApi(scope.widgetApi);  // 暴露出widgetApi对象
 
 
 
-//==========================================================================创建grid 和暴露对象 end==========================================================================================================================================================
+            //需要定义一个属性 叫做 dataWindowId   gridDefName
+            if(scope.option.dataWindowId){
+                //有dataWindowId 说明要使用远程Grid定义
+                //就要开始做Http请求 然后覆盖outerOptions
+                scope.whhHttpService.request("GridDefService/queryGridDef.json", {"grid_name": scope.option.dataWindowId}).success(function (data, status, headers, config) {
+
+
+                    var grid_id = data.grid_id;
+                    var globe_option = JSON.parse(data.globe_option)
+
+                    //先把涉及到的日期字段转成date
+                    for(var i=0;i<globe_option.columns.length;i++){
+                        if(globe_option.columns[i].editorConfig){
+                            if(globe_option.columns[i].editorConfig.editorType==editorTypeEnum.DatePicker){
+                                if(globe_option.columns[i].validation){
+                                    if(globe_option.columns[i].validation.min){
+                                        globe_option.columns[i].validation.min = scope.whhDateService.StringToDate(globe_option.columns[i].validation.min);
+                                    }
+                                    if(globe_option.columns[i].validation.max){
+                                        globe_option.columns[i].validation.max = scope.whhDateService.StringToDate(globe_option.columns[i].validation.max);
+                                    }
+                                }
+                            }
+                            if(globe_option.columns[i].editorConfig.editorType==editorTypeEnum.DateTimePicker){  //是日期控件
+                                if(globe_option.columns[i].validation){   //有validation
+                                    if(globe_option.columns[i].validation.min){  //有min
+                                        globe_option.columns[i].validation.min = scope.whhDateService.StringToDateTime(globe_option.columns[i].validation.min);
+                                    }
+                                    if(globe_option.columns[i].validation.max){
+                                        globe_option.columns[i].validation.max = scope.whhDateService.StringToDateTime(globe_option.columns[i].validation.max);
+                                    }
+                                }
+                            }
+                        }
+                    }
+
+                    //然后用原有的option来覆盖其中的属性 这样用户自己在代码里定义的属性会优先
+                    for(var prop in globe_option){
+
+                        if(outerOptions[prop]){
+
+                        }else{
+                            outerOptions[prop] = globe_option[prop];
+                        }
+                    }
+
+
+                    //构建innerOption
+                    createInnerOptionAndDataSource();
+
+                    //构建Grid UI
+                    createGridAndApi();
+
+                }).error(function (data, status, headers, config) {
+                    alert("出错");
+                });
+                //至此 远程获取的option对象就构建完成
+            }else{
+
+                //构建innerOption
+                createInnerOptionAndDataSource();
+
+                //构建Grid UI
+                createGridAndApi();
+
+            }
 
 
         }
