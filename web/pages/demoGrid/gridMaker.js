@@ -293,15 +293,53 @@ App.controller('gridMakerMainCtrl', ['$scope', '$state', '$filter', 'whhHttpServ
                 return draw.join('');
             }
 
-            var jsonStr = formatJson(JSON.stringify($scope.globeOption, null, 4),false);
+            var tempObj = jQuery.extend({},$scope.globeOption,true);
+            tempObj.info="构建GridOption的中间层json 会被用于转换成构建WhhGrid所需的真正的option对象";
+            tempObj.infoTime = "构建时间: "+whhDateService.dateTimeToString(new Date());
+
+            var jsonStr = formatJson(JSON.stringify(tempObj, null, 4),false);
+            // jsonStr = '{"info":"构建GridOption的中间层json 会被用于转换成构建WhhGrid所需的真正的option对象","infoTime":"构建时间: '+whhDateService.dateTimeToString(new Date())+'}';
+            //+jsonStr;
+            //
+            //"/** "+
+            // "* 构建GridOption的中间层json 会被用于转换成构建WhhGrid所需的真正的option对象 "+
+            // "* 构建时间: "+whhDateService.dateTimeToString(new Date())+
+            // "*/ "+
+            //+jsonStr;
 
 
 
             var editor = ace.edit("sub2editor");
-            editor.setTheme("ace/theme/twilight");
+            editor.setTheme("ace/theme/monokai");//twilight tomorrow_night_bright
             editor.setReadOnly(true);
-            editor.session.setMode("ace/mode/javascript");
+            editor.setFontSize(13);
+            editor.session.setMode("ace/mode/json");
             editor.setValue(jsonStr);
+
+
+
+        //    theme: {
+        //         clouds:           "Clouds",
+        //        clouds_midnight:  "Clouds Midnight",
+        //        cobalt:           "Cobalt",
+        //        crimson_editor:   "Crimson Editor",
+        //        dawn:             "Dawn",
+        //        eclipse:          "Eclipse",
+        //        idle_fingers:     "Idle Fingers",
+        //        kr_theme:         "Kr Theme",
+        //        merbivore:        "Merbivore",
+        //        merbivore_soft:   "Merbivore Soft",
+        //        mono_industrial:  "Mono Industrial",
+        //        monokai:          "Monokai",
+        //        pastel_on_dark:   "Pastel On Dark",
+        //        solarized_dark:   "Solarized Dark",
+        //        solarized_light:  "Solarized Light",
+        //        textmate:         "Textmate",
+        //        twilight:         "Twilight",
+        //        vibrant_ink:      "Vibrant Ink"
+        //}
+
+
 
         },function error(){});
     }
