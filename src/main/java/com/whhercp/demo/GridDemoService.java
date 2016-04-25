@@ -88,15 +88,18 @@ public class GridDemoService {
 
 
     //http://localhost:8080/webDemo/GridDemoService/getPhone.json
-    @RequestMapping(value = "/getPhone" ,method = RequestMethod.GET)
+    @RequestMapping(value = "/getPhone" ,method = RequestMethod.POST)
     @ResponseBody
-    public List<Map> getPhone(@RequestParam("phonename") String phonename){
+    public List<Map> getPhone(@RequestBody Map para){ //@RequestParam("phonename") String phonename
         System.out.println("getOS ");
 
 //        try{
 //            Thread.sleep(2000);// 模拟网络延迟
 //        }catch(Exception e){}
 
+
+
+        String phonename = para.get("phonename")==null ? "":para.get("phonename").toString();
 
 
         DataAdapter da = new DataAdapter();
@@ -129,8 +132,8 @@ public class GridDemoService {
 
     @RequestMapping(value = "/getPhonePost" ,method = RequestMethod.POST)
     @ResponseBody
-    public List<Map> getPhonePost(@RequestParam("phonename") String phonename){
-        return getPhone(phonename);
+    public List<Map> getPhonePost(@RequestBody Map para){
+            return getPhone(para);
     }
 
 

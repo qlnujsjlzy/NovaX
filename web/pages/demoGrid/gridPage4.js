@@ -15,9 +15,8 @@ App.controller('gridPage4Ctrl', ['$scope', '$http', '$timeout', function ($scope
             $scope.grid1 = widgetApi.widget;
 
             $scope.gridApi1.query({
-                url: "GridDemoService/getPhone.json?phonename=",
-                method: "GET"
-
+                url: "GridDemoService/getPhone.json",
+                data:{"phonename":$scope.phonename}
             });
         }
     }
@@ -32,9 +31,8 @@ App.controller('gridPage4Ctrl', ['$scope', '$http', '$timeout', function ($scope
 
 
             $scope.gridApi2.query({
-                url: "GridDemoService/getPhone.json?phonename=",
-                method: "GET"
-
+                url: "GridDemoService/getPhone.json",
+                data:{"phonename":$scope.phonename}
             });
         }
     }
@@ -64,8 +62,6 @@ App.controller('gridPage4Ctrl', ['$scope', '$http', '$timeout', function ($scope
         );
 
 
-
-
         //给第二个grid绑定事件
         identifier2 = $scope.gridApi2.bindEvent('Select',
             function (items) {  //选中行触发的事件 可以写多个 会顺序执行   参数就是选中行数组
@@ -79,7 +75,6 @@ App.controller('gridPage4Ctrl', ['$scope', '$http', '$timeout', function ($scope
                 $("#changes").html(info);
             }
         );
-
 
         $scope.ifHandler = "已绑定OnSelect事件";
     }

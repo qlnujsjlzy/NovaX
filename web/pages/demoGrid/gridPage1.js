@@ -16,8 +16,8 @@ App.controller('gridPage1Ctrl', ['$scope', '$http', '$timeout', function ($scope
             $scope.grid = widgetApi.widget;
 
             $scope.gridApi.query({
-                url: "GridDemoService/getPhone.json?phonename=",
-                method: "GET"
+                url: "GridDemoService/getPhone.json",
+                data:{"phonename":$scope.phonename}
             });
         }
 
@@ -63,7 +63,8 @@ App.controller('gridPage1Ctrl', ['$scope', '$http', '$timeout', function ($scope
         //        paraField: "brand",
         //        textField: "detail",   // 下拉控件的key
         //        valueField: "detail",  // 下拉控件的value
-        //        columns: [
+        //        columns:
+        //          [
         //            {
         //                field: "producer",
         //                title: "厂商",
@@ -126,8 +127,8 @@ App.controller('gridPage1Ctrl', ['$scope', '$http', '$timeout', function ($scope
             $scope.phonename = "";
         }
         $scope.gridApi.query({
-            url: "GridDemoService/getPhone.json?phonename=" + $scope.phonename,
-            method: "GET"
+            url: "GridDemoService/getPhone.json",
+            data:{"phonename":$scope.phonename}
         });
     }
 

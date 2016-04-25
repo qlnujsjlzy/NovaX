@@ -10,7 +10,13 @@
  * 恢复属性 包括主界面属性的恢复 这个在主界面grid构建完成后才开始做      然后是各个editor界面的恢复 这个基于各个界面的cache对象里的history来恢复
  * 主界面恢复 发生在切换会主界面,以及查询grid定义的时候,editor界面的恢复 在点击了具体的某一行col定义的时候 根据colid 从history对象里面取出来
  *
- * 123456
+ * 最后是构建对象  和  还原对象
+ * 构建对象是把界面属性的cache 构建成一个gridOption 要把combobox等等的columns属性json字符串转为js对象
+ * 存储对象 是把构建好的gridOption转成json字符串存储起来  以及把各个cache也转成字符串存储起来
+ * 恢复对象 就是从数据库中取出各个cache对象的字符串 转会对象
+ *
+ * 这里的问题在于 combobox的columns定义 和  data定义 这些 是json字符串 如果格式不对 比如什么换行符之类  就会导致转换错误
+ *
  *
  *
  *
@@ -23,6 +29,16 @@ App.controller('gridMakerMainCtrl', ['$scope', '$state', '$filter', 'whhHttpServ
 
 
 //====================================================缓存定义 start=================================================================
+
+
+    //常量
+    $scope.comboBoxDataInitStr = '[{"username":"sample","address":"hangzhou","age":25}]';
+    $scope.comboBoxParaInitStr = '{"username":"sample"}';
+    $scope.comboBoxColumnsInitStr = '[{"field":"sample", "title":"sample", "width":30}]';
+
+    $scope.dropDownDataInitStr = '[{"text":"hello","value":"world"}]';
+    $scope.dropDownParaInitStr = '{"username":"sample"}';
+
 
 
     //全局按钮状态
@@ -105,10 +121,15 @@ App.controller('gridMakerMainCtrl', ['$scope', '$state', '$filter', 'whhHttpServ
 
     //缓存 存放这个设置界面最原始的信息
     $scope.GridMakerColDropDownListCtrlCache = {
+        editor_wz_data:{},
+        editor_wz_para:{},
         history: {"colid": {}}
     };
     //缓存 存放这个设置界面最原始的信息
     $scope.GridMakerColComboBoxCtrlCache = {
+        editor_wz_data:{},
+        editor_wz_columns:{},
+        editor_wz_para:{},
         history: {"colid": {}}
     };
     //缓存 存放这个设置界面最原始的信息
@@ -124,6 +145,120 @@ App.controller('gridMakerMainCtrl', ['$scope', '$state', '$filter', 'whhHttpServ
         //$scope.$broadcast('createOptionNow', arg);
         createOption(arg);
     });
+    $scope.$on('$viewContentLoaded', function (event, viewName) {
+
+
+        //$viewContentLoaded
+        //Fired once the view is loaded, after the DOM is rendered.
+        // 这里 这个DOM已经渲染好了的 为什么还是无法获取到div的jquery对象?
+        // 事实证明 执行到这里的时候 只是gridMakerColDetailView 这个view的框子准备好了 里面的内容并没有出来
+        // 比如这个view的模版里有一个div 这个div此时并没有加载出来的 所以是获取不到的!
+       //alert(viewName);
+        if( viewName=="gridMakerColDetailView@main.init.gridMaker"){
+            if($state.is('main.init.gridMaker.sub1.editor_combobox')){
+                $scope.GridMakerColComboBoxCtrlCache.editor_wz_data = ace.edit("wz_data");
+                $scope.GridMakerColComboBoxCtrlCache.editor_wz_data.setTheme("ace/theme/monokai");//twilight tomorrow_night_bright
+                $scope.GridMakerColComboBoxCtrlCache.editor_wz_data.setReadOnly(false);
+                $scope.GridMakerColComboBoxCtrlCache.editor_wz_data.setFontSize(12);
+                $scope.GridMakerColComboBoxCtrlCache.editor_wz_data.renderer.setShowGutter(false);
+                $scope.GridMakerColComboBoxCtrlCache.editor_wz_data.session.setMode("ace/mode/json");
+                $scope.GridMakerColComboBoxCtrlCache.editor_wz_data.setValue($scope.comboBoxDataInitStr);
+
+
+                $scope.GridMakerColComboBoxCtrlCache.editor_wz_columns = ace.edit("wz_columns");
+                $scope.GridMakerColComboBoxCtrlCache.editor_wz_columns.setTheme("ace/theme/monokai");//twilight tomorrow_night_bright
+                $scope.GridMakerColComboBoxCtrlCache.editor_wz_columns.setReadOnly(false);
+                $scope.GridMakerColComboBoxCtrlCache.editor_wz_columns.setFontSize(12);
+                $scope.GridMakerColComboBoxCtrlCache.editor_wz_columns.renderer.setShowGutter(false);
+                $scope.GridMakerColComboBoxCtrlCache.editor_wz_columns.session.setMode("ace/mode/json");
+                $scope.GridMakerColComboBoxCtrlCache.editor_wz_columns.setValue($scope.comboBoxColumnsInitStr);
+
+                $scope.GridMakerColComboBoxCtrlCache.editor_wz_para = ace.edit("wz_para");
+                $scope.GridMakerColComboBoxCtrlCache.editor_wz_para.setTheme("ace/theme/monokai");//twilight tomorrow_night_bright
+                $scope.GridMakerColComboBoxCtrlCache.editor_wz_para.setReadOnly(false);
+                $scope.GridMakerColComboBoxCtrlCache.editor_wz_para.setFontSize(12);
+                $scope.GridMakerColComboBoxCtrlCache.editor_wz_para.renderer.setShowGutter(false);
+                $scope.GridMakerColComboBoxCtrlCache.editor_wz_para.session.setMode("ace/mode/json");
+                $scope.GridMakerColComboBoxCtrlCache.editor_wz_para.setValue($scope.comboBoxParaInitStr);
+            }
+            if($state.is('main.init.gridMaker.sub1.editor_dropdownlist')){
+                $scope.GridMakerColDropDownListCtrlCache.editor_wz_data = ace.edit("wz_data");
+                $scope.GridMakerColDropDownListCtrlCache.editor_wz_data.setTheme("ace/theme/monokai");//twilight tomorrow_night_bright
+                $scope.GridMakerColDropDownListCtrlCache.editor_wz_data.setReadOnly(false);
+                $scope.GridMakerColDropDownListCtrlCache.editor_wz_data.setFontSize(12);
+                $scope.GridMakerColDropDownListCtrlCache.editor_wz_data.renderer.setShowGutter(false);
+                $scope.GridMakerColDropDownListCtrlCache.editor_wz_data.session.setMode("ace/mode/json");
+                $scope.GridMakerColDropDownListCtrlCache.editor_wz_data.setValue($scope.dropDownDataInitStr);
+
+                $scope.GridMakerColDropDownListCtrlCache.editor_wz_para = ace.edit("wz_para");
+                $scope.GridMakerColDropDownListCtrlCache.editor_wz_para.setTheme("ace/theme/monokai");//twilight tomorrow_night_bright
+                $scope.GridMakerColDropDownListCtrlCache.editor_wz_para.setReadOnly(false);
+                $scope.GridMakerColDropDownListCtrlCache.editor_wz_para.setFontSize(12);
+                $scope.GridMakerColDropDownListCtrlCache.editor_wz_para.renderer.setShowGutter(false);
+                $scope.GridMakerColDropDownListCtrlCache.editor_wz_para.session.setMode("ace/mode/json");
+                $scope.GridMakerColDropDownListCtrlCache.editor_wz_para.setValue($scope.dropDownParaInitStr);
+            }
+        }
+
+        if( viewName=="gridMakerView@main.init.gridMaker"){
+            if($state.is('main.init.gridMaker.sub2')){
+                var formatJson = function (txt,compress/*是否为压缩模式*/){/* 格式化JSON源码(对象转换为JSON文本) */
+                    var indentChar = '    ';
+                    if(/^\s*$/.test(txt)){
+                        alert('数据为空,无法格式化! ');
+                        return;
+                    }
+                    try{var data=eval('('+txt+')');}
+                    catch(e){
+                        alert('数据源语法错误,格式化失败! 错误信息: '+e.description,'err');
+                        return;
+                    };
+                    var draw=[],last=false,This=this,line=compress?'':'\n',nodeCount=0,maxDepth=0;
+
+                    var notify=function(name,value,isLast,indent/*缩进*/,formObj){
+                        nodeCount++;/*节点计数*/
+                        for (var i=0,tab='';i<indent;i++ )tab+=indentChar;/* 缩进HTML */
+                        tab=compress?'':tab;/*压缩模式忽略缩进*/
+                        maxDepth=++indent;/*缩进递增并记录*/
+                        if(value&&value.constructor==Array){/*处理数组*/
+                            draw.push(tab+(formObj?('"'+name+'":'):'')+'['+line);/*缩进'[' 然后换行*/
+                            for (var i=0;i<value.length;i++)
+                                notify(i,value[i],i==value.length-1,indent,false);
+                            draw.push(tab+']'+(isLast?line:(','+line)));/*缩进']'换行,若非尾元素则添加逗号*/
+                        }else   if(value&&typeof value=='object'){/*处理对象*/
+                            draw.push(tab+(formObj?('"'+name+'":'):'')+'{'+line);/*缩进'{' 然后换行*/
+                            var len=0,i=0;
+                            for(var key in value)len++;
+                            for(var key in value)notify(key,value[key],++i==len,indent,true);
+                            draw.push(tab+'}'+(isLast?line:(','+line)));/*缩进'}'换行,若非尾元素则添加逗号*/
+                        }else{
+                            if(typeof value=='string')value='"'+value+'"';
+                            draw.push(tab+(formObj?('"'+name+'":'):'')+value+(isLast?'':',')+line);
+                        };
+                    };
+                    var isLast=true,indent=0;
+                    notify('',data,isLast,indent,false);
+                    return draw.join('');
+                }
+
+                var tempObj = jQuery.extend({},$scope.globeOption,true);
+                tempObj.info="构建GridOption的中间层json 会被用于转换成构建WhhGrid所需的真正的option对象";
+                tempObj.infoTime = "构建时间: "+whhDateService.dateTimeToString(new Date());
+
+                var jsonStr = formatJson(JSON.stringify(tempObj, null, 4),false);
+
+                var editor = ace.edit("sub2editor");
+                editor.setTheme("ace/theme/monokai");//twilight tomorrow_night_bright
+                editor.setReadOnly(true);
+                editor.setFontSize(13);
+                editor.session.setMode("ace/mode/json");
+                editor.setValue(jsonStr);
+            }
+        }
+
+    });
+
+
 
     $scope.$on('restore', function (event, columnEditor) {
         //restore(arg);
@@ -198,6 +333,7 @@ App.controller('gridMakerMainCtrl', ['$scope', '$state', '$filter', 'whhHttpServ
                 $scope.GridMakerColComboBoxCtrlCache.history[$scope.globeColUid["colid"]] = copy;
             }
             $state.go('main.init.gridMaker.sub1.editor_combobox').then(function success() {
+                //alert("state.go('main.init.gridMaker.sub1.editor_combobox')");
                 if ($scope.GridMakerColComboBoxCtrlCache.history[$scope.globeColUid["colid"]]) {
                     $scope.GridMakerColComboBoxCtrlCache.wz_hidden = $scope.GridMakerColComboBoxCtrlCache.history[$scope.globeColUid["colid"]].wz_hidden;
                     $scope.GridMakerColComboBoxCtrlCache.wz_width = $scope.GridMakerColComboBoxCtrlCache.history[$scope.globeColUid["colid"]].wz_width;
@@ -215,6 +351,17 @@ App.controller('gridMakerMainCtrl', ['$scope', '$state', '$filter', 'whhHttpServ
                     $scope.GridMakerColComboBoxCtrlCache.wz_valueField = $scope.GridMakerColComboBoxCtrlCache.history[$scope.globeColUid["colid"]].wz_valueField;
                     $scope.GridMakerColComboBoxCtrlCache.wz_columns = $scope.GridMakerColComboBoxCtrlCache.history[$scope.globeColUid["colid"]].wz_columns;
 
+
+                    //复原代码编辑框
+                    if($scope.GridMakerColComboBoxCtrlCache.wz_data!=$scope.comboBoxDataInitStr   && $scope.GridMakerColComboBoxCtrlCache.wz_data !=""){
+                        $scope.GridMakerColComboBoxCtrlCache.editor_wz_data.setValue($scope.GridMakerColComboBoxCtrlCache.wz_data);
+                    }
+                    if($scope.GridMakerColComboBoxCtrlCache.wz_columns!=$scope.comboBoxColumnsInitStr   && $scope.GridMakerColComboBoxCtrlCache.wz_columns !=""){
+                        $scope.GridMakerColComboBoxCtrlCache.editor_wz_columns.setValue($scope.GridMakerColComboBoxCtrlCache.wz_columns);
+                    }
+                    if($scope.GridMakerColComboBoxCtrlCache.wz_para!=$scope.comboBoxParaInitStr   && $scope.GridMakerColComboBoxCtrlCache.wz_para !=""){
+                        $scope.GridMakerColComboBoxCtrlCache.editor_wz_para.setValue($scope.GridMakerColComboBoxCtrlCache.wz_para);
+                    }
                 }
             }, function error() {
 
@@ -238,6 +385,14 @@ App.controller('gridMakerMainCtrl', ['$scope', '$state', '$filter', 'whhHttpServ
                     $scope.GridMakerColDropDownListCtrlCache.wz_paraField = $scope.GridMakerColDropDownListCtrlCache.history[$scope.globeColUid["colid"]].wz_paraField;
                     $scope.GridMakerColDropDownListCtrlCache.wz_para = $scope.GridMakerColDropDownListCtrlCache.history[$scope.globeColUid["colid"]].wz_para;
                     $scope.GridMakerColDropDownListCtrlCache.wz_data = $scope.GridMakerColDropDownListCtrlCache.history[$scope.globeColUid["colid"]].wz_data;
+
+                    if($scope.GridMakerColDropDownListCtrlCache.wz_data!=$scope.dropDownDataInitStr && $scope.GridMakerColDropDownListCtrlCache.wz_data !=""){
+                        $scope.GridMakerColDropDownListCtrlCache.editor_wz_data.setValue($scope.GridMakerColDropDownListCtrlCache.wz_data);
+                    }
+                    if($scope.GridMakerColDropDownListCtrlCache.wz_para!=$scope.dropDownParaInitStr && $scope.GridMakerColDropDownListCtrlCache.wz_para !=""){
+                        $scope.GridMakerColDropDownListCtrlCache.editor_wz_para.setValue($scope.GridMakerColDropDownListCtrlCache.wz_para);
+                    }
+
                 }
             }, function error() {
 
@@ -259,90 +414,8 @@ App.controller('gridMakerMainCtrl', ['$scope', '$state', '$filter', 'whhHttpServ
         createOption();
         $state.go('main.init.gridMaker.sub2').then(function success(){
 
-            var formatJson = function (txt,compress/*是否为压缩模式*/){/* 格式化JSON源码(对象转换为JSON文本) */
-                var indentChar = '    ';
-                if(/^\s*$/.test(txt)){
-                    alert('数据为空,无法格式化! ');
-                    return;
-                }
-                try{var data=eval('('+txt+')');}
-                catch(e){
-                    alert('数据源语法错误,格式化失败! 错误信息: '+e.description,'err');
-                    return;
-                };
-                var draw=[],last=false,This=this,line=compress?'':'\n',nodeCount=0,maxDepth=0;
-
-                var notify=function(name,value,isLast,indent/*缩进*/,formObj){
-                    nodeCount++;/*节点计数*/
-                    for (var i=0,tab='';i<indent;i++ )tab+=indentChar;/* 缩进HTML */
-                    tab=compress?'':tab;/*压缩模式忽略缩进*/
-                    maxDepth=++indent;/*缩进递增并记录*/
-                    if(value&&value.constructor==Array){/*处理数组*/
-                        draw.push(tab+(formObj?('"'+name+'":'):'')+'['+line);/*缩进'[' 然后换行*/
-                        for (var i=0;i<value.length;i++)
-                            notify(i,value[i],i==value.length-1,indent,false);
-                        draw.push(tab+']'+(isLast?line:(','+line)));/*缩进']'换行,若非尾元素则添加逗号*/
-                    }else   if(value&&typeof value=='object'){/*处理对象*/
-                        draw.push(tab+(formObj?('"'+name+'":'):'')+'{'+line);/*缩进'{' 然后换行*/
-                        var len=0,i=0;
-                        for(var key in value)len++;
-                        for(var key in value)notify(key,value[key],++i==len,indent,true);
-                        draw.push(tab+'}'+(isLast?line:(','+line)));/*缩进'}'换行,若非尾元素则添加逗号*/
-                    }else{
-                        if(typeof value=='string')value='"'+value+'"';
-                        draw.push(tab+(formObj?('"'+name+'":'):'')+value+(isLast?'':',')+line);
-                    };
-                };
-                var isLast=true,indent=0;
-                notify('',data,isLast,indent,false);
-                return draw.join('');
-            }
-
-            var tempObj = jQuery.extend({},$scope.globeOption,true);
-            tempObj.info="构建GridOption的中间层json 会被用于转换成构建WhhGrid所需的真正的option对象";
-            tempObj.infoTime = "构建时间: "+whhDateService.dateTimeToString(new Date());
-
-            var jsonStr = formatJson(JSON.stringify(tempObj, null, 4),false);
-            // jsonStr = '{"info":"构建GridOption的中间层json 会被用于转换成构建WhhGrid所需的真正的option对象","infoTime":"构建时间: '+whhDateService.dateTimeToString(new Date())+'}';
-            //+jsonStr;
-            //
-            //"/** "+
-            // "* 构建GridOption的中间层json 会被用于转换成构建WhhGrid所需的真正的option对象 "+
-            // "* 构建时间: "+whhDateService.dateTimeToString(new Date())+
-            // "*/ "+
-            //+jsonStr;
 
 
-
-            var editor = ace.edit("sub2editor");
-            editor.setTheme("ace/theme/monokai");//twilight tomorrow_night_bright
-            editor.setReadOnly(true);
-            editor.setFontSize(13);
-            editor.session.setMode("ace/mode/json");
-            editor.setValue(jsonStr);
-
-
-
-        //    theme: {
-        //         clouds:           "Clouds",
-        //        clouds_midnight:  "Clouds Midnight",
-        //        cobalt:           "Cobalt",
-        //        crimson_editor:   "Crimson Editor",
-        //        dawn:             "Dawn",
-        //        eclipse:          "Eclipse",
-        //        idle_fingers:     "Idle Fingers",
-        //        kr_theme:         "Kr Theme",
-        //        merbivore:        "Merbivore",
-        //        merbivore_soft:   "Merbivore Soft",
-        //        mono_industrial:  "Mono Industrial",
-        //        monokai:          "Monokai",
-        //        pastel_on_dark:   "Pastel On Dark",
-        //        solarized_dark:   "Solarized Dark",
-        //        solarized_light:  "Solarized Light",
-        //        textmate:         "Textmate",
-        //        twilight:         "Twilight",
-        //        vibrant_ink:      "Vibrant Ink"
-        //}
 
 
 
@@ -683,22 +756,28 @@ App.controller('gridMakerMainCtrl', ['$scope', '$state', '$filter', 'whhHttpServ
                     }
                 }
 
-                if (cache["wz_para"] && cache["wz_para"].replace(/(^\s*)|(\s*$)/g, "") !== "") {
-                    //做json字符串到json对象的转换
-                    $scope.globeOption.columns[i].editorConfig.para = JSON.parse(cache["wz_para"])
+                try{
+                    if (cache["wz_para"] && cache["wz_para"].replace(/(^\s*)|(\s*$)/g, "") !== "") {
+                        //做json字符串到json对象的转换
+                        $scope.globeOption.columns[i].editorConfig.para = JSON.parse(cache["wz_para"])
+                    }
+
+                    if (cache["wz_data"] && cache["wz_data"].replace(/(^\s*)|(\s*$)/g, "") !== "") {
+                        //做json字符串到json对象的转换
+                        $scope.globeOption.columns[i].editorConfig.data = JSON.parse(cache["wz_data"])
+                    }
+                }catch (err){
+                    alert("参数 和 本地数据 json转换出错");
+                    return;
                 }
+
+
+
                 // 如果要用整行做参数 就删掉para 和 paraField
                 if (cache["wz_para_item"]) {
                     delete $scope.globeOption.columns[i].editorConfig.para;
                     delete $scope.globeOption.columns[i].editorConfig.paraField;
                 }
-
-
-                if (cache["wz_data"] && cache["wz_data"].replace(/(^\s*)|(\s*$)/g, "") !== "") {
-                    //做json字符串到json对象的转换
-                    $scope.globeOption.columns[i].editorConfig.data = JSON.parse(cache["wz_data"])
-                }
-
             }
             //=======================================DropDownList界面end=======================================
 
@@ -750,24 +829,34 @@ App.controller('gridMakerMainCtrl', ['$scope', '$state', '$filter', 'whhHttpServ
                     }
                 }
 
-                if (cache["wz_para"] && cache["wz_para"].replace(/(^\s*)|(\s*$)/g, "") !== "") {
-                    //做json字符串到json对象的转换
-                    $scope.globeOption.columns[i].editorConfig.para = JSON.parse(cache["wz_para"])
+
+
+                try{
+                    if (cache["wz_para"] && cache["wz_para"].replace(/(^\s*)|(\s*$)/g, "") !== "") {
+                        //做json字符串到json对象的转换
+                        $scope.globeOption.columns[i].editorConfig.para = JSON.parse(cache["wz_para"])
+                    }
+                    if (cache["wz_data"] && cache["wz_data"].replace(/(^\s*)|(\s*$)/g, "") !== "") {
+                        //做json字符串到json对象的转换
+                        $scope.globeOption.columns[i].editorConfig.data = JSON.parse(cache["wz_data"])
+                    }
+                    if (cache["wz_columns"] && cache["wz_columns"].replace(/(^\s*)|(\s*$)/g, "") !== "") {
+                        //做json字符串到json对象的转换
+                        $scope.globeOption.columns[i].editorConfig.columns = JSON.parse(cache["wz_columns"])
+                    }
+                }catch (err){
+                    alert("参数 columns 或者 data 的json转换出错")
+                    return;
                 }
+
+
                 // 如果要用整行做参数 就删掉para 和 paraField
                 if (cache["wz_para_item"]) {
                     delete $scope.globeOption.columns[i].editorConfig.para;
                     delete $scope.globeOption.columns[i].editorConfig.paraField;
                 }
 
-                if (cache["wz_data"] && cache["wz_data"].replace(/(^\s*)|(\s*$)/g, "") !== "") {
-                    //做json字符串到json对象的转换
-                    $scope.globeOption.columns[i].editorConfig.data = JSON.parse(cache["wz_data"])
-                }
-                if (cache["wz_columns"] && cache["wz_columns"].replace(/(^\s*)|(\s*$)/g, "") !== "") {
-                    //做json字符串到json对象的转换
-                    $scope.globeOption.columns[i].editorConfig.columns = JSON.parse(cache["wz_columns"])
-                }
+
 
             }
             //=======================================ComboBox界面end===========================================
@@ -877,9 +966,29 @@ App.controller('gridMakerMainCtrl', ['$scope', '$state', '$filter', 'whhHttpServ
 
 
         gridInfoPkg.grid_cache_option.GridMakerColStringCtrlCache = jQuery.extend({},$scope.GridMakerColStringCtrlCache,true);
-        gridInfoPkg.grid_cache_option.GridMakerColDropDownListCtrlCache = jQuery.extend({},$scope.GridMakerColDropDownListCtrlCache,true);
-        gridInfoPkg.grid_cache_option.GridMakerColComboBoxCtrlCache =jQuery.extend({},$scope.GridMakerColComboBoxCtrlCache,true);
 
+        //这种有大段json字符串的 还带各种换行的 存回去再取出来会有问题 格式会有问题的
+        gridInfoPkg.grid_cache_option.GridMakerColDropDownListCtrlCache = jQuery.extend({},$scope.GridMakerColDropDownListCtrlCache,true);
+        //for(var innercolid in gridInfoPkg.grid_cache_option.GridMakerColDropDownListCtrlCache.history ){
+        //    gridInfoPkg.grid_cache_option.GridMakerColDropDownListCtrlCache.history[innercolid].wz_para =  JSON.parse(gridInfoPkg.grid_cache_option.GridMakerColDropDownListCtrlCache.history[innercolid].wz_para);
+        //    gridInfoPkg.grid_cache_option.GridMakerColDropDownListCtrlCache.history[innercolid].wz_data =  JSON.parse(gridInfoPkg.grid_cache_option.GridMakerColDropDownListCtrlCache.history[innercolid].wz_data);
+        //}
+
+
+        gridInfoPkg.grid_cache_option.GridMakerColComboBoxCtrlCache =jQuery.extend({},$scope.GridMakerColComboBoxCtrlCache,true);
+        //for(var innercolid in gridInfoPkg.grid_cache_option.GridMakerColComboBoxCtrlCache.history ){
+        //    gridInfoPkg.grid_cache_option.GridMakerColComboBoxCtrlCache.history[innercolid].wz_para =  JSON.parse(gridInfoPkg.grid_cache_option.GridMakerColComboBoxCtrlCache.history[innercolid].wz_para);
+        //    gridInfoPkg.grid_cache_option.GridMakerColComboBoxCtrlCache.history[innercolid].wz_data =  JSON.parse(gridInfoPkg.grid_cache_option.GridMakerColComboBoxCtrlCache.history[innercolid].wz_data);
+        //    gridInfoPkg.grid_cache_option.GridMakerColComboBoxCtrlCache.history[innercolid].wz_columns =  JSON.parse(gridInfoPkg.grid_cache_option.GridMakerColComboBoxCtrlCache.history[innercolid].wz_columns);
+        //}
+
+
+        delete gridInfoPkg.grid_cache_option.GridMakerColComboBoxCtrlCache.editor_wz_columns;
+        delete gridInfoPkg.grid_cache_option.GridMakerColComboBoxCtrlCache.editor_wz_data;
+        delete gridInfoPkg.grid_cache_option.GridMakerColComboBoxCtrlCache.editor_wz_para;
+
+        delete gridInfoPkg.grid_cache_option.GridMakerColDropDownListCtrlCache.editor_wz_data;
+        delete gridInfoPkg.grid_cache_option.GridMakerColDropDownListCtrlCache.editor_wz_para;
 
 
         whhHttpService.request("GridDefService/uploadLoadGridDef.json", gridInfoPkg).success(function (data, status, headers, config) {
@@ -895,13 +1004,19 @@ App.controller('gridMakerMainCtrl', ['$scope', '$state', '$filter', 'whhHttpServ
 
         whhHttpService.request("GridDefService/queryGridDef.json", {"grid_name": $scope.grid_name}).success(function (data, status, headers, config) {
 
-            btn_alterState();
+
             $scope.grid_id = data.grid_id;
-            //$scope.grid_id=data.grid_id;
 
-            var grid_cache_option = JSON.parse(data.grid_cache_option)
-            console.log(grid_cache_option);
 
+            try{
+                var grid_cache_option = JSON.parse(data.grid_cache_option)
+            }catch(err){
+                alert("json转换出错");
+                return;
+            }
+
+            //改变界面按钮的状态
+            btn_alterState();
 
             //准备开始恢复
             delete grid_cache_option.GridMakerSub1CtrlCache.CreatingGridApi; //这个CreatingGridApi可不能覆盖
@@ -1337,8 +1452,26 @@ App.controller('gridMakerMainCtrl', ['$scope', '$state', '$filter', 'whhHttpServ
         $scope.GridMakerColDropDownListCtrlCache.history[$scope.globeColUid["colid"]].wz_url = $scope.GridMakerColDropDownListCtrlCache.wz_url;
         $scope.GridMakerColDropDownListCtrlCache.history[$scope.globeColUid["colid"]].wz_para_item = $scope.GridMakerColDropDownListCtrlCache.wz_para_item;
         $scope.GridMakerColDropDownListCtrlCache.history[$scope.globeColUid["colid"]].wz_paraField = $scope.GridMakerColDropDownListCtrlCache.wz_paraField;
-        $scope.GridMakerColDropDownListCtrlCache.history[$scope.globeColUid["colid"]].wz_para = $scope.GridMakerColDropDownListCtrlCache.wz_para;
-        $scope.GridMakerColDropDownListCtrlCache.history[$scope.globeColUid["colid"]].wz_data = $scope.GridMakerColDropDownListCtrlCache.wz_data;
+        //$scope.GridMakerColDropDownListCtrlCache.history[$scope.globeColUid["colid"]].wz_para = $scope.GridMakerColDropDownListCtrlCache.wz_para;
+
+
+        //代码编辑器中的内容 存入history
+        if($scope.GridMakerColDropDownListCtrlCache.editor_wz_data.getValue() != $scope.dropDownDataInitStr){
+            $scope.GridMakerColDropDownListCtrlCache.wz_data = $scope.GridMakerColDropDownListCtrlCache.editor_wz_data.getValue();
+            $scope.GridMakerColDropDownListCtrlCache.history[$scope.globeColUid["colid"]].wz_data = $scope.GridMakerColDropDownListCtrlCache.wz_data;
+        }else{
+            $scope.GridMakerColDropDownListCtrlCache.history[$scope.globeColUid["colid"]].wz_data ="";
+        }
+
+        if($scope.GridMakerColDropDownListCtrlCache.editor_wz_para.getValue() != $scope.dropDownParaInitStr) {
+            $scope.GridMakerColDropDownListCtrlCache.wz_para = $scope.GridMakerColDropDownListCtrlCache.editor_wz_para.getValue();
+            $scope.GridMakerColDropDownListCtrlCache.history[$scope.globeColUid["colid"]].wz_para = $scope.GridMakerColDropDownListCtrlCache.wz_para;
+        }else {
+            $scope.GridMakerColDropDownListCtrlCache.history[$scope.globeColUid["colid"]].wz_para = "";
+
+        }
+
+
         console.log($scope.globeColUid["colid"]);
         console.log(JSON.stringify($scope.GridMakerColDropDownListCtrlCache.history[$scope.globeColUid["colid"]]));
     }
@@ -1361,13 +1494,39 @@ App.controller('gridMakerMainCtrl', ['$scope', '$state', '$filter', 'whhHttpServ
         $scope.GridMakerColComboBoxCtrlCache.history[$scope.globeColUid["colid"]].wz_url = $scope.GridMakerColComboBoxCtrlCache.wz_url;
         $scope.GridMakerColComboBoxCtrlCache.history[$scope.globeColUid["colid"]].wz_para_item = $scope.GridMakerColComboBoxCtrlCache.wz_para_item;
         $scope.GridMakerColComboBoxCtrlCache.history[$scope.globeColUid["colid"]].wz_paraField = $scope.GridMakerColComboBoxCtrlCache.wz_paraField;
-        $scope.GridMakerColComboBoxCtrlCache.history[$scope.globeColUid["colid"]].wz_para = $scope.GridMakerColComboBoxCtrlCache.wz_para;
-        $scope.GridMakerColComboBoxCtrlCache.history[$scope.globeColUid["colid"]].wz_data = $scope.GridMakerColComboBoxCtrlCache.wz_data;
+        //$scope.GridMakerColComboBoxCtrlCache.history[$scope.globeColUid["colid"]].wz_para = $scope.GridMakerColComboBoxCtrlCache.wz_para;
+
 
         $scope.GridMakerColComboBoxCtrlCache.history[$scope.globeColUid["colid"]].wz_textField = $scope.GridMakerColComboBoxCtrlCache.wz_textField;
         $scope.GridMakerColComboBoxCtrlCache.history[$scope.globeColUid["colid"]].wz_valueField = $scope.GridMakerColComboBoxCtrlCache.wz_valueField;
-        $scope.GridMakerColComboBoxCtrlCache.history[$scope.globeColUid["colid"]].wz_columns = $scope.GridMakerColComboBoxCtrlCache.wz_columns;
 
+
+        if($scope.GridMakerColComboBoxCtrlCache.editor_wz_data.getValue() != $scope.comboBoxDataInitStr) {
+            $scope.GridMakerColComboBoxCtrlCache.wz_data = $scope.GridMakerColComboBoxCtrlCache.editor_wz_data.getValue();
+            $scope.GridMakerColComboBoxCtrlCache.history[$scope.globeColUid["colid"]].wz_data = $scope.GridMakerColComboBoxCtrlCache.wz_data;
+        }else {
+            $scope.GridMakerColComboBoxCtrlCache.history[$scope.globeColUid["colid"]].wz_data = "";
+        }
+
+        if($scope.GridMakerColComboBoxCtrlCache.editor_wz_columns.getValue() != $scope.comboBoxColumnsInitStr) {
+            $scope.GridMakerColComboBoxCtrlCache.wz_columns = $scope.GridMakerColComboBoxCtrlCache.editor_wz_columns.getValue();
+            $scope.GridMakerColComboBoxCtrlCache.history[$scope.globeColUid["colid"]].wz_columns = $scope.GridMakerColComboBoxCtrlCache.wz_columns;
+        }else {
+            $scope.GridMakerColComboBoxCtrlCache.history[$scope.globeColUid["colid"]].wz_columns = "";
+        }
+
+
+        if($scope.GridMakerColComboBoxCtrlCache.editor_wz_para.getValue() != $scope.comboBoxParaInitStr) {
+            $scope.GridMakerColComboBoxCtrlCache.wz_para = $scope.GridMakerColComboBoxCtrlCache.editor_wz_para.getValue();
+            $scope.GridMakerColComboBoxCtrlCache.history[$scope.globeColUid["colid"]].wz_para = $scope.GridMakerColComboBoxCtrlCache.wz_para;
+        }else{
+            $scope.GridMakerColComboBoxCtrlCache.history[$scope.globeColUid["colid"]].wz_para ="";
+        }
+        //if($scope.GridMakerColComboBoxCtrlCache.wz_columns){
+        //    $scope.GridMakerColComboBoxCtrlCache.editor_wz_data.setValue(JSON.stringify($scope.GridMakerColComboBoxCtrlCache.wz_columns));
+        //}else{
+        //    $scope.GridMakerColComboBoxCtrlCache.editor_wz_data.setValue('[{"sample":"helloWorld","address":"hangzhou","age":25}]');
+        //}
 
         console.log($scope.globeColUid["colid"]);
         console.log(JSON.stringify($scope.GridMakerColComboBoxCtrlCache.history[$scope.globeColUid["colid"]]));

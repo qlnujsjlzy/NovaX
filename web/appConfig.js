@@ -94,6 +94,17 @@ App.config(function ($stateProvider, $urlRouterProvider) {
             "gridMakerView": {
                 templateUrl: "framwork/whhJsFrame/gridMaker/gridMaker_sub2.html"
             }
+        },
+        onEnter: function() {
+
+            //照样拿不到jquery对象  所以在onEnter里面 还是不适合做DOM操作 时机不对
+            //alert($("#sub2editor").length);
+            //var editor = ace.edit("sub2editor");
+            //editor.setTheme("ace/theme/monokai");//twilight tomorrow_night_bright
+            //editor.setReadOnly(true);
+            //editor.setFontSize(12);
+            //editor.session.setMode("ace/mode/json");
+            //editor.setValue("");
         }
     }).state('main.init.gridMaker.sub3', {
         url: "/sub3",
@@ -129,6 +140,15 @@ App.config(function ($stateProvider, $urlRouterProvider) {
             "gridMakerColDetailView@main.init.gridMaker": {
                 templateUrl: "framwork/whhJsFrame/gridMaker/gridMaker_ColDetail_ComboBox.html"
             }
+        },
+        onEnter: function() {
+           // alert($("#hehehe").length);
+            //var editor = ace.edit("sub2editor");
+            //editor.setTheme("ace/theme/monokai");//twilight tomorrow_night_bright
+            //editor.setReadOnly(true);
+            //editor.setFontSize(12);
+            //editor.session.setMode("ace/mode/json");
+            //editor.setValue("");
         }
     }).state('main.init.gridMaker.sub1.editor_datetime', {
             url: "/editor_datetime",

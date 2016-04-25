@@ -349,12 +349,36 @@ App.service('whhDateService', ['$rootScope', '$filter', function ($rootScope, $f
 App.factory('appExceptionInterceptor', ['$rootScope', function ($rootScope) {
     var interceptor = {
         response: function (response) {
+            if(response.data){
+                if(response.data.errorInfo){
+                    $rootScope.MessageWindow.content(response.data.errorInfo);
+                    $rootScope.blockPage();
+                    $rootScope.MessageWindow.open();
+                    $rootScope.MessageWindow.center();
+                }
+            }
 
+            //if (response.status != 200) {
+            //    var reg1 = new RegExp("com\.whhercp\.lang\.exception\.AppException");
+            //    var res1 = reg1.test(response.data);
+            //    if (res1.length >= 1) {
+            //        //说明是AppException
+            //        //对数据做xml解析 取出真正的错误信息
+            //    } else {
+            //        //说明是普通错误 那么久全部显示出来
+            //    }
+            //
+            //    //if(response.data)
+            //    $rootScope.MessageWindow.content(response.data);
+            //    $rootScope.blockPage();
+            //    $rootScope.MessageWindow.open();
+            //    $rootScope.MessageWindow.center();
+            //}
 
             return response;
         },
         responseError: function (response) {
-            if (response.status == 500) {
+            if (response.status != 200) {
                 var reg1 = new RegExp("com\.whhercp\.lang\.exception\.AppException");
                 var res1 = reg1.test(response.data);
                 if (res1.length >= 1) {
@@ -412,8 +436,9 @@ App.factory('httpBlockUIInterceptor',['$rootScope',function($rootScope){
 
 }]);
 App.config(['$httpProvider', function ($httpProvider) {
-    $httpProvider.interceptors.push('appExceptionInterceptor');
     $httpProvider.interceptors.push('httpBlockUIInterceptor');
+    $httpProvider.interceptors.push('appExceptionInterceptor');
+
 }]);
 
 

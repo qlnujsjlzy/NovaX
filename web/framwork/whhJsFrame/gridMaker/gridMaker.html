@@ -1,16 +1,40 @@
 <div class="row" ng-controller="gridMakerMainCtrl">
         <div class="col-md-4">
-            <div class="box box-solid ">
-                <div class="box-body">
 
-                    <label for="gridName">Grid定义</label>
-                    <input class="form-control" type="text" placeholder="输入GridName"  id="gridName" ng-model="grid_name" style="margin-bottom: 5px;">
-                    <a  class="btn btn-success btn-block {{QueryDisable}}" ng-click="queryGridDef()">查询</a>
-                    <a  class="btn btn-warning btn-block {{NewDisable}}" ng-click="createGridDef()" >新建</a>
-                    <a  class="btn btn-primary btn-block {{SaveDisable}}" ng-click="saveGridDef()" >保存</a>
-                    <a  class="btn btn-info btn-block {{newSaveDisable}}" ng>另存</a>
+            <div class="box box-solid">
+                <div class="box-header with-border">
+                    <h3 class="box-title">Grid定义</h3>
+                    <div class="box-tools">
+                        <button class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
+                    </div>
+
                 </div>
-            </div>
+                <div class="box-body" >
+                        <input class="form-control" type="text" placeholder="输入GridName"    ng-model="grid_name" style="margin-bottom: 5px;">
+                        <a  class="btn btn-success btn-block {{QueryDisable}}" ng-click="queryGridDef()">查询</a>
+                        <a  class="btn btn-warning btn-block {{NewDisable}}" ng-click="createGridDef()" >新建</a>
+                        <a  class="btn btn-primary btn-block {{SaveDisable}}" ng-click="saveGridDef()" >保存</a>
+                        <a  class="btn btn-info btn-block {{newSaveDisable}}" ng>另存</a>
+                </div><!-- /.box-body -->
+            </div><!-- /. box -->
+
+
+            <!--        <div class="box box-solid ">
+
+           <div class="box-body">
+
+                            <label for="gridName">Grid定义</label>
+                            <input class="form-control" type="text" placeholder="输入GridName"  id="gridName" ng-model="grid_name" style="margin-bottom: 5px;">
+                            <a  class="btn btn-success btn-block {{QueryDisable}}" ng-click="queryGridDef()">查询</a>
+                            <a  class="btn btn-warning btn-block {{NewDisable}}" ng-click="createGridDef()" >新建</a>
+                            <a  class="btn btn-primary btn-block {{SaveDisable}}" ng-click="saveGridDef()" >保存</a>
+                            <a  class="btn btn-info btn-block {{newSaveDisable}}" ng>另存</a>
+                        </div>
+
+
+
+
+                    </div>-->
             <div class="box box-solid">
                 <div class="box-header with-border">
                     <h3 class="box-title">创建Grid</h3>
@@ -40,9 +64,12 @@
             </div><!-- /.box -->
         </div><!-- /.col -->
         <div class="col-md-8">
+
+
+
             <div class="box box-primary">
                 <div class="box-header with-border">
-                    <h3 class="box-title">Grid列定义</h3>
+                    <h3 class="box-title">Grid Columns 构建</h3>
                 </div><!-- /.box-header -->
 
                 <div class="box-body no-padding" ui-view="gridMakerView">

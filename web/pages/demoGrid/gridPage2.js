@@ -13,9 +13,8 @@ App.controller('gridPage2Ctrl', ['$scope', '$http','$timeout','whhHttpService' ,
                 $scope.gridApi = widgetApi;
                 $scope.grid = widgetApi.widget;
                 $scope.gridApi.query({
-                    url: "GridDemoService/getPhone.json?phonename=",
-                    method: "GET"//,
-                   // data:{"phonename1":"2"} //Get的话 data是无效的
+                    url: "GridDemoService/getPhone.json",
+                    data:{"phonename":$scope.phonename}
                 });
             }
         }
@@ -28,8 +27,8 @@ App.controller('gridPage2Ctrl', ['$scope', '$http','$timeout','whhHttpService' ,
                 $scope.phonename = "";
             }
             $scope.gridApi.query({
-                url: "GridDemoService/getPhone.json?phonename=" + $scope.phonename,
-                method: "GET"
+                url: "GridDemoService/getPhone.json",
+                data:{"phonename":$scope.phonename}
             });
         }
 

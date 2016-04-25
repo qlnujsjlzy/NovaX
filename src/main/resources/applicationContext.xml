@@ -40,4 +40,7 @@
 	<!-- 支持上传文件 解析requestbody 的解析器 -->
 	<bean id="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver"/>
 
+	<!-- 异常处理类 -->
+	<bean id="exceptionHandler" class="com.whhercp.jsframe.WhhJSFrameExceptionHandler"/>
+
 </beans>

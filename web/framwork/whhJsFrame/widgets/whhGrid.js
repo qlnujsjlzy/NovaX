@@ -67,7 +67,7 @@ App.directive('ngWhhGrid', function () {//编写grid对应的指令
             $scope.widgetApi.query = function (para) {
                 $http({
                     url: para["url"],
-                    method: para["method"],
+                    method: "POST",//para["method"],
                     headers: { 'needUiBlock': true}, // 加上这一句 在做http请求的时候会提供界面屏蔽
                     data:para["data"]
                 }).success(function (data, status, header, config) {
@@ -760,7 +760,7 @@ App.directive('ngWhhGrid', function () {//编写grid对应的指令
 
                                             var dataSource ;
                                             if(editorType["url"]){
-                                                //远程数据源
+                                                //远程数据源  这种请求都是get请求 要注意参数都是键值对字符串
                                                 dataSource = new kendo.data.DataSource({
                                                     transport: {
                                                         read: {
@@ -772,7 +772,7 @@ App.directive('ngWhhGrid', function () {//编写grid对应的指令
                                                                     return {"para": item[editorType['paraField']]};
                                                                 } else if (editorType["para"]) {
                                                                     //如果有用户自己定义的参数
-                                                                    return {"para":editorType["para"]};
+                                                                    return editorType["para"]; //{"para":editorType["para"]};
                                                                 } else {
                                                                     //如果用户什么都没写 那么就是默认传整个item
                                                                     return {"para":""};
@@ -853,7 +853,7 @@ App.directive('ngWhhGrid', function () {//编写grid对应的指令
                                                                     return {"para": item[editorType2['paraField']]};
                                                                 } else if (editorType2["para"]) {
                                                                     //如果有用户自己定义的参数
-                                                                    return {"para":editorType2["para"]};
+                                                                    return editorType2["para"];
                                                                 } else {
                                                                     //如果用户什么都没写 那么就是默认传整个item  先不传整个item 代价太大
                                                                     return {"para":""};
