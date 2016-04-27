@@ -7,7 +7,7 @@
 App.controller('gridPage5Ctrl', ['$scope', '$http', '$timeout', 'whhHttpService', function ($scope, $http, $timeout, whhHttpService) {
     $scope.gridOption1 =
     {
-        dataWindowId: "GridDemo2",
+        dataWindowId: "GridDemo5",
         //获取widgetApi
         getWidgetApi: function (widgetApi) {
             $scope.gridApi = widgetApi;
@@ -28,7 +28,7 @@ App.controller('gridPage5Ctrl', ['$scope', '$http', '$timeout', 'whhHttpService'
 
             $scope.widgetApi.bindEvent('Complate', function (result) {
                 //console.log(result);
-                $scope.gridApi.setData(result);
+                $scope.gridApi.setExcelData(result);
             });
 
         }

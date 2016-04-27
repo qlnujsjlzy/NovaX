@@ -277,6 +277,13 @@ App.config(function ($stateProvider, $urlRouterProvider) {
                 templateUrl: "pages/demoGrid/gridPage5.html"
             }
         }
+    }).state('main.init.gridPage6', {
+        url: "/gridPage6",
+        views: {
+            "userPage@main": {
+                templateUrl: "pages/demoGrid/gridPage6.html"
+            }
+        }
     })
 
 

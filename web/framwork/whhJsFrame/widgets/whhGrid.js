@@ -100,7 +100,16 @@ App.directive('ngWhhGrid', function () {//编写grid对应的指令
 
 
             }
+            $scope.widgetApi.setExcelData = function (data) {
 
+                //Excel导入的数据 我们认为是新增的 所以不给oid
+                $scope.widgetApi.dataSource.data(data);
+                $scope.selectedRowItems.length = 0;//要清除选中行
+
+                $scope.widgetApi.modifyCache.insertItems.length = 0;
+                $scope.widgetApi.modifyCache.deleteItems.length = 0;
+                $scope.widgetApi.modifyCache.updateItems.length = 0;
+            }
             $scope.widgetApi.getData = function (data) {
                 return jQuery.extend(true, [], $scope.widgetApi.dataSource.data());
             }
@@ -582,7 +591,7 @@ App.directive('ngWhhGrid', function () {//编写grid对应的指令
                     allPages: true //Excel导出 默认导出所有数据 即使在分页的情况下
                 };
                 scope.innerOptions.editorColCache = {};
-
+                scope.innerOptions.commandCache = {};
                 //解析Options
                 var innerColumns = []; //准被给grid用的真正的column定义数组
                 var schema = {  // 准备给grid的dataSource用得 schema对象
@@ -701,6 +710,49 @@ App.directive('ngWhhGrid', function () {//编写grid对应的指令
                             var fieldOfSchema = {};//一个column对应的field对象 用于schema
 
                             for (var outerColumnProperty in outerColumn) {
+
+
+
+                                //如果是command列 command是一个数组 里面有多个button定义
+                                if( outerColumnProperty=="buttons"){
+
+                                    //先创建command数组
+                                    if(innerColumn.command){
+                                    }else{
+                                        innerColumn.command = [];
+                                    }
+
+                                    for(var i=0;i<outerColumn.buttons.length;i++){
+
+                                        if(outerOptions.columnButtons==undefined){
+                                            alert("没有定义columnButtons");
+                                            return;
+                                        }
+
+                                        var command = {};
+                                        //command.uuid =  Math.uidFast();
+                                        command.name = outerColumn.buttons[i].name;  //name是一个command的唯一标示 我用name作为key 把一个command缓存起来
+                                        command.text = outerColumn.buttons[i].text;
+                                        command.userFunc = outerOptions.columnButtons[command.name];
+                                        command.click = function(e){
+                                            e.preventDefault(); //不能让事件继续传播 否则会出现地址栏url改变的情况 这是不能允许的
+                                            var tr = $(e.target).closest("tr"); // get the current table row (tr)
+                                            var data = scope.widgetApi.widget.dataItem(tr);
+
+                                            var name = e.data.commandName;
+                                            //从缓存中取出来 进行调用
+                                            scope.innerOptions.commandCache[name].userFunc(data);
+                                        }
+                                        if(scope.innerOptions.commandCache[command.name]){
+                                            alert("你已经定义了一个叫做 "+command.name+" 的button,button是不允许重名的");
+                                            return;
+                                        }else{
+                                            scope.innerOptions.commandCache[command.name] = command;
+                                            innerColumn.command.push(command);
+                                        }
+                                    }
+                                    //innerColumn.command = outerColumn.command;
+                                }
 
 
                                 if (outerColumnProperty == "field") {
