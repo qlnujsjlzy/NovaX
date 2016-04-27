@@ -1,6 +1,6 @@
 
 //angular.module('whh.datePicker',[])
-App.directive('ngWhhDatePicker', function () {
+App.directive('ngWhhDateTimePicker', function () {
     return {
 
         // 必须改 不能用元素 必须是input元素上加一个属性这种模式 这样才可以使用ng=model 才可以实现双向数据绑定
@@ -12,23 +12,28 @@ App.directive('ngWhhDatePicker', function () {
             option: "=" // 双向绑定过来
         },
         //template:'<input style="width: 100%;" />',
-        controller: ['$scope','$filter', function ($scope,$filter) {
+        controller: ['$scope','$filter','whhDateService', function ($scope,$filter,whhDateService) {
 
             //$scope.$watch($scope.option.date, function (newValue,oldValue,scope) {
             //    //监控date
             //    console.log(newValue);
             //});
             $scope.$filter = $filter;
+            $scope.whhDateService = whhDateService;
             $scope.widgetApi={};
 
             $scope.widgetApi.setDate = function (date) {
                 if(typeof(date) == "string"){
-                    //如果传入字符串 必须是 yyyy-MM-dd格式 不能有其他格式
-                    var year = date.split("-")[0];
-                    var month = date.split("-")[1];
-                    var day = date.split("-")[2];
+                    //如果传入字符串 必须是 yyyy-MM-dd HH:mm:ss格式 不能有其他格式
+                    //var year = date.split("-")[0];
+                    //var month = date.split("-")[1];
+                    //var day = date.split("-")[2];
+                    //
+                    //$scope.datePicker.value(new Date(year+"/"+month+"/"+day));
 
-                    $scope.datePicker.value(new Date(year+"/"+month+"/"+day));
+
+                    $scope.datePicker.value($scope.whhDateService.StringToDateTime(date));
+
 
                 }else{
                     //或者 传入Date类型的参数
@@ -47,7 +52,7 @@ App.directive('ngWhhDatePicker', function () {
 
             //
             $scope.widgetApi.getDateStr = function(){
-                return $filter('date')($scope.datePicker.value(), 'yyyy-MM-dd');
+                return $scope.whhDateService.dateTimeToString($scope.datePicker.value());//$filter('date')($scope.datePicker.value(), 'yyyy-MM-dd HH:mm:ss');
             }
 
             $scope.widgetApi.getMSeconds = function(){
@@ -99,7 +104,7 @@ App.directive('ngWhhDatePicker', function () {
                 // from Model to View  我们的model是date对象  view 是日期字符串
                 scope.ngModelCtrl.$formatters.push(function(value) {
                     // 把日期对象转换成日期字符串
-                    return  scope.$filter('date')(value, 'yyyy-MM-dd');
+                    return  scope.whhDateService.dateTimeToString(value); //scope.$filter('date')(value, 'yyyy-MM-dd HH:mm:ss');
                 });
 
 
@@ -112,7 +117,9 @@ App.directive('ngWhhDatePicker', function () {
                     //就是直接把modelValue赋值给日历控件呗
                     var date = controller.$modelValue;
                     if ( angular.isDefined(date) && date !== null && !angular.isDate(date) ) {
-                        throw new Error('ng-Model value must be a Date object - currently it is a ' + typeof date + ' - use ui-date-format to convert it from a string');
+                        //throw new Error('ng-Model value must be a Date object - currently it is a ' + typeof date + ' - use ui-date-format to convert it from a string');
+                        // 灵活一点 如果不是date类型 是字符串 那么就直接转换成date类型就好了
+                        date = scope.whhDateService.StringToDateTime(date);
                     }
                     scope.datePicker.value(date);// 把$modelValue 赋值给我们自己的日历控件
 
@@ -126,12 +133,12 @@ App.directive('ngWhhDatePicker', function () {
                     //inputValue 是view传来的值 我们要转成date对象 存起来
                     if(typeof(inputValue) == "string"){
                         //如果传入字符串 必须是 yyyy-MM-dd格式 不能有其他格式
-                        var year = inputValue.split("-")[0];
-                        var month = inputValue.split("-")[1];
-                        var day = inputValue.split("-")[2];
-
-                        return new Date(year+"/"+month+"/"+day);
-
+                        //var year = inputValue.split("-")[0];
+                        //var month = inputValue.split("-")[1];
+                        //var day = inputValue.split("-")[2];
+                        //
+                        //return new Date(year+"/"+month+"/"+day);
+                        return scope.whhDateService.StringToDateTime(inputValue);
                     }else {
                         return undefined;
                     }
@@ -144,7 +151,7 @@ App.directive('ngWhhDatePicker', function () {
                     if( typeof(value) == "string"){
                         scope.ngModelCtrl.$setViewValue(value);
                     }else{
-                        scope.ngModelCtrl.$setViewValue(scope.$filter('date')(value, 'yyyy-MM-dd'));
+                        scope.ngModelCtrl.$setViewValue(scope.whhDateService.dateTimeToString(value));  //scope.$filter('date')(value, 'yyyy-MM-dd')
                     }
                 }
 
@@ -159,7 +166,7 @@ App.directive('ngWhhDatePicker', function () {
 
 
             //补全option
-            scope.option.format ="yyyy-MM-dd";
+            scope.option.format ="yyyy-MM-dd HH:mm:ss";
             scope.option.value=new Date();
             scope.option.culture="zh-CN";
             scope.option.change = function() {
@@ -180,12 +187,12 @@ App.directive('ngWhhDatePicker', function () {
 
 
 
-            $(element).kendoDatePicker(scope.option);
+            $(element).kendoDateTimePicker(scope.option);
 
 
 
 
-            scope.datePicker = $(element).data("kendoDatePicker");
+            scope.datePicker = $(element).data("kendoDateTimePicker");
 
             scope.widgetApi.widget = scope.datePicker;
             scope.option.getWidgetApi(scope.widgetApi);

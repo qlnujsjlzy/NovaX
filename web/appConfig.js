@@ -263,6 +263,13 @@ App.config(function ($stateProvider, $urlRouterProvider) {
                 templateUrl: "pages/demoDropDown/demo1.html"
             }
         }
+    }).state('main.init.dateTimeDemo', {
+        url: "/dateTimeDemo",
+        views: {
+            "userPage@main": {
+                templateUrl: "pages/otherDemo/dateTimeDemo.html"
+            }
+        }
     })
 
 
