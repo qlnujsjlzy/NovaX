@@ -1,5 +1,5 @@
 /**
- * Created by wz on 16/4/27.
+ * Created by wangzheng on 16/4/27.
  */
 App.directive('ngWhhFileUploadOri', function () {
 
@@ -81,8 +81,6 @@ App.directive('ngWhhFileUploadOri', function () {
 
         }],
         link:function(scope, element, attrs){
-
-
 
             $($(element).find("input")[0]).attr("id","file_"+scope.fileuid);
             $($(element).find("input")[1]).attr("id","fileName_"+scope.fileuid);
