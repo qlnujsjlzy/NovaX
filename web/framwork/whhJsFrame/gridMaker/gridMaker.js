@@ -106,6 +106,7 @@ App.controller('gridMakerMainCtrl', ['$scope', '$state', '$filter', 'whhHttpServ
         wz_resizable: true,
         wz_title: "NewGrid",
         wz_groupable: false,
+        wz_virtual:false,
         CreatingGridApi: {}
     };
 
@@ -447,6 +448,9 @@ App.controller('gridMakerMainCtrl', ['$scope', '$state', '$filter', 'whhHttpServ
             $scope.GridMakerSub1CtrlCache["wz_resizable"] = true;
             $scope.GridMakerSub1CtrlCache["wz_title"] = "NewGrid";
             $scope.GridMakerSub1CtrlCache["wz_groupable"] = false;
+            $scope.GridMakerSub1CtrlCache["wz_virtual"] = false;
+
+
             if ($scope.GridMakerSub1CtrlCache.CreatingGridApi) {
                 $scope.GridMakerSub1CtrlCache.CreatingGridApi.deleteAllItem();
             }
@@ -541,7 +545,7 @@ App.controller('gridMakerMainCtrl', ['$scope', '$state', '$filter', 'whhHttpServ
         $scope.globeOption.sortable = $scope.GridMakerSub1CtrlCache.wz_sortable;
         $scope.globeOption.reorderable = $scope.GridMakerSub1CtrlCache.wz_reorderable;
         $scope.globeOption.resizable = $scope.GridMakerSub1CtrlCache.wz_resizable;
-
+        $scope.globeOption.virtual = $scope.GridMakerSub1CtrlCache.wz_virtual;
 
         //获取colDef 的定义 从grid里取出每个col的基本定义 restore回来之后 uid已经改变了! 导致了重新创建 丢失了editer相关属性 需要使用自己的uuid 不要使用grid的uid
         //为了把构建columns的顺序也根据用户的上移下移的顺序来调整
@@ -871,7 +875,14 @@ App.controller('gridMakerMainCtrl', ['$scope', '$state', '$filter', 'whhHttpServ
 //====================================================构建测试数据 start=================================================================
     function createDemoData(columns) {
         var res = [];
-        for (var index = 0; index <= 10; index++) {
+        var itemnum = 10;
+        if($scope.globeOption.virtual){
+
+            itemnum = 500000;
+
+        }
+
+        for (var index = 0; index <= itemnum; index++) {
             var item = {};
             for (var i = 0; i < columns.length; i++) {
                 if (columns[i].type == "String") {

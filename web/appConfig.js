@@ -270,6 +270,13 @@ App.config(function ($stateProvider, $urlRouterProvider) {
                 templateUrl: "pages/otherDemo/dateTimeDemo.html"
             }
         }
+    }).state('main.init.gridPage5', {
+        url: "/gridPage5",
+        views: {
+            "userPage@main": {
+                templateUrl: "pages/demoGrid/gridPage5.html"
+            }
+        }
     })
 
 

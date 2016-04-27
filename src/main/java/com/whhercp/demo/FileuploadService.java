@@ -72,7 +72,7 @@ public class FileuploadService {
 
 
 
-        //构建下载链接
+        //构建下载链接 $rootScope.appPath+"whhJsPlatform/pages/demoFileUpload/"+file.name
         String downloadPath = "http://"+request.getServerName()+":"+request.getServerPort()+"/whhJsPlatform/pages/demoFileUpload/"+fileName;
 
         // 返回的得是对象 可以转成json的对象

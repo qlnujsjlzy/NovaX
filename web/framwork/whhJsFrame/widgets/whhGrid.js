@@ -344,6 +344,14 @@ App.directive('ngWhhGrid', function () {//编写grid对应的指令
             }
 
 
+
+            //导出Excel
+            $scope.widgetApi.exportExcel = function () {
+                $scope.widgetApi.widget.saveAsExcel();
+            }
+
+
+            
             //不加$parent   不用function() { return $scope.option.data; }  就无效果 要注意是什么原因?
             //$scope.$parent.$watchCollection(function () {
             //    return $scope.option.data;
@@ -570,6 +578,9 @@ App.directive('ngWhhGrid', function () {//编写grid对应的指令
 
                 //默认禁用分类汇总
                 innerOptions.groupable = false;
+                innerOptions.excel={
+                    allPages: true //Excel导出 默认导出所有数据 即使在分页的情况下
+                };
                 scope.innerOptions.editorColCache = {};
 
                 //解析Options
@@ -619,6 +630,13 @@ App.directive('ngWhhGrid', function () {//编写grid对应的指令
                         innerOptions.selectable = outerOptions.selectable;
 
                     }
+                    //开启虚拟化 此时无法使用分页
+                    if (property == "virtual") {
+                        innerOptions.scrollable = {
+                            virtual: true
+                        }
+                        dataSourceOptions.pageSize = 100; //每次渲染100行
+                    }
                     // grid的是否可编辑
                     if (property == "editable") {
                         innerOptions.editable = outerOptions.editable;
@@ -658,7 +676,11 @@ App.directive('ngWhhGrid', function () {//编写grid对应的指令
                     delete innerOptions.pageSize;
                     delete innerOptions.pageable;
                 }
-
+                if (outerOptions.virtual) {
+                    //删掉分页属性
+                    delete innerOptions.pageSize;
+                    delete innerOptions.pageable;
+                }
 
                 //处理columns
                 for (var property in outerOptions) {
@@ -1058,7 +1080,7 @@ App.directive('ngWhhGrid', function () {//编写grid对应的指令
                 //        method: "GET",
                 //        //headers: { 'needUiBlock': true} // 加上这一句 在做http请求的时候会提供界面屏蔽
                 //
-                //    }).success(function (data, status, header, config) {
+                //    }).success(function (f) {
                 //        //直接赋值数据 而不使用transaction   坏处是如果远程请求耗时较长的话,不会出现菊花图标来过渡
                 //        // 要想有菊花图标 还得自己再实现一个query方法
                 //        scope.widgetApi.setData(data);

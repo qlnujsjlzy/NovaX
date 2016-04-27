@@ -1,17 +1,20 @@
 package com.whhercp.demo;
 
 import com.whhercp.jpa.datastore.DataAdapter;
+import com.whhercp.jsframe.ColHeadView;
+import com.whhercp.jsframe.ExportExcelUtil;
 import com.whhercp.lang.exception.AppException;
+import com.whhercp.lang.io.*;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.*;
 import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.ThreadFactory;
 
 /**
@@ -173,8 +176,60 @@ public class GridDemoService {
 
 
 
+    @RequestMapping(value = "/importExcel" ,method = RequestMethod.POST)
+    @ResponseBody
+    public List<Map> importExcel(@RequestParam(value = "file", required = false) MultipartFile file, HttpServletRequest request) throws IOException, ServletException {
+        System.out.println("importExcel ");
 
 
+        //使用part的话 要在Servlet上加注解 @MultipartConfig//标识Servlet支持文件上传  这里现在不是Servlet 只能用传统的方法来解析part spring就可以做了
+        Object aaa = request.getParts();
+
+        byte[] content;
+        try{
+            content = file.getBytes();
+        }catch (Exception e){
+            throw new AppException(e.getMessage());
+        }
+
+        ExportExcelUtil exportExcelUtil = new ExportExcelUtil();
+        List<ColHeadView> colHeadViews = new ArrayList<ColHeadView>();
+
+        ColHeadView c1 = new ColHeadView();
+        c1.setColName("phonename");
+        c1.setColType(String.class.getName());
+        colHeadViews.add(c1);
+
+        ColHeadView c2 = new ColHeadView();
+        c2.setColName("producedate");
+        c2.setColType(String.class.getName());
+        colHeadViews.add(c2);
+
+        ColHeadView c3 = new ColHeadView();
+        c3.setColName("logtime");
+        c3.setColType(String.class.getName());
+        colHeadViews.add(c3);
+
+        ColHeadView c4 = new ColHeadView();
+        c4.setColName("cpu");
+        c4.setColType(String.class.getName());
+        colHeadViews.add(c4);
+
+        ColHeadView c5 = new ColHeadView();
+        c5.setColName("os");
+        c5.setColType(String.class.getName());
+        colHeadViews.add(c5);
+
+        ColHeadView c6 = new ColHeadView();
+        c6.setColName("screen");
+        c6.setColType(String.class.getName());
+        colHeadViews.add(c6);
+
+        InputStream in = new com.whhercp.lang.io.ByteArrayInputStream(content);
+        List<Map> result = exportExcelUtil.importExcel(in, 0, 2, colHeadViews);
+
+        return result;
+    }
 
 
 
