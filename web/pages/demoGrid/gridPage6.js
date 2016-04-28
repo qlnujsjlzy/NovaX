@@ -20,10 +20,10 @@ App.controller('gridPage6Ctrl', ['$scope', '$http', '$timeout', 'whhHttpService'
         },
         columnButtons:{
             "details1":function (item) {  //details1必须唯一
-                console.log("Details1 for: " + item.phonename);
+                alert("Details1 for: " + item.phonename);
             },
             "details2":function (item) {
-                console.log("Details2 for: " + item.phonename);
+                alert("Details2 for: " + item.phonename);
             }
         },
         height: 450,
@@ -48,7 +48,6 @@ App.controller('gridPage6Ctrl', ['$scope', '$http', '$timeout', 'whhHttpService'
             title: "操作2",
             buttons: [{ name: "details2", text: "查看明细2"} ]
         }
-
         ]
 
     }
