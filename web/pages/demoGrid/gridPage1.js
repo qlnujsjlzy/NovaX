@@ -2,15 +2,13 @@
  * Created by wz on 16/4/2.
  */
 
-
-//angular.module('gridPage1', ['whh.grid'])
 App.controller('gridPage1Ctrl', ['$scope', '$http', '$timeout', function ($scope, $http, $timeout) {
+
+
     $scope.gridOption1 =
     {
-
         dataWindowId:"GridDemo1",
 
-        //获取widgetApi
         getWidgetApi: function (widgetApi) {
             $scope.gridApi = widgetApi;
             $scope.grid = widgetApi.widget;
@@ -20,108 +18,21 @@ App.controller('gridPage1Ctrl', ['$scope', '$http', '$timeout', function ($scope
                 data:{"phonename":$scope.phonename}
             });
         }
-
-        //pageSize: 20,
-        //height: 450,
-        //groupable: true,
-        //sortable: true,
-        //title: "Grid CRUD Demo1",
-        ////scrolling: true,
-        //resizable: true,  //resizable  用户可以自己调整列宽
-        //reorderable: true, // 用户可以自己拖拽列的顺序
-        //selectable: "multiple row", //multiple row 多行    row单行  不写就是不可选
-        ////batch: true, // 批量修改
-        //editable: true,// 可修改
-        //columns: [{
-        //    field: "phonename",
-        //    title: "名称",
-        //    width: 200
-        //}, {
-        //    field: "producedate",
-        //    title: "日期(日期控件)",
-        //    format: "yyyy-MM-dd", // 支持yyyy-MM-dd   yyyy-MM-dd HH:mm:ss     HH:mm:ss   3种
-        //    width: 120,
-        //    editorConfig: {
-        //        editorType: editorTypeEnum.DatePicker
-        //    }
-        //}, {
-        //    field: "logtime",
-        //    title: "logtime(日期时间控件)",
-        //    format: "yyyy-MM-dd HH:mm:ss",
-        //    width: 210,
-        //    editorConfig: {
-        //        editorType: editorTypeEnum.DateTimePicker
-        //    }
-        //}, {
-        //    field: "cpu",
-        //    title: "cpu(多列下拉)",
-        //    width: 350,  // 宽度只能这样设置了 就用户自己设置数值就好了
-        //    editorConfig: {
-        //        editorType: editorTypeEnum.ComboBox,
-        //        url: "GridDemoService/getCPU.json",
-        //        dataType: "json",
-        //        paraField: "brand",
-        //        textField: "detail",   // 下拉控件的key
-        //        valueField: "detail",  // 下拉控件的value
-        //        columns:
-        //          [
-        //            {
-        //                field: "producer",
-        //                title: "厂商",
-        //                width: 30
-        //            },
-        //            {
-        //                field: "serialname",
-        //                title: "系列",
-        //                width: 30
-        //            },
-        //            {
-        //                field: "performance",
-        //                title: "性能",
-        //                width: 40
-        //            }
-        //        ]
-        //    }
-        //}, {
-        //    field: "os",
-        //    title: "os(单列下拉)",
-        //    width: 240,
-        //    editorConfig: {
-        //        editorType: editorTypeEnum.DropDownList,
-        //        url: "GridDemoService/getOS.json",
-        //        dataType: "json",//如果跨域 就是jsonp   后台方法你要自己取出callback参数
-        //        paraField: "brand", // 要当参数传递的字段是哪个?   如果是item 那就是要传整个item   后台得用map类型接收参数
-        //        para: {},// 自己定义参数  如果写了这个 paraField就不要再写了
-        //        textField: "key",   // 下拉控件的key
-        //        valueField: "value",  // 下拉控件的value
-        //        data: []   //如果有这个参数 就是使用本地数据源
-        //    }
-        //}, {
-        //    field: "brand",
-        //    title: "品牌"
-        //}, {
-        //    field: "osversion",
-        //    title: "系统版本"
-        //}, {
-        //    field: "screen",
-        //    title: "分辨率"
-        //}, {
-        //    field: "memory",
-        //    title: "内存"
-        //}, {
-        //    field: "imgurl",
-        //    title: "imgurl"
-        //}, {
-        //    field: "id",
-        //    title: "id"
-        //}],
-
     }
+
+
+
+
+
+
+
+
+
+
 
 
     var i = 0;
     $scope.query = function (para) {
-
 
         if ($scope.phonename == undefined) {
             $scope.phonename = "";

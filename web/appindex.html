@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="app"><!--  -->
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>WHH Js Demo</title>
+    <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+
+
+    <link rel="stylesheet" href="framwork/AdminLTE-2.3.0/bootstrap/css/bootstrap.min.css">
+    <!-- <link rel="stylesheet" href="framwork/Font-Awesome-3.2.1/css/font-awesome.css"> -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="framwork/ionicons-2.0.1/css/ionicons.min.css">
+    <link rel="stylesheet" href="framwork/AdminLTE-2.3.0/dist/css/AdminLTE.min.css">
+    <link rel="stylesheet" href="framwork/AdminLTE-2.3.0/dist/css/skins/_all-skins.min.css">
+
+
+    <!-- Kendo UI Css-->
+    <link rel="stylesheet" href="framwork/telerik_kendoui_professional_2016_1_266/styles/kendo.common.min.css">
+    <link rel="stylesheet" href="framwork/telerik_kendoui_professional_2016_1_266/styles/kendo.material.min.css">
+
+    <link rel="stylesheet" href="framwork/whhJsFrame/css/site.css">
+
+    <!--Angular-->
+    <script src="framwork/angular-1.5.0/angular.js"></script>
+    <script src="framwork/angular-ui-router.js"></script>
+    <script src="framwork/whhJsFrame/js/app.js"></script>
+    <script src="appConfig.js"></script>
+    <script src="framwork/whhJsFrame/js/appMain.js"></script>
+    <script src="framwork/whhJsFrame/js/directives.js"></script>
+
+
+</head>
+<body class="hold-transition sidebar-collapse skin-{{appConfig.theme}} {{appConfig.layout}}">
+
+<div class="wrapper" ng-controller="mainAppCtrl">
+
+
+    <header class="main-header" >
+        <a ui-sref=".welcome" class="logo">
+            <span class="logo-mini"><b></b>Whh</span>
+            <span class="logo-lg"><b>Whh</b> Web开发平台</span>
+        </a>
+        <nav class="navbar navbar-static-top" role="navigation">
+
+
+
+            <div class="navbar-custom-menu" ng-show="login_info.loginUserIconShow">
+                <ul class="nav navbar-nav">
+
+                    <li><a ng-click="logout()">修改密码</a></li>
+                    <li><a ng-click="logout()">退出</a></li>
+
+
+                    <li class="dropdown user user-menu">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                            <img src="framwork/whhJsFrame/template/user8-128x128.jpg" class="user-image"
+                                 alt="User Image">
+                            <span class="hidden-xs">{{login_info.login_user.userName}}</span>
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li class="user-header">
+                                <img src="framwork/whhJsFrame/template/user8-128x128.jpg" class="img-circle"
+                                     alt="User Image">
+                                <p>
+                                    {{login_info.login_user.userName}} - {{login_info.login_user.userId}}
+                                    <small>{{login_info.login_user.loginIp}}</small>
+                                </p>
+                            </li>
+                            <li class="user-footer">
+                                <div class="pull-right">
+                                    <a class="btn btn-default btn-flat" ng-click="logout()">修改密码</a>
+                                    <a class="btn btn-default btn-flat" ng-click="logout()">退出</a>
+                                </div>
+                            </li>
+                        </ul>
+                    </li>
+
+                </ul>
+            </div>
+        </nav>
+    </header>
+
+
+
+    <div class="content-wrapper">
+        <!-- Main content -->
+        <section class="content"  >
+
+            <div class="row">
+                <div class="col-md-3 col-sm-6 col-xs-12">
+                    <div class="info-box">
+                        <span class="info-box-icon bg-aqua"><i class="ion ion-ios-gear-outline"></i></span>
+                        <div class="info-box-content">
+                            <span class="info-box-text">CPU Traffic</span>
+                            <span class="info-box-number">90<small>%</small></span>
+                        </div><!-- /.info-box-content -->
+                    </div><!-- /.info-box -->
+                </div><!-- /.col -->
+                <div class="col-md-3 col-sm-6 col-xs-12">
+                    <div class="info-box">
+                        <span class="info-box-icon bg-red"><i class="fa fa-google-plus"></i></span>
+                        <div class="info-box-content">
+                            <span class="info-box-text">Likes</span>
+                            <span class="info-box-number">41,410</span>
+                        </div><!-- /.info-box-content -->
+                    </div><!-- /.info-box -->
+                </div><!-- /.col -->
+
+                <!-- fix for small devices only -->
+                <div class="clearfix visible-sm-block"></div>
+
+                <div class="col-md-3 col-sm-6 col-xs-12">
+                    <div class="info-box">
+                        <span class="info-box-icon bg-green"><i class="ion ion-ios-cart-outline"></i></span>
+                        <div class="info-box-content">
+                            <span class="info-box-text">Sales</span>
+                            <span class="info-box-number">760</span>
+                        </div><!-- /.info-box-content -->
+                    </div><!-- /.info-box -->
+                </div><!-- /.col -->
+                <div class="col-md-3 col-sm-6 col-xs-12">
+                    <div class="info-box">
+                        <span class="info-box-icon bg-yellow"><i class="ion ion-ios-people-outline"></i></span>
+                        <div class="info-box-content">
+                            <span class="info-box-text">New Members</span>
+                            <span class="info-box-number">2,000</span>
+                        </div><!-- /.info-box-content -->
+                    </div><!-- /.info-box -->
+                </div><!-- /.col -->
+            </div>
+
+        </section>
+    </div>
+
+
+    <footer class="main-footer">
+        <div class="pull-right hidden-xs  ">
+            <b>Version</b> 1.0.0
+        </div>
+        <strong> Whh Web开发平台 IM Dept <a href="#">2016-04-01</a></strong>
+    </footer>
+
+
+    <!-- Control Sidebar -->
+    <aside class="control-sidebar control-sidebar-dark">
+        <div id="control-sidebar-home-tab" >
+        </div>
+    </aside><!-- /.control-sidebar -->
+    <!-- Add the sidebar's background. This div must be placed
+         immediately after the control sidebar -->
+    <div class="control-sidebar-bg"></div>
+
+
+
+
+
+</div>
+
+<!-- jQuery 2.1.4 -->
+<script src="framwork/AdminLTE-2.3.0/plugins/jQuery/jQuery-2.1.4.min.js"></script>
+<!-- jQuery UI 1.11.4 -->
+<script src="framwork/AdminLTE-2.3.0/plugins/jQueryUI/jquery-ui.min.js"></script>
+<script src="framwork/jquery.blockUI.js"></script>
+<!-- Resolve conflict in jQuery UI tooltip with Bootstrap tooltip -->
+<script>
+    $.widget.bridge('uibutton', $.ui.button);
+</script>
+<!-- Bootstrap 3.3.5 -->
+<script src="framwork/AdminLTE-2.3.0/bootstrap/js/bootstrap.min.js"></script>
+<!-- Sparkline -->
+<script src="framwork/AdminLTE-2.3.0/plugins/sparkline/jquery.sparkline.min.js"></script>
+<!-- jvectormap -->
+<script src="framwork/AdminLTE-2.3.0/plugins/jvectormap/jquery-jvectormap-1.2.2.min.js"></script>
+<script src="framwork/AdminLTE-2.3.0/plugins/jvectormap/jquery-jvectormap-world-mill-en.js"></script>
+<!-- jQuery Knob Chart -->
+<script src="framwork/AdminLTE-2.3.0/plugins/knob/jquery.knob.js"></script>
+<!-- Bootstrap WYSIHTML5 -->
+<script src="framwork/AdminLTE-2.3.0/plugins/bootstrap-wysihtml5/bootstrap3-wysihtml5.all.min.js"></script>
+<!-- Slimscroll -->
+<script src="framwork/AdminLTE-2.3.0/plugins/slimScroll/jquery.slimscroll.min.js"></script>
+<!-- FastClick -->
+<script src="framwork/AdminLTE-2.3.0/plugins/fastclick/fastclick.min.js"></script>
+<!-- AdminLTE App -->
+<script src="framwork/AdminLTE-2.3.0/dist/js/app.js"></script>
+
+<!-- kendo UI -->
+<script src="framwork/Stuk-jszip-f355e18/dist/jszip.js"></script>
+<script src="framwork/telerik_kendoui_professional_2016_1_266/js/kendo.all.min.js"></script>
+<script src="framwork/telerik_kendoui_professional_2016_1_266/js/cultures/kendo.culture.zh-CN.min.js"></script>
+
+<!-- 封装的UI控件的js-->
+<script src="framwork/whhJsFrame/js/settings.js"></script>
+<script src="framwork/whhJsFrame/widgets/ItemObject.js"></script>
+<script src="framwork/whhJsFrame/widgets/whhGrid.js"></script>
+<script src="framwork/whhJsFrame/widgets/whhDatePicker.js"></script>
+<script src="framwork/whhJsFrame/widgets/whhComboBox.js"></script>
+<script src="framwork/whhJsFrame/widgets/whhButton.js"></script>
+<script src="framwork/whhJsFrame/widgets/WhhFileUpload.js"></script>
+<script src="framwork/whhJsFrame/widgets/WhhDropDown.js"></script>
+<script src="framwork/whhJsFrame/widgets/whhDateTimePicker.js"></script>
+<script src="framwork/whhJsFrame/widgets/whhFileUploadORI.js"></script>
+
+<!--UI控件Demo的js -->
+<script src="pages/demoGrid/gridPage1.js"></script>
+<script src="pages/demoGrid/gridPage2.js"></script>
+<script src="pages/demoGrid/gridPage4.js"></script>
+<script src="pages/demoGrid/gridPage5.js"></script>
+<script src="pages/demoGrid/gridPage6.js"></script>
+<script src="pages/demoDatePicker/datePage1.js"></script>
+<script src="pages/demoComboBox/demo1.js"></script>
+<script src="pages/demoFileUpload/demo.js"></script>
+<script src="pages/demoDropDown/demo1.js"></script>
+<script src="pages/otherDemo/dateTimeDemo.js"></script>
+<script src="framwork/whhJsFrame/gridMaker/gridMaker.js"></script>
+
+
+<!-- ACE编辑器-->
+<script src="framwork/ace-builds-master/src-min-noconflict/ace.js" type="text/javascript" charset="utf-8"></script>
+
+<!-- Message窗口-->
+<div id="MessageWindow"></div>
+<!-- 登录窗口 -->
+<div id="loginViewWindow"  >
+
+    <form ng-controller="loginPopCtrl"  >
+        <table width="100%">
+            <tr><td>
+                <div class="form-group" style="padding-right: 26px;">
+                    <label for="password">用户名</label>
+                    <input type="text" class="form-control" id="username" placeholder="Username" ng-model="userInfo.username" ng-keyup="keyLogin($event)">
+                </div>
+            </td></tr>
+            <tr><td>
+                <div class="form-group" style="padding-right: 26px;">
+                    <label for="password">密码</label>
+                    <input  style="margin-right: 5px;width: 100%;"
+                            type="password" class="form-control" id="password" placeholder="Password" ng-model="userInfo.password" ng-keyup="keyLogin($event)">
+                </div>
+            </td></tr>
+            <tr><td>
+                <div class="checkbox">
+                    <label>
+                        <input type="checkbox"> 记住密码
+                    </label>
+                </div>
+            </td></tr>
+            <tr><td>
+                <div class="form-group" style="padding-right: 26px;width: 100%">
+                    <a class="btn btn-default btn-flat col-xs-2  " ng-click="reset()" >取消</a>
+                    <a class="btn   btn-flat pull-right col-xs-2 btn-info" ng-click="login()" >登录</a>
+                </div></td>
+                <!-- 得用a标签 不能直接用button 否则会出现回车无效-->
+            </tr>
+
+        </table >
+
+        <div class="callout callout-success" ng-show="successBoxShow" style="margin-top: 5px;">
+            <h4>登录成功!</h4>
+            <p>{{loginMessage}} 欢迎你 {{login_info.login_user.userName}} !</p>
+        </div>
+        <div class="callout callout-danger" ng-show="errorBoxShow" style="margin-top: 5px;">
+            <h4>登录出错啦!</h4>
+            <p>{{loginMessage}}</p>
+        </div>
+    </form>
+
+</div>
+
+
+</body>
+</html>

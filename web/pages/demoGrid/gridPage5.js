@@ -1,14 +1,11 @@
 /**
  * Created by wz on 16/4/2.
  */
-
-
-//angular.module('gridPage2', ['whh.grid'])
 App.controller('gridPage5Ctrl', ['$scope', '$http', '$timeout', 'whhHttpService', function ($scope, $http, $timeout, whhHttpService) {
     $scope.gridOption1 =
     {
         dataWindowId: "GridDemo5",
-        //获取widgetApi
+
         getWidgetApi: function (widgetApi) {
             $scope.gridApi = widgetApi;
             $scope.grid = widgetApi.widget;
@@ -21,7 +18,8 @@ App.controller('gridPage5Ctrl', ['$scope', '$http', '$timeout', 'whhHttpService'
 
     $scope.fileUploadOption = {
         url: "GridDemoService/importExcel.json",
-        // 获取api对象 和 widget对象
+        placeholder:"Excel导入数据...",
+
         getWidgetApi: function (widgetApi) {
             $scope.widgetApi = widgetApi;
             $scope.widget = widgetApi.widget;

@@ -1,5 +1,6 @@
 package com.whhercp.demo;
 
+import com.alibaba.fastjson.JSON;
 import com.whhercp.common.Application;
 import com.whhercp.jpa.datastore.DataAdapter;
 import com.whhercp.lang.exception.AppException;
@@ -83,5 +84,59 @@ public class FileuploadService {
 
 
 
+    @RequestMapping(value = "/uploadFileByGrid" ,method = RequestMethod.POST)
+    @ResponseBody
+    public Map uploadFileByGrid(@RequestParam(value = "file", required = false) MultipartFile file,@RequestParam(value = "para", required = false) String itemJsonStr, HttpServletRequest request){
+        System.out.println("uploadFileByGrid ");
 
+
+        Map item = JSON.parseObject(itemJsonStr,HashMap.class);
+
+
+        String name = file.getName();
+        String fileName = file.getOriginalFilename();
+        byte[] content;
+        try{
+            content = file.getBytes();
+        }catch (Exception e){
+            throw new AppException(e.getMessage());
+        }
+
+        //拿到了文件名 文件二进制码 可以存到项目目录 也可以存到文件服务器去
+        String filePath = request.getServletContext().getRealPath(File.separator);
+
+
+
+        BufferedOutputStream bof = null;
+        try{
+
+            File localFile= new File(filePath+File.separator+"pages"+File.separator+"demoFileUpload"+File.separator+fileName);
+            if(localFile.exists()){
+                localFile.delete();
+                localFile.createNewFile();
+            }
+
+            bof = new BufferedOutputStream(new FileOutputStream(localFile));
+            bof.write(content);
+        }catch (Exception e){
+            throw new AppException(e.getMessage());
+        }finally {
+            try {
+                bof.close();
+            } catch (IOException e) {
+                throw new AppException(e.getMessage());
+            }
+        }
+
+
+
+        //构建下载链接 $rootScope.appPath+"whhJsPlatform/pages/demoFileUpload/"+file.name
+        String downloadPath = "http://"+request.getServerName()+":"+request.getServerPort()+"/whhJsPlatform/pages/demoFileUpload/"+fileName;
+
+        // 返回的得是对象 可以转成json的对象
+        Map res = new HashMap();
+        res.put("downloadPath",downloadPath);
+        res.put("item",item);
+        return res;
+    }
 }

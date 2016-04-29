@@ -1,0 +1,23 @@
+<div style="padding: 5px;" ng-controller="GridMakerColUploadCtrl">
+    <ul class="nav nav-pills nav-stacked" ng-mousemove="move()">
+        <li>
+            <div class="form-group">
+                <label for="colWidth">宽度</label>
+                <input type="text" class="form-control" id="colWidth" placeholder="300" ng-model="GridMakerColUploadCtrlCache.wz_width">
+            </div>
+        </li>
+
+        <li>
+            <div class="form-group">
+                <label for="url">上传url</label>
+                <input type="text" class="form-control" id="url" placeholder="FileuploadService/uploadFileByGrid.json" ng-model="GridMakerColUploadCtrlCache.wz_url">
+            </div>
+        </li>
+        <li>
+            <div class="form-group">
+                <label>complete事件handler数组</label>
+                <pre id="wz_complete" ng-model="GridMakerColUploadCtrlCache.wz_complete" style="height: 100px;"></pre>
+            </div>
+        </li>
+    </ul>
+</div>

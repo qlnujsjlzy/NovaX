@@ -13,11 +13,14 @@ App.directive('ngWhhGrid', function () {//编写grid对应的指令
             option: "=" // 双向绑定过来
         },//e6e6e6
         template: '<div><div class="whhGridMainTitle" style="border-color: dimgrey;border-width: 1px;border-style: solid;border-bottom-width: 0px;"></div><div class="whhGridMainContent"></div></div>',
-        controller: ['$scope', '$http','whhHttpService','whhDateService', function ($scope, $http,whhHttpService,whhDateService) {
+        controller: ['$scope','$rootScope', '$http','$compile','whhHttpService','whhDateService', function ($scope,$rootScope,$http,$compile,whhHttpService,whhDateService) {
 
 
             //便捷使用
             $scope.$http = $http;
+            $scope.$compile = $compile;
+            $scope.$rootScope = $rootScope;
+
             $scope.whhHttpService = whhHttpService;
             $scope.whhDateService = whhDateService;
 
@@ -197,16 +200,24 @@ App.directive('ngWhhGrid', function () {//编写grid对应的指令
 
 
             $scope.widgetApi.updateItem = function (index, para) {
-                //还是要根据uid来做更新  一般我们的用法都是要循环更新一个Grid里面的某些内容
 
-                //var innerItem = $scope.widgetApi.dataSource.getByUid(item.uid);
-                //var index = $scope.widgetApi.dataSource.indexOf(innerItem);
+                if(arguments.length==2){
 
-                for (var prop in para) {
-                    $scope.widgetApi.dataSource.at(index).set(prop, para[prop]);
+                    for (var prop in para) {
+                        $scope.widgetApi.dataSource.at(index).set(prop, para[prop]);
+                    }
                 }
-                //var prop="phonename";var index = 1;
-                //$scope.innerOptions.dataSource.at(index).set(prop,item[prop]);
+                if(arguments.length==1){
+                    var item = index;
+                    var innerItem = $scope.widgetApi.dataSource.getByUid(item.uid);
+                    var index = $scope.widgetApi.dataSource.indexOf(innerItem);
+
+                    for (var prop in para) {
+                        $scope.widgetApi.dataSource.at(index).set(prop, para[prop]);
+                    }
+
+                }
+
             }
 
 
@@ -713,48 +724,6 @@ App.directive('ngWhhGrid', function () {//编写grid对应的指令
 
 
 
-                                //如果是command列 command是一个数组 里面有多个button定义
-                                if( outerColumnProperty=="buttons"){
-
-                                    //先创建command数组
-                                    if(innerColumn.command){
-                                    }else{
-                                        innerColumn.command = [];
-                                    }
-
-                                    for(var i=0;i<outerColumn.buttons.length;i++){
-
-                                        if(outerOptions.columnButtons==undefined){
-                                            alert("没有定义columnButtons");
-                                            return;
-                                        }
-
-                                        var command = {};
-                                        //command.uuid =  Math.uidFast();
-                                        command.name = outerColumn.buttons[i].name;  //name是一个command的唯一标示 我用name作为key 把一个command缓存起来
-                                        command.text = outerColumn.buttons[i].text;
-                                        command.userFunc = outerOptions.columnButtons[command.name];
-                                        command.click = function(e){
-                                            e.preventDefault(); //不能让事件继续传播 否则会出现地址栏url改变的情况 这是不能允许的
-                                            var tr = $(e.target).closest("tr"); // get the current table row (tr)
-                                            var data = scope.widgetApi.widget.dataItem(tr);
-
-                                            var name = e.data.commandName;
-                                            //从缓存中取出来 进行调用
-                                            scope.innerOptions.commandCache[name].userFunc(data);
-                                        }
-                                        if(scope.innerOptions.commandCache[command.name]){
-                                            alert("你已经定义了一个叫做 "+command.name+" 的button,button是不允许重名的");
-                                            return;
-                                        }else{
-                                            scope.innerOptions.commandCache[command.name] = command;
-                                            innerColumn.command.push(command);
-                                        }
-                                    }
-                                    //innerColumn.command = outerColumn.command;
-                                }
-
-
                                 if (outerColumnProperty == "field") {
                                     innerColumn.field = outerColumn.field;
                                 }
@@ -1053,7 +1022,111 @@ App.directive('ngWhhGrid', function () {//编写grid对应的指令
                                         }
 
                                     }
+
+
+                                    //buttons
+                                    if (outerColumn[outerColumnProperty]["editorType"] == editorTypeEnum.Buttons) {
+
+                                        //把editorConfig对象缓存起来
+                                        scope.innerOptions.editorColCache[outerColumn.field] = jQuery.extend(true, {}, outerColumn["editorConfig"]);
+                                        var editorConfig = scope.innerOptions.editorColCache[outerColumn.field];
+
+                                        //先创建command数组
+                                        if(innerColumn.command){
+                                        }else{
+                                            innerColumn.command = [];
+                                        }
+                                        for(var i=0;i<editorConfig.buttons.length;i++){
+
+                                            if(outerOptions.buttonsFunc==undefined){
+                                                alert("没有定义buttonsFunc");
+                                                return;
+                                            }
+
+                                            var command = {};
+                                            //command.uuid =  Math.uidFast();
+                                            command.name = editorConfig.buttons[i].name;  //name是一个command的唯一标示 我用name作为key 把一个command缓存起来
+                                            command.text = editorConfig.buttons[i].text;
+                                            command.userFunc = outerOptions.buttonsFunc[command.name];
+                                            command.click = function(e){
+                                                e.preventDefault(); //不能让事件继续传播 否则会出现地址栏url改变的情况 这是不能允许的
+                                                var tr = $(e.target).closest("tr"); // get the current table row (tr)
+                                                var data = scope.widgetApi.widget.dataItem(tr);
+
+                                                var name = e.data.commandName;
+                                                //从缓存中取出来 进行调用
+                                                scope.innerOptions.commandCache[name].userFunc(data);
+                                            }
+                                            if(scope.innerOptions.commandCache[command.name]){
+                                                alert("你已经定义了一个叫做 "+command.name+" 的button,button是不允许重名的");
+                                                return;
+                                            }else{
+                                                scope.innerOptions.commandCache[command.name] = command;
+                                                innerColumn.command.push(command);
+                                            }
+                                        }
+
+                                    }
+
+
+                                    //FileUpload
+                                    if (outerColumn[outerColumnProperty]["editorType"] == editorTypeEnum.FileUpload) {
+
+                                        scope.innerOptions.editorColCache[outerColumn.field] = jQuery.extend(true, {}, outerColumn["editorConfig"]);
+                                        innerColumn.editor = function (container, options) {
+
+
+                                            var editorType = scope.innerOptions.editorColCache[options.field];
+                                            var field = options.field;
+                                            var item = options.model;
+                                            var val = options.model[options.field];
+
+
+
+                                            var input = $('<ng-whh-file-upload-ori option="fileUploadOptionxxx"></ng-whh-file-upload-ori>');
+                                            input.attr("name", options.field);
+                                            input.appendTo(container);
+
+
+
+                                            var tempScope = scope.$rootScope.$new();
+                                            tempScope.field = field;
+                                            tempScope.item = item;
+                                            tempScope.val = val;
+                                            tempScope.editorType = editorType;
+                                            tempScope.fileUploadOptionxxx = {
+                                                url:editorType["url"],
+                                                data:{"para":JSON.stringify(item)},
+
+                                                getWidgetApi: function (widgetApi) {
+                                                    tempScope.widgetApi = widgetApi;
+                                                    tempScope.widget = widgetApi.widget;
+
+                                                    tempScope.widgetApi.bindEvent('Complate',function(res){
+
+                                                        //主要关注的是作用域,执行到这个function里面来的时候 这些个item  editorType 这些变量都是否还有效?因为外部的所用于可能早就没了
+                                                        //你拿到的只是最后一次item  editorType的值而已 所以还是把这些变量存储到这个专用的scope上面去比如tempScope
+                                                        tempScope.item[tempScope.field] = res.downloadPath==undefined?"上传成功":res.downloadPath;
+                                                        scope.widgetApi.updateItem(tempScope.item);
+
+                                                        if(tempScope.editorType.complete){
+                                                            for(var j=0;j<tempScope.editorType.complete.length;j++){
+                                                                outerOptions.uploadsFunc[tempScope.editorType.complete[j]](res,tempScope.item);
+                                                            }
+                                                        }else{
+                                                            alert("上传成功!");
+                                                        }
+                                                    });
+                                                }
+                                            }
+
+                                            scope.$compile(input[0])(tempScope);
+
+                                        }
+                                    }
                                     //**************************************** Editors End *****************************//
+
+
 
                                 }//开始对每种编辑器做处理 end
 
@@ -1405,7 +1478,9 @@ var editorTypeEnum = {
     "DropDownList": "kendoDropDownList",
     "ComboBox": "kendoComboBox",
     "DatePicker": "kendoDatePicker",
-    "DateTimePicker": "kendoDateTimePicker"
+    "DateTimePicker": "kendoDateTimePicker",
+    "Buttons": "Buttons",
+    "FileUpload": "FileUpload",
 }
 
 

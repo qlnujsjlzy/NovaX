@@ -11,8 +11,8 @@ App.directive('ngWhhFileUploadOri', function () {
         },
         template:
         '<div class="input-group">'+
-        '<input type="file" style="display:none;visibility: hidden;height: 0px;">'+
-        '<input type="text" class="form-control">'+
+        '<input type="file" style="display:none;visibility: hidden;height: 0px;" >'+
+        '<input type="text" class="form-control"  >'+
         '<span class="input-group-btn">'+
         //'<div class="btn-group">' +
         '<button class="btn btn-default btn-flat" ng-click="choseFile()" type="button">浏览</button>'+
@@ -52,6 +52,14 @@ App.directive('ngWhhFileUploadOri', function () {
             $scope.upload = function () {
                 var formData = new FormData();
                 formData.append('file', $('#file_'+$scope.fileuid)[0].files[0]);
+
+                //如果有额外的参数 也要放进去  暂时只能传string类型的参数 如果想传object 可以先转成json字符串再传输
+                if($scope.option.data){
+                    for (var prop in $scope.option.data ){
+                        formData.append(prop, $scope.option.data[prop]);
+                    }
+                }
+
                 $.ajax({
                     url: $scope.option.url,
                     type: 'POST',
@@ -84,7 +92,7 @@ App.directive('ngWhhFileUploadOri', function () {
 
             $($(element).find("input")[0]).attr("id","file_"+scope.fileuid);
             $($(element).find("input")[1]).attr("id","fileName_"+scope.fileuid);
-
+            $('#fileName_'+scope.fileuid).attr("placeholder",scope.option.placeholder);
 
             $('#file_'+scope.fileuid).change(function() {
                 $('#fileName_'+scope.fileuid).val( $('#file_'+scope.fileuid).val() );

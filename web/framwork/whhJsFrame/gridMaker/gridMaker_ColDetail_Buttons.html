@@ -1,0 +1,17 @@
+<!-- 在这里写定义  以后就在这里做ui-view -->
+<div style="padding: 5px;" ng-controller="GridMakerColButtonsCtrl">
+    <ul class="nav nav-pills nav-stacked" ng-mousemove="move()">
+        <li>
+            <div class="form-group">
+                <label for="colWidth">宽度</label>
+                <input type="text" class="form-control" id="colWidth" placeholder="300" ng-model="GridMakerColButtonsCtrlCache.wz_width">
+            </div>
+        </li>
+        <li>
+            <div class="form-group">
+                <label>buttons数组</label>
+                <pre id="wz_buttons" ng-model="GridMakerColDropDownListCtrlCache.wz_buttons" style="height: 100px;"></pre>
+            </div>
+        </li>
+    </ul>
+</div>

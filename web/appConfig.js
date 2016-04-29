@@ -157,7 +157,21 @@ App.config(function ($stateProvider, $urlRouterProvider) {
                     templateUrl: "framwork/whhJsFrame/gridMaker/gridMaker_ColDetail_DateTime.html"
                 }
             }
-    })
+    }).state('main.init.gridMaker.sub1.editor_buttons', {
+            url: "/editor_buttons",
+            views: {
+                "gridMakerColDetailView@main.init.gridMaker": {
+                    templateUrl: "framwork/whhJsFrame/gridMaker/gridMaker_ColDetail_Buttons.html"
+                }
+            }
+     }).state('main.init.gridMaker.sub1.editor_upload', {
+            url: "/editor_upload",
+            views: {
+                "gridMakerColDetailView@main.init.gridMaker": {
+                    templateUrl: "framwork/whhJsFrame/gridMaker/gridMaker_ColDetail_Upload.html"
+                }
+            }
+        })
 //===============================================================Grid制作工具的路由 end=========================================================================
 /*
  Create by wangzheng  2016-04-01
